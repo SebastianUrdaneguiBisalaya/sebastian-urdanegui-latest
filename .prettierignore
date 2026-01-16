@@ -1,0 +1,9 @@
+dist
+package-lock.json
+.eslintrc.cjs
+.next
+node_modules
+.devcontainer
+public
+docker-compose.yml
+Dockerfile
