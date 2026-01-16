@@ -1,20 +1,23 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Sora, Reddit_Sans } from "next/font/google";
-import "./globals.css";
+
+import Footer from "@/components/shared/Footer";
+import Navbar from "@/components/shared/Navbar";
 
 const geistSans = Sora({
-  variable: "--font-sora",
   subsets: ["latin"],
+  variable: "--font-sora",
 });
 
 const geistMono = Reddit_Sans({
-  variable: "--font-reddit-sans",
   subsets: ["latin"],
+  variable: "--font-reddit-sans",
 });
 
 export const metadata: Metadata = {
-  title: "Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer",
   description: "I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.",
+  title: "Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer",
 };
 
 export default function RootLayout({
@@ -27,8 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="max-w-3xl w-full bg-white min-h-screen">
+        <div className="max-w-3xl w-full min-h-screen h-full flex flex-col p-4">
+          <Navbar />
           {children}
+          <Footer />
         </div>
       </body>
     </html>
