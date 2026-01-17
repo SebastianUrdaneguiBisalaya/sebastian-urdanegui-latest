@@ -38,11 +38,11 @@ export default function RootLayout({
 			>
 				<div className='max-w-3xl w-full min-h-screen h-full flex flex-col p-4'>
 					<Navbar />
-          			<Navigation />
+					<Navigation />
 					{children}
 					<Footer />
 				</div>
-        		<Lenis />
+				<Lenis />
 				<SmoothCursor />
 			</body>
 		</html>

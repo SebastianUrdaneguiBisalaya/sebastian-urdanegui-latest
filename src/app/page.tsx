@@ -63,11 +63,12 @@ export default function Page() {
 				</span>{' '}
 				| <span className='font-light italic'>October 2025 - Present</span>.
 				Create modern and functional interfaces using Next.js, React, TypeScript
-				and JavaScript (ES6+). The projects are focused on the real estate sector. Implement server-side rendering (SSR) and static
-				site generation (SSG) to optimize user experience and performance.
-				Integrate and consume RESTful APIs, maintain clean and scalable code,
-				and collaborate in agile teams applying good development and version
-				control practices with Git. Create a chatbot using n8n and LLM.
+				and JavaScript (ES6+). The projects are focused on the real estate
+				sector. Implement server-side rendering (SSR) and static site generation
+				(SSG) to optimize user experience and performance. Integrate and consume
+				RESTful APIs, maintain clean and scalable code, and collaborate in agile
+				teams applying good development and version control practices with Git.
+				Create a chatbot using n8n and LLM.
 			</p>
 			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
 				-{' '}

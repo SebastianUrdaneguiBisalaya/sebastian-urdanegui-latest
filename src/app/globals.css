@@ -38,25 +38,27 @@ body {
 }
 
 .cursor-dot {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: white;
-  border-radius: 9999px;
-  will-change: transform;
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: white;
+	border-radius: 9999px;
+	will-change: transform;
 }
 
 .cursor-border {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border: 1px solid white;
-  border-radius: 9999px;
-  transition: width 0.25s ease, height 0.25s ease;
-  will-change: transform;
+	position: absolute;
+	width: 28px;
+	height: 28px;
+	border: 1px solid white;
+	border-radius: 9999px;
+	transition:
+		width 0.25s ease,
+		height 0.25s ease;
+	will-change: transform;
 }
 
 .cursor-border.cursor--hover {
-  width: 44px;
-  height: 44px;
+	width: 44px;
+	height: 44px;
 }
