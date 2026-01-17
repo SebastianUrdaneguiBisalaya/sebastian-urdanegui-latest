@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { Sora, Reddit_Sans } from 'next/font/google';
 
 import Footer from '@/components/shared/Footer';
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
 	title: 'Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer',
 };
 
+const SmoothCursor = dynamic(() => import('../components/shared/SmoothCursor'));
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -35,11 +38,12 @@ export default function RootLayout({
 			>
 				<div className='max-w-3xl w-full min-h-screen h-full flex flex-col p-4'>
 					<Navbar />
-          <Navigation />
+          			<Navigation />
 					{children}
 					<Footer />
 				</div>
-        <Lenis />
+        		<Lenis />
+				<SmoothCursor />
 			</body>
 		</html>
 	);
