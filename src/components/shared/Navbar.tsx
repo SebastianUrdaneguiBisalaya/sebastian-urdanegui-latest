@@ -1,14 +1,23 @@
+'use client';
+
+import Link from "next/link";
+
 export default function Navbar() {
 	return (
 		<nav className='w-full py-4 flex flex-col gap-2'>
-			<h1 className='text-lg text-white font-sora text-center font-medium'>
-				Sebastian Marat Urdanegui Bisalaya
-			</h1>
+			<Link
+				className="w-full flex flex-col items-center"
+				href='/'
+			>
+				<h1 className='text-lg text-white font-sora text-center font-medium'>
+					Sebastian Marat Urdanegui Bisalaya
+				</h1>
+			</Link>
 			<h2 className='font-reddit-sans text-center text-gray-400 font-medium'>
 				Full-Stack Developer & Data Analyst
 			</h2>
 			<div className='flex flex-row items-center justify-center gap-1 w-full pt-4'>
-				<a
+				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-6 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/'
 					target='_blank'
@@ -24,8 +33,8 @@ export default function Navbar() {
 							fill='currentColor'
 						></path>
 					</svg>
-				</a>
-				<a
+				</Link>
+				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-8 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://github.com/SebastianUrdaneguiBisalaya'
 					target='_blank'
@@ -41,8 +50,8 @@ export default function Navbar() {
 							fill='currentColor'
 						></path>
 					</svg>
-				</a>
-				<a
+				</Link>
+				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-6 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://x.com/sebasurdaneguib'
 					target='_blank'
@@ -67,8 +76,8 @@ export default function Navbar() {
 							</defs>
 						</g>
 					</svg>
-				</a>
-				<a
+				</Link>
+				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-6 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://public.tableau.com/app/profile/sebastian.marat.urdanegui.bisalaya/vizzes'
 					target='_blank'
@@ -84,8 +93,8 @@ export default function Navbar() {
 							fill='currentColor'
 						></path>
 					</svg>
-				</a>
-				<a
+				</Link>
+				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-6 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://medium.com/@sebasurdanegui'
 					target='_blank'
@@ -101,7 +110,7 @@ export default function Navbar() {
 							fill='currentColor'
 						></path>
 					</svg>
-				</a>
+				</Link>
 			</div>
 		</nav>
 	);
