@@ -1,3 +1,4 @@
+import { type Blog } from "@/components/blog/Card";
 import { type Project } from "@/components/projects/Card";
 
 const navigationsPaths = [
@@ -81,4 +82,14 @@ const projectsList: Project[] = [
     },
 ];
 
-export { navigationsPaths, projectsList };
+const blogList: Blog[] = [
+    {
+        description: "A practical guide with FastAPI and Groq AI to build a voice assistant for forms.",
+        link: "/blog/voice-agent-for-forms",
+        name: "Voice agent for forms",
+        skills: ["FastAPI", "Python", "WebSocket", "Groq", "LLM", "SpeechToText", "TextToSpeech", "React", "TailwindCSS", "TypeScript"],
+        year: "2025"
+    }
+]
+
+export { blogList, navigationsPaths, projectsList };
