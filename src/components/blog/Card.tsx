@@ -22,8 +22,6 @@ export default function Card({ description, link, name, skills, year }: Blog) {
 				<Link
 					className='font-sora font-medium cursor-pointer group-hover:scale-[1.05] transition-all duration-500 ease-out'
 					href={link ?? '/'}
-					rel='noopener noreferrer'
-					target='_blank'
 				>
 					{name} —
 				</Link>
