@@ -14,7 +14,7 @@ export default function Card({ description, link, name, skills, year }: Blog) {
 	return (
 		<div className='w-full h-fit flex flex-row items-stretch gap-6 group'>
 			<div className='flex flex-col'>
-				<span className='font-sora text-white/70 font-medium group-hover:scale-[1.05] transition-all duration-500 ease-out'>
+				<span className='font-sora text-white/70 font-medium'>
 					{year}
 				</span>
 			</div>
