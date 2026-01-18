@@ -19,8 +19,10 @@ const geistMono = Reddit_Sans({
 });
 
 export const metadata: Metadata = {
+	authors: [{ name: 'Sebastian Marat Urdanegui Bisalaya', url: 'https://sebastianurdanegui.com' }],
 	description:
 		'I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.',
+	keywords: ['sebastian marat urdanegui bisalaya', 'sebastian urdanegui', 'JavaScript', 'React', 'React Native', 'Node.js', 'TypeScript', 'desarrollo web', 'desarrollo móvil', 'fullstack developer', 'frontend developer', 'backend developer', 'python', 'data analyst', 'data scientist', 'data visualization', 'programación'],
 	title: 'Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer',
 };
 
@@ -33,6 +35,29 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
+			<head>
+				<meta content="PE" name="geo.region" />
+				<meta content="Perú" name="geo.placename" />
+				<meta content="general" name="rating" />
+				<meta content="global" name="distribution" />
+				<meta
+					content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer'
+					property='og:title'
+				/>
+				<meta
+					content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.'
+					property='og:description'
+				/>
+				<meta
+					content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer'
+					name='twitter:title'
+				/>
+				<meta
+					content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.'
+					name='twitter:description'
+				/>
+				<meta content='https://sebastianurdanegui.com' property='og:url' />
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
