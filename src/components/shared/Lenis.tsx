@@ -18,5 +18,11 @@ export default function Lenis() {
 		return () => cancelFrame(update);
 	}, []);
 
-	return <ReactLenis options={{ autoRaf: false }} ref={lenisRef} root />;
+	return <ReactLenis
+		options={{
+			autoRaf: false,
+		}}
+		ref={lenisRef}
+		root
+		/>;
 }
