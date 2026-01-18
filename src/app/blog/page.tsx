@@ -3,7 +3,7 @@ import { blogList } from '@/constants/constants';
 
 export default function Page() {
 	return (
-		<main className='pb-4 mt-[1.25em] mb-[1.25em]'>
+		<main className='pb-4'>
 			<div className='flex flex-col items-start w-full gap-6'>
 				{blogList.map((project, idx) => (
 					<Card
