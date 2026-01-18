@@ -1,12 +1,34 @@
+'use client';
+
+import { motion, type Variants } from 'motion/react';
 import Image from 'next/image';
+
+const paragraphVariants: Variants = {
+	hidden: {
+		opacity: 0,
+		y: 10
+	},
+	visible: {
+		opacity: 1,
+		transition: {
+			duration: 1.2,
+			ease: 'easeOut'
+		},
+		y: 0,
+	}
+}
 
 export default function Page() {
 	return (
 		<main className='pb-4'>
-			<a
+			<motion.a
 				className='flex justify-center sm:block cursor-pointer'
 				href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/'
+				initial='hidden'
 				target='_blank'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
 			>
 				<Image
 					alt='Profile image'
@@ -15,15 +37,27 @@ export default function Page() {
 					src='/image-profile.webp'
 					width={130}
 				/>
-			</a>
-			<p className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'>
+			</motion.a>
+			<motion.p
+				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				I am a Full-Stack Developer, Data Analyst & Scientist from Lima, Peru.
 				Currently, I specialize in creating web and mobile applications using
 				modern stacks: React, React Native, Node.js and Python. My goal is
 				clear: create products that impact a large number of people, combining
 				my technical vision with a user-oriented mindset.
-			</p>
-			<p className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				My journey began with analytics and data science in Python, where I
 				gained a solid foundation in logic and algorithms. This experience
 				inspired me to create my first two open-source libraries:{' '}
@@ -44,19 +78,37 @@ export default function Page() {
 				</a>
 				<span className='font-bold'> with over 1.6K downloads</span>, tools
 				designed to simplify financial analysis.
-			</p>
-			<p className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				Driven by the desire to build comprehensive solutions, I expanded my
 				skills through self-taught mobile development. This path of constant
 				learning not only allowed me to master key technologies like JavaScript
 				and React, but also led me to obtain a Full-Stack Developer scholarship,
 				consolidating my training and my ability to adapt and grow in a
 				constantly evolving technology environment.
-			</p>
-			<h2 className='text-left font-sora text-white/95 text-lg w-full mt-[1.25em] mb-[1.25em] leading-7'>
+			</motion.p>
+			<motion.h2
+				className='text-left font-sora text-white/95 text-lg w-full mt-[1.25em] mb-[1.25em] leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				Experience
-			</h2>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.h2>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<span className='font-bold font-sora'>
 					Front-end Developer Junior | Formula - Marketing Agency
@@ -69,8 +121,14 @@ export default function Page() {
 				RESTful APIs, maintain clean and scalable code, and collaborate in agile
 				teams applying good development and version control practices with Git.
 				Create a chatbot using n8n and LLM.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -84,8 +142,14 @@ export default function Page() {
 				translates, and formulates clear and effective responses in real time,
 				regardless of the situation. Ideal for sales, customer service,
 				meetings, language learning, and more.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -96,8 +160,14 @@ export default function Page() {
 				</a>{' '}
 				| <span className='font-light italic'>August 2025</span>. A web platform
 				to organize all your subscriptions in one place.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -108,8 +178,14 @@ export default function Page() {
 				</a>{' '}
 				| <span className='font-light italic'>August 2025</span>. An AI-powered
 				web platform for music recommendations integrated with Spotify.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -121,8 +197,14 @@ export default function Page() {
 				| <span className='font-light italic'>June 2025</span>. Forget about
 				paperwork. Send a photo to our Telegram bot, and our AI model will
 				extract the data, making it available on the web dashboard.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -141,8 +223,14 @@ export default function Page() {
 				Huancavelica. We developed an MVP that allows parents and health
 				personnel to view check-ups and vaccines from their mobile phones, with
 				automatic alerts and auditory translation into Quechua.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<span className='font-bold font-sora'>
 					Full-Stack Developer - Make It Real Camp
@@ -154,8 +242,14 @@ export default function Page() {
 				APIs. I implemented features such as event search by date range and
 				name, advanced filters by category and price, and a ticket purchasing
 				system integrated with Stripe.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<a
 					className='font-bold font-sora underline'
@@ -172,8 +266,14 @@ export default function Page() {
 				Transformation of Peru. The topic of my analysis was the valuation of
 				rest days due to work accidents at a national level. The dataset was
 				provided by the Ministry of Labor and Employment Promotion.
-			</p>
-			<p className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'>
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				-{' '}
 				<span className='font-bold font-sora'>
 					Business Strategy Intern - Treasury - Banco de Crédito del Perú
@@ -186,7 +286,7 @@ export default function Page() {
 				exchange rate, generating an approximate transaction volume of 500K PEN
 				in 4 months. I designed an enablement flow to validate client
 				requirements for operating financial derivatives.
-			</p>
+			</motion.p>
 		</main>
 	);
 }

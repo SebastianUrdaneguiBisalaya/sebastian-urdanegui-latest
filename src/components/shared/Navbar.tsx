@@ -1,6 +1,22 @@
 'use client';
 
+import { motion, type Variants } from 'motion/react';
 import Link from "next/link";
+
+const variants: Variants = {
+	hidden: {
+		opacity: 0,
+		y: 10
+	},
+	visible: {
+		opacity: 1,
+		transition: {
+			duration: 1.2,
+			ease: 'easeOut'
+		},
+		y: 0,
+	}
+}
 
 export default function Navbar() {
 	return (
@@ -9,14 +25,32 @@ export default function Navbar() {
 				className="w-full flex flex-col items-center"
 				href='/'
 			>
-				<h1 className='text-lg text-white font-sora text-center font-medium'>
+				<motion.h1
+					className='text-lg text-white font-sora text-center font-medium'
+					initial='hidden'
+					variants={variants}
+					viewport={{ amount: 0.3, once: true }}
+					whileInView="visible"
+				>
 					Sebastian Marat Urdanegui Bisalaya
-				</h1>
+				</motion.h1>
 			</Link>
-			<h2 className='font-reddit-sans text-center text-gray-400 font-medium'>
+			<motion.h2
+				className='font-reddit-sans text-center text-gray-400 font-medium'
+				initial='hidden'
+				variants={variants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				Full-Stack Developer & Data Analyst
-			</h2>
-			<div className='flex flex-row items-center justify-center gap-1 w-full pt-4'>
+			</motion.h2>
+			<motion.div
+				className='flex flex-row items-center justify-center gap-1 w-full pt-4'
+				initial='hidden'
+				variants={variants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
 				<Link
 					className='opacity-50 flex flex-col items-center justify-center h-6 w-auto cursor-pointer hover:opacity-100 text-gray-300 transition-all duration-500 ease-out'
 					href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/'
@@ -111,7 +145,7 @@ export default function Navbar() {
 						></path>
 					</svg>
 				</Link>
-			</div>
+			</motion.div>
 		</nav>
 	);
 }
