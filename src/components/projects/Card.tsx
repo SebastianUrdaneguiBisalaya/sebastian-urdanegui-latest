@@ -34,7 +34,7 @@ export default function Card({
 					{name} —
 				</Link>
 				<p className='font-reddit-sans text-sm text-white/85'>{description}</p>
-				<div className='flex flex-wrap items-center gap-2 pt-1'>
+				<div className='flex flex-wrap items-center gap-2 pt-2'>
 					{skills.map((item, idx) => (
 						<span
 							className='font-reddit-sans text-xs text-white/80 bg-white/10 rounded-2xl px-2 py-1 whitespace-nowrap'
