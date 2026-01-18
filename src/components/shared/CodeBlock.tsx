@@ -38,7 +38,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
     code,
     filename,
     language = 'ts',
-    theme = 'github-dark'
+    theme = 'material-theme-darker'
 }) => {
     const [html, setHtml] = useState<string>('');
     const [copied, setCopied] = useState<boolean>(false);
@@ -98,7 +98,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
                 </button>
             </div>
             <div
-                className='leading-relaxed border-x border-b border-white/20 rounded-b-md py-4 bg-[rgba(0,0,0,1)]'
+                className='leading-relaxed border-x border-b text-sm border-white/20 rounded-b-md py-4 bg-[rgba(0,0,0,1)]'
                 dangerouslySetInnerHTML={{ __html: html }}
             />
         </div>
