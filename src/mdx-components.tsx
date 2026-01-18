@@ -23,7 +23,7 @@ const components = {
         <h6 className='font-reddit-sans text-[13px] text-white/50 mb-[1em] mt-[1em]'>{children}</h6>
     ),
     li: ({ children }) => (
-        <li className='font-reddit-sans mt-[1.1em] mb-[1.1em] in-[ul]:relative in-[ul]:before:mr-2 in-[ul]:before:content-["-"]'>{children}</li>
+        <li className='font-reddit-sans mt-[1.1em] mb-[1.1em] in-[ul]:relative in-[ul]:before:mr-2 in-[ul]:before:content-["-"] in-[ul]:before:absolute in-[ul]:before:-ml-4 in-[ul]:pl-4'>{children}</li>
     ),
     p: ({ children }) => (
         <p className='font-reddit-sans leading-7 mt-[1.25em] mb-[1.25em]'>{children}</p>
