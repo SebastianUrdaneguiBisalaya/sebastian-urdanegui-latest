@@ -1,6 +1,8 @@
 import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 
+###### Last updated: September 24, 2025
+
 # **Voice Agent for Forms: A Practical Guide with FastAPI and Groq**
 
 **Artificial Intelligence (AI)** applications have become increasingly popular across various sectors, especially in customer service, where we've moved from chatbots with rigid procedures to advanced **Natural Language Processing (NLP)** tools powered by **Large Language Models (LLMs)**.
@@ -24,28 +26,28 @@ Go to your terminal and run the following commands:
 - Clone the repository:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='git clone https://github.com/SebastianUrdaneguiBisalaya/building-a-voice-agents-for-forms'
 />
 
 - Move into the server directory:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='cd building-a-voice-agents-for-forms'
 />
 
 - Create a virtual environment:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='python -m venv venv'
 />
 
 - Activate the virtual environment:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code={[
         'source venv/bin/activate # (macOS)',
         'venv\\Scripts\\activate # (Windows)',
@@ -55,14 +57,14 @@ Go to your terminal and run the following commands:
 - Install dependencies:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='pip install -r requirements.txt'
 />
 
-- Create a ```.env``` file in the project's root with the following environment variables:
+- Create a **.env** file in the project's root with the following environment variables:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code={[
         'ENVIRONMENT=development # (development or production)',
         'API_GROQ=****************',
@@ -72,7 +74,7 @@ Go to your terminal and run the following commands:
 - Run the server:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='fastapi dev src/app/main.py'
 />
 
@@ -81,21 +83,21 @@ Go to your terminal and run the following commands:
 - Move into the client directory:
 
 <CodeBlock
-    language='python'
-    code='fcd building-a-voice-agents-for-forms/client'
+    language='bash'
+    code='cd building-a-voice-agents-for-forms/client'
 />
 
 - Install dependencies:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='pnpm install'
 />
 
 - Run the client development server:
 
 <CodeBlock
-    language='python'
+    language='bash'
     code='pnpm dev'
 />
 
@@ -162,13 +164,12 @@ Considering the WebSocket flow, we can build the process in a way that gives the
 
 ### **FastAPI Process**
 
-The ```config.py``` file handles environment variable management. It uses ```python-dotenv``` to load variables from the ```.env``` file and ```Pydantic``` to securely validate and type these variables, ensuring the application won't start if any critical configuration is missing.
+The **config.py** file handles environment variable management. It uses **python-dotenv** to load variables from the **.env** file and **Pydantic** to securely validate and type these variables, ensuring the application won't start if any critical configuration is missing.
 
 <CodeBlock
     filename='src/config/config.py'
     language='python'
-    code={`
-        import os
+    code={`import os
         from pydantic import ValidationError, Field
         from pydantic_settings import BaseSettings
         from dotenv import load_dotenv
@@ -202,9 +203,9 @@ The ```config.py``` file handles environment variable management. It uses ```pyt
     `}
 />
 
-The ```classes.py``` file defines the key classes for session and connectivity management. The ```ConnectionManager``` class handles active WebSocket connections, with methods to connect, disconnect and send messages to individual clients or all of them (broadcast). This is useful for managing connection persistence (e.g., with 'ping' messages).
+The **classes.py** file defines the key classes for session and connectivity management. The **ConnectionManager** class handles active WebSocket connections, with methods to connect, disconnect and send messages to individual clients or all of them (broadcast). This is useful for managing connection persistence (e.g., with 'ping' messages).
 
-The ```FormSession``` class is the core of the form's logic. It's responsible for tracking a user's session, controlling the current question's index, storing validated answers, and determining when the form is complete. While the data is currently stored in memory, this design facilitates future integration with a database.
+The **FormSession** class is the core of the form's logic. It's responsible for tracking a user's session, controlling the current question's index, storing validated answers, and determining when the form is complete. While the data is currently stored in memory, this design facilitates future integration with a database.
 
 <CodeBlock
     filename='src/classes/classes.py'
@@ -261,7 +262,7 @@ The ```FormSession``` class is the core of the form's logic. It's responsible fo
     `}
 />
 
-If you're familiar with data typing in **TypeScript**, you'll find the use of **Pydantic** in Python to be similar. The ```BaseModel``` class allows us to define structured and validated data schemas, which is fundamental for handling function inputs and outputs in our API.
+If you're familiar with data typing in **TypeScript**, you'll find the use of **Pydantic** in Python to be similar. The **BaseModel** class allows us to define structured and validated data schemas, which is fundamental for handling function inputs and outputs in our API.
 
 We suggest always typinh your code. It's a good programming practice that prevents errors and improves readability.
 
@@ -304,7 +305,7 @@ We suggest always typinh your code. It's a good programming practice that preven
     `}
 />
 
-The ```groq.py``` file encapsulates the logic for interacting with the Groq API. Each function here communicates with a task-specific AI model: ```greeting_groq``` to generate an initial greeting, ```transcription_groq``` to transcribe audio, and ```validate_data_groq``` to validate and normalize the user response. Importantly, each function uses a carefully crafted prompt to guide the model toward the desired response, including the expected output format.
+The **groq.py** file encapsulates the logic for interacting with the Groq API. Each function here communicates with a task-specific AI model: **greeting_groq** to generate an initial greeting, **transcription_groq** to transcribe audio, and **validate_data_groq** to validate and normalize the user response. Importantly, each function uses a carefully crafted prompt to guide the model toward the desired response, including the expected output format.
 
 <CodeBlock
     filename='src/lib/groq.py'
@@ -422,17 +423,17 @@ The ```groq.py``` file encapsulates the logic for interacting with the Groq API.
     `}
 />
 
-This file (```voice_agents.py```) acts as the back-end's **"brain"**, controlling the flow of interaction through the WebSocket. The ```/api/v1/ws/voice-agents``` route handles the bidirectional communication between the client and the server. Upon connection, the server starts a form session for the provided ```user_id``` and ```language```. It sends an initial greeting with the first form question. In each interaction, the server:
+This file (**voice_agents.py**) acts as the back-end's **"brain"**, controlling the flow of interaction through the WebSocket. The **/api/v1/ws/voice-agents** route handles the bidirectional communication between the client and the server. Upon connection, the server starts a form session for the provided **user_id** and **language**. It sends an initial greeting with the first form question. In each interaction, the server:
 
-1. Receives audio from the user.
+- Receives audio from the user.
 
-2. Uses the ```groq.py``` functions to transcribe, validate and normalize the response.
+- Uses the **groq.py** functions to transcribe, validate and normalize the response.
 
-3. If the response is valid, it advances to the next question and sends it to the client.
+- If the response is valid, it advances to the next question and sends it to the client.
 
-4. If the response is invalid, it sends an error message and repeats the current question.
+- If the response is invalid, it sends an error message and repeats the current question.
 
-5. When the form is complete, it sends the collected answers and closes the flow.
+- When the form is complete, it sends the collected answers and closes the flow.
 
 This approach delegates data validation to the LLM but keeps the form's flow control on the back-end, ensuring all questions are followed and the logic is handled predictably.
 
@@ -533,7 +534,7 @@ This approach delegates data validation to the LLM but keeps the form's flow con
     `}
 />
 
-The ```main.py``` file is our API's entry point. It defines the routes for client-server communication and configures the necessary middlewares for the application to function.
+The **main.py** file is our API's entry point. It defines the routes for client-server communication and configures the necessary middlewares for the application to function.
 
 <CodeBlock
     filename='src/app/main.py'
@@ -576,6 +577,6 @@ The ```main.py``` file is our API's entry point. It defines the routes for clien
     `}
 />
 
-Once you hacve cloned the repository, the ```client``` folder contains the necessary code to run a basic UI that will allow you to test the voice agent. All that's left is to run both the back-end and client development servers on your computer.
+Once you have cloned the repository, the **client** folder contains the necessary code to run a basic UI that will allow you to test the voice agent. All that's left is to run both the back-end and client development servers on your computer.
 
-If you found this article valuable or would like to see more content on other topics, you can support us by leaving a comment in the section below 👇🏻. You can also share this article with your friends and colleagues 😊.
+If you found this article valuable or would like to see more content on other topics, you can support us by leaving a comment in the section below. You can also share this article with your friends and colleagues.

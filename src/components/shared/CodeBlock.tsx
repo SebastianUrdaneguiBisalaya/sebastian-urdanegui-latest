@@ -8,6 +8,8 @@ import {
     bundledThemes
 } from 'shiki';
 
+import Icons from '@/components/shared/Icons';
+
 export type CodeLanguage = keyof typeof bundledLanguages;
 
 export interface CodeBlockProps {
@@ -68,26 +70,35 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         setCopied(true);
         setTimeout(() => {
             setCopied(false);
-        }, 1200);
+        }, 2000);
     };
 
     return (
         <div
-            className='overflow-hidden rounded-xl'
+            className='overflow-hidden'
         >
-            <div className='flex items-center justify-between'>
-                <span className='truncate'>
-                    {filename ?? language}
-                </span>
+            <div className='flex items-center justify-between border border-white/20 px-3 py-2 rounded-t-md'>
+                <div className='flex flex-row items-center gap-2 text-white/60'>
+                    <Icons language={language} />
+                    <span className='truncate text-xs font-sora'>
+                        {filename ?? language}
+                    </span>
+                </div>
                 <button
-                    className=''
+                    className='text-xs text-white/60 font-sora hover:bg-white/15 p-1 rounded-md transition-all duration-500 ease-out'
                     onClick={handleCopy}
                 >
-                    {copied ? 'Copied!' : 'Copy'}
+                    {
+                        copied ? (
+                            <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z" fill="currentColor"/></svg>
+                        ) : (
+                            <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M7 9.667A2.667 2.667 0 0 1 9.667 7h8.666A2.667 2.667 0 0 1 21 9.667v8.666A2.667 2.667 0 0 1 18.333 21H9.667A2.667 2.667 0 0 1 7 18.333z"/><path d="M4.012 16.737A2 2 0 0 1 3 15V5c0-1.1.9-2 2-2h10c.75 0 1.158.385 1.5 1"/></g></svg>
+                        )
+                    }
                 </button>
             </div>
             <div
-                className='leading-relaxed'
+                className='leading-relaxed border-x border-b border-white/20 rounded-b-md py-4 bg-[rgba(0,0,0,1)]'
                 dangerouslySetInnerHTML={{ __html: html }}
             />
         </div>

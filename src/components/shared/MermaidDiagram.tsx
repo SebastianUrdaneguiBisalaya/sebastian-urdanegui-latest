@@ -48,7 +48,7 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
 
     return (
         <div
-            className=''
+            className='w-full flex flex-col items-center pt-[1.25em] pb-[1.25em]'
             ref={containerRef}
         />
     )
