@@ -1,15 +1,37 @@
 'use client';
 
+import { motion, type Variants } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { navigationsPaths } from '@/constants/constants';
 import { cn } from '@/libs/cn';
 
+const variants: Variants = {
+	hidden: {
+		opacity: 0,
+		y: 10
+	},
+	visible: {
+		opacity: 1,
+		transition: {
+			duration: 1.2,
+			ease: 'easeOut'
+		},
+		y: 0,
+	}
+}
+
 export default function Navigation() {
 	const pathname = usePathname();
 	return (
-		<div className='fixed z-50 inset-x bottom-4 bg-[rgba(255,255,255,0.045)] border-t border-t-[rgba(255,255,255,0.4)] border-l border-l-[rgba(255,255,255,0.3)] shadow-[3px_3px_3px_rgba(0,0,0,0.089)] backdrop-blur-[10px] rounded-full w-fit self-center h-fit'>
+		<motion.div
+			className='fixed z-50 inset-x bottom-4 bg-[rgba(255,255,255,0.045)] border-t border-t-[rgba(255,255,255,0.4)] border-l border-l-[rgba(255,255,255,0.3)] shadow-[3px_3px_3px_rgba(0,0,0,0.089)] backdrop-blur-[10px] rounded-full w-fit self-center h-fit'
+			initial='hidden'
+			variants={variants}
+			viewport={{ amount: 0.3, once: true }}
+			whileInView="visible"
+		>
 			<div className='flex flex-row items-center py-2 px-4 gap-2'>
 				{navigationsPaths.map(item => (
 					<Link
@@ -24,6 +46,6 @@ export default function Navigation() {
 					</Link>
 				))}
 			</div>
-		</div>
+		</motion.div>
 	);
 }
