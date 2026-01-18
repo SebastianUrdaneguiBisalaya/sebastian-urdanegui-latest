@@ -11,7 +11,6 @@ import {
 
 import Icons from '@/components/shared/Icons';
 import { cn } from '@/libs/cn';
-import { toClassArray } from '@/libs/functions';
 
 export type CodeLanguage = keyof typeof bundledLanguages;
 
