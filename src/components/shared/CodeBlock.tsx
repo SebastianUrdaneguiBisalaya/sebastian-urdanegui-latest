@@ -1,5 +1,6 @@
 'use client';
 
+import dedent from "dedent";
 import { useState, useEffect } from 'react';
 import {
     createHighlighter,
@@ -9,6 +10,8 @@ import {
 } from 'shiki';
 
 import Icons from '@/components/shared/Icons';
+import { cn } from '@/libs/cn';
+import { toClassArray } from '@/libs/functions';
 
 export type CodeLanguage = keyof typeof bundledLanguages;
 
@@ -51,9 +54,16 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             if (!highlighter.getLoadedLanguages().includes(language)) {
                 await highlighter.loadLanguage(language);
             }
-            const result = highlighter.codeToHtml(code, {
+            const result = highlighter.codeToHtml(dedent(code), {
                 lang: language,
-                theme
+                theme,
+                transformers: [
+                    {
+                        pre(node) {
+                            node.properties.style = ''
+                        }
+                    }
+                ]
             });
             if (mounted) {
                 setHtml(result);
@@ -77,7 +87,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         <div
             className='overflow-hidden'
         >
-            <div className='flex items-center justify-between border border-white/20 px-3 py-2 rounded-t-md'>
+            <div className='flex items-center justify-between border border-white/20 p-3 rounded-t-md'>
                 <div className='flex flex-row items-center gap-2 text-white/60'>
                     <Icons language={language} />
                     <span className='truncate text-xs font-sora'>
@@ -85,20 +95,29 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
                     </span>
                 </div>
                 <button
-                    className='text-xs text-white/60 font-sora hover:bg-white/15 p-1 rounded-md transition-all duration-500 ease-out'
+                    className='relative w-5.5 h-5.5 flex flex-col items-center justify-center text-xs text-white/60 font-sora hover:bg-white/15 rounded-md transition-all duration-500 ease-out'
                     onClick={handleCopy}
                 >
-                    {
-                        copied ? (
-                            <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z" fill="currentColor"/></svg>
-                        ) : (
-                            <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M7 9.667A2.667 2.667 0 0 1 9.667 7h8.666A2.667 2.667 0 0 1 21 9.667v8.666A2.667 2.667 0 0 1 18.333 21H9.667A2.667 2.667 0 0 1 7 18.333z"/><path d="M4.012 16.737A2 2 0 0 1 3 15V5c0-1.1.9-2 2-2h10c.75 0 1.158.385 1.5 1"/></g></svg>
-                        )
-                    }
+                    <div
+                        className={cn(
+                            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out p-1',
+                            copied ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+                        )}
+                    >
+                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z" fill="currentColor"/></svg>
+                    </div>
+                    <div
+                        className={cn(
+                            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out p-1',
+                            copied ? 'scale-75 opacity-0' : 'scale-100 opacity-100'
+                        )}
+                    >
+                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M7 9.667A2.667 2.667 0 0 1 9.667 7h8.666A2.667 2.667 0 0 1 21 9.667v8.666A2.667 2.667 0 0 1 18.333 21H9.667A2.667 2.667 0 0 1 7 18.333z"/><path d="M4.012 16.737A2 2 0 0 1 3 15V5c0-1.1.9-2 2-2h10c.75 0 1.158.385 1.5 1"/></g></svg>
+                    </div>
                 </button>
             </div>
             <div
-                className='leading-relaxed border-x border-b text-sm border-white/20 rounded-b-md py-4 bg-[rgba(0,0,0,1)]'
+                className='leading-relaxed border-x border-b border-white/20 rounded-b-md py-4 pl-4 bg-[rgba(0,0,0,1)] overflow-x-auto'
                 dangerouslySetInnerHTML={{ __html: html }}
             />
         </div>
