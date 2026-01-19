@@ -20,7 +20,7 @@ const projectsList: Project[] = [
 	{
 		description:
 			'Modern, unopinionated React hooks with a focus on developer experience.',
-		link: 'https://vibehooks.sebastianurdanegui.com',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/vibehooks',
 		name: 'vibehooks',
 		skills: ['React.js', 'TypeScript', 'Hooks', 'Vite'],
 		year: '2026',
