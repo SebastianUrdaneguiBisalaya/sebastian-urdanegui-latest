@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import { useMediaQuery } from '@/libs/functions';
+
 interface Position {
 	x: number;
 	y: number;
@@ -11,6 +13,7 @@ const DOT_SMOOTHNESS = 0.2;
 const BORDER_SMOOTHNESS = 0.1;
 
 export default function SmoothCursor() {
+	const isDesktop = useMediaQuery('(min-width: 768px) and (pointer: fine)');
 	const dotRef = React.useRef<HTMLDivElement>(null);
 	const borderRef = React.useRef<HTMLDivElement>(null);
 
@@ -22,6 +25,7 @@ export default function SmoothCursor() {
 	const rafId = React.useRef<number | null>(null);
 
 	React.useEffect(() => {
+		if (!isDesktop) return;
 		const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
 		const onMouseMove = (e: MouseEvent) => {
@@ -82,7 +86,9 @@ export default function SmoothCursor() {
 			});
 			if (rafId.current) cancelAnimationFrame(rafId.current);
 		};
-	}, []);
+	}, [isDesktop]);
+
+	if (!isDesktop) return null;
 
 	return (
 		<div className='pointer-events-none fixed inset-0 z-100'>
