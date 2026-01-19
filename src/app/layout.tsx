@@ -57,6 +57,9 @@ export default function RootLayout({
 					name='twitter:description'
 				/>
 				<meta content='https://sebastianurdanegui.com' property='og:url' />
+				<meta content="https://sebastianurdanegui.com" property="twitter:url" />
+				<meta content="website" name="og:type" />
+				<meta content="summary_large_image" name="twitter:card" />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
