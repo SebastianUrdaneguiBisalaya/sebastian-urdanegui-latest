@@ -20,7 +20,7 @@ export default function Card({ description, link, name, skills, year }: Blog) {
 			</div>
 			<div className='flex flex-col items-start gap-1'>
 				<Link
-					className='font-sora font-medium cursor-pointer group-hover:scale-[1.05] transition-all duration-500 ease-out'
+					className='font-sora text-white font-medium cursor-pointer group-hover:scale-[1.05] transition-all duration-500 ease-out'
 					href={link ?? '/'}
 				>
 					{name} —
