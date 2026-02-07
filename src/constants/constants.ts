@@ -19,10 +19,10 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		description:
-			'Modern, unopinionated React hooks with a focus on developer experience.',
-		link: 'https://github.com/SebastianUrdaneguiBisalaya/vibehooks',
+			'Modern React and Next.js hooks, unopinionated and focused on developer experience.',
+		link: 'https://vibehooks.sebastianurdanegui.com',
 		name: 'vibehooks',
-		skills: ['React.js', 'TypeScript', 'Hooks', 'Vite'],
+		skills: ['React.js', 'TypeScript', 'Hooks', 'Next.js', 'tsdown'],
 		year: '2026',
 	},
 	{
