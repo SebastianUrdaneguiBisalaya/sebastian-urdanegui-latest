@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { useMediaQuery } from '@/libs/functions';
+import { useMediaQuery, useMounted } from '@/libs/functions';
 
 interface Position {
 	x: number;
@@ -13,7 +13,9 @@ const DOT_SMOOTHNESS = 0.2;
 const BORDER_SMOOTHNESS = 0.1;
 
 export default function SmoothCursor() {
+	const mounted = useMounted();
 	const isDesktop = useMediaQuery('(min-width: 768px) and (pointer: fine)');
+
 	const dotRef = React.useRef<HTMLDivElement>(null);
 	const borderRef = React.useRef<HTMLDivElement>(null);
 
@@ -88,7 +90,7 @@ export default function SmoothCursor() {
 		};
 	}, [isDesktop]);
 
-	if (!isDesktop) return null;
+	if (!mounted || !isDesktop) return null;
 
 	return (
 		<div className='pointer-events-none fixed inset-0 z-100'>

@@ -21,4 +21,13 @@ function useMediaQuery(query: string): boolean {
     return matches;
 }
 
-export { useMediaQuery };
+function useMounted() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        // eslint-disable-next-line
+        setMounted(true);
+    }, []);
+    return mounted;
+}
+
+export { useMediaQuery, useMounted };

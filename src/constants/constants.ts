@@ -19,6 +19,14 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		description:
+			'A minimalist CLI password manager secured with local master key encryption and seamless clipboard integration.',
+		link: 'https://www.npmjs.com/package/@stackvoid/vaultgen',
+		name: 'vaultgen',
+		skills: ['Node.js', 'TypeScript'],
+		year: '2026',
+	},
+	{
+		description:
 			'Modern React and Next.js hooks, unopinionated and focused on developer experience.',
 		link: 'https://vibehooks.sebastianurdanegui.com',
 		name: 'vibehooks',
