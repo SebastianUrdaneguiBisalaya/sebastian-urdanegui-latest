@@ -30,7 +30,7 @@ const projectsList: Project[] = [
 			'Modern React and Next.js hooks, unopinionated and focused on developer experience.',
 		link: 'https://vibehooks.sebastianurdanegui.com',
 		name: 'vibehooks',
-		skills: ['React.js', 'TypeScript', 'Hooks', 'Vite'],
+		skills: ['React.js', 'TypeScript', 'Hooks', 'Next.js', 'tsdown'],
 		year: '2026',
 	},
 	{
