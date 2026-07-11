@@ -18,21 +18,23 @@ export default function Card({
 	year,
 }: Project) {
 	return (
-		<div className='w-full h-fit flex flex-row items-stretch gap-6 group'>
+		<Link
+			className='w-full h-fit flex flex-row items-stretch gap-6 group'
+			href={link ?? '/'}
+			rel='noopener noreferrer'
+			target='_blank'
+		>
 			<div className='flex flex-col'>
-				<span className='font-sora text-white/70 font-medium'>
+				<span className='font-sora text-white/70 font-medium group-hover:text-white transition-all duration-500 ease-out'>
 					{year}
 				</span>
 			</div>
 			<div className='flex flex-col items-start gap-1'>
-				<Link
-					className='font-sora font-medium text-white cursor-pointer group-hover:scale-[1.05] transition-all duration-500 ease-out'
-					href={link ?? '/'}
-					rel='noopener noreferrer'
-					target='_blank'
+				<h3
+					className='font-sora font-medium text-white cursor-pointer group-hover:scale-[1.07] transition-all duration-500 ease-out'
 				>
 					{name} —
-				</Link>
+				</h3>
 				<p className='font-reddit-sans text-sm text-white/85'>{description}</p>
 				<div className='flex flex-wrap items-center gap-2 pt-2'>
 					{skills.map((item, idx) => (
@@ -45,6 +47,6 @@ export default function Card({
 					))}
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }

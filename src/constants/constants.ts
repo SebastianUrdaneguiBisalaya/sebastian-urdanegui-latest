@@ -18,6 +18,13 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		description: 'SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.',
+		link: 'https://membi.dev',
+		name: 'membi',
+		skills: ['Nest.js', 'Next.js', 'React.js', 'TypeScript', 'TypeORM', 'Multi-Tenant', 'MercadoPago', 'Docker', 'DevOps'],
+		year: '2026',
+	},
+	{
 		description:
 			'A minimalist CLI password manager secured with local master key encryption and seamless clipboard integration.',
 		link: 'https://www.npmjs.com/package/@stackvoid/vaultgen',
