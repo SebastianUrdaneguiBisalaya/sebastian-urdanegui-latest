@@ -148,7 +148,7 @@ export default function Page() {
 					className='font-bold font-sora'
 				>
 					Full Stack | aiblabla
-				</a>{' '}
+				</span>{' '}
 				| <span className='font-light italic'>Co-Founder & CTO</span>. A web
 				platform to boost your conversations in any context. It understands,
 				translates, and formulates clear and effective responses in real time,
