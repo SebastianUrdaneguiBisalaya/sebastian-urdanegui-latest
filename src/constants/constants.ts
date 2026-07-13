@@ -19,7 +19,7 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		description: 'SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.',
-		link: 'https://membi.dev',
+		link: '/',
 		name: 'membi',
 		skills: ['Nest.js', 'Next.js', 'React.js', 'TypeScript', 'TypeORM', 'Multi-Tenant', 'MercadoPago', 'Docker', 'DevOps'],
 		year: '2026',
