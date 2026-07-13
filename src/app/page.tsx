@@ -144,10 +144,8 @@ export default function Page() {
 				whileInView="visible"
 			>
 				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://aiblabla.com'
-					target='_blank'
+				<span
+					className='font-bold font-sora'
 				>
 					Full Stack | aiblabla
 				</a>{' '}
