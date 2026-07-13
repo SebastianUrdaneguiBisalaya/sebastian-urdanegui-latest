@@ -111,7 +111,21 @@ export default function Page() {
 			>
 				-{' '}
 				<span className='font-bold font-sora'>
-					Front-end Developer Junior | Formula - Marketing Agency
+					Full Stack Developer | membi
+				</span>{' '}
+				| <span className='font-light italic'>May 2026 - July 2026</span>.
+				SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
+				-{' '}
+				<span className='font-bold font-sora'>
+					Full Stack Developer Junior | Formula - Marketing Agency
 				</span>{' '}
 				| <span className='font-light italic'>October 2025 - Present</span>.
 				Create modern and functional interfaces using Next.js, React, TypeScript
@@ -135,7 +149,7 @@ export default function Page() {
 					href='https://aiblabla.com'
 					target='_blank'
 				>
-					aiblabla
+					Full Stack | aiblabla
 				</a>{' '}
 				| <span className='font-light italic'>Co-Founder & CTO</span>. A web
 				platform to boost your conversations in any context. It understands,
