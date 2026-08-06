@@ -110,7 +110,7 @@ export default function Page() {
 				whileInView="visible"
 			>
 				-{' '}
-				<a className='font-bold font-sora' href='https://membi.dev'
+				<a className='font-bold font-sora underline' href='https://membi.dev'
 					target='_blank'>
 					Full Stack Developer | membi
 				</a>{' '}
