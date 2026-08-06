@@ -110,10 +110,11 @@ export default function Page() {
 				whileInView="visible"
 			>
 				-{' '}
-				<span className='font-bold font-sora'>
+				<a className='font-bold font-sora' href='https://membi.dev'
+					target='_blank'>
 					Full Stack Developer | membi
-				</span>{' '}
-				| <span className='font-light italic'>May 2026 - July 2026</span>.
+				</a>{' '}
+				| <span className='font-light italic'>May 2026 - August 2026</span>.
 				SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.
 			</motion.p>
 			<motion.p
