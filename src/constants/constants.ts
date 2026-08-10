@@ -50,7 +50,7 @@ const projectsList: Project[] = [
 	},
 	{
 		description:
-			'A web platform to boost your conversations in any context. It understands, translates, and formulates clear and effective responses in real time, regardless of the situation. Ideal for sales, customer service, meetings, language learning, and more.',
+			'An AI-powered platform that understands, translates, and formulates real-time responses during conversations.',
 		link: 'https://aiblabla.com',
 		name: 'aiblabla',
 		skills: [

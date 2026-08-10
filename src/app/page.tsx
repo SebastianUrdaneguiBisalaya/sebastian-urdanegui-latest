@@ -45,11 +45,7 @@ export default function Page() {
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				I am a Full-Stack Developer, Data Analyst & Scientist from Lima, Peru.
-				Currently, I specialize in creating web and mobile applications using
-				modern stacks: React, React Native, Node.js and Python. My goal is
-				clear: create products that impact a large number of people, combining
-				my technical vision with a user-oriented mindset.
+				I am a Full-Stack Developer and Product Engineer from Lima, Peru, focused on designing and building web and mobile products from idea to production.
 			</motion.p>
 			<motion.p
 				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
@@ -58,26 +54,34 @@ export default function Page() {
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				My journey began with analytics and data science in Python, where I
-				gained a solid foundation in logic and algorithms. This experience
-				inspired me to create my first two open-source libraries:{' '}
+				Rather than being defined by a specific technology stack, I focus on how software is structured, how its components interact, and how technical decisions translate into reliable, maintainable products. I enjoy working across the entire development lifecycle—from designing architectures and APIs to building interfaces, integrating external services, and optimizing applications for real-world use.
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
+				My background started in analytics and data science with Python, which gave me a strong foundation in problem solving, algorithms, and working with data. That path eventually led me toward software engineering and product development, where I found a stronger interest in turning ideas into complete, usable systems. Along the way, I built and published open-source financial analysis libraries, including{' '}
 				<a
-					className='font-medium underline'
+					className='font-bold'
 					href='https://github.com/SebastianUrdaneguiBisalaya/py-portfolio-analytics'
+					rel='noreferrer'
 					target='_blank'
 				>
-					pyportfolioanalytics
+					pyportfolioanalytics{' '}
 				</a>
-				<span className='font-bold'> with over 2K downloads</span>, and{' '}
+				<a className='font-bold underline' href='https://pepy.tech/projects/pyportfolioanalytics?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C0.*' rel='noreferrer' target='_blank'>with over 2.6K downloads</a>, and{' '}
 				<a
-					className='font-medium underline'
+					className='font-bold'
 					href='https://github.com/SebastianUrdaneguiBisalaya/py-financial-analysis'
+					rel='noreferrer'
 					target='_blank'
 				>
-					pyFinancialAnalysis
+					pyFinancialAnalysis{' '}
 				</a>
-				<span className='font-bold'> with over 1.6K downloads</span>, tools
-				designed to simplify financial analysis.
+				<a className='font-bold underline' href='https://pepy.tech/projects/pyfinancialanalysis?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C1.*' rel='noreferrer' target='_blank'>with over 2.4K downloads</a>.
 			</motion.p>
 			<motion.p
 				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
@@ -86,12 +90,16 @@ export default function Page() {
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				Driven by the desire to build comprehensive solutions, I expanded my
-				skills through self-taught mobile development. This path of constant
-				learning not only allowed me to master key technologies like JavaScript
-				and React, but also led me to obtain a Full-Stack Developer scholarship,
-				consolidating my training and my ability to adapt and grow in a
-				constantly evolving technology environment.
+				Today, I work primarily with modern JavaScript/TypeScript ecosystems and Python, building applications that involve APIs, databases, authentication, third-party integrations, automation, real-time communication, and AI-powered features. I’m particularly interested in multi-tenant SaaS architectures, developer tooling, and products that solve practical problems for businesses and users.
+			</motion.p>
+			<motion.p
+				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
+				initial='hidden'
+				variants={paragraphVariants}
+				viewport={{ amount: 0.3, once: true }}
+				whileInView="visible"
+			>
+				I’m driven by the idea of building software that goes beyond working code: products that are simple to use, technically sound, and capable of growing with the people who depend on them.
 			</motion.p>
 			<motion.h2
 				className='text-left font-sora text-white/95 text-lg w-full mt-[1.25em] mb-[1.25em] leading-7'
@@ -102,204 +110,235 @@ export default function Page() {
 			>
 				Experience
 			</motion.h2>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a className='font-bold font-sora underline' href='https://membi.dev'
-					target='_blank'>
-					Full Stack Developer | membi
-				</a>{' '}
-				| <span className='font-light italic'>May 2026 - August 2026</span>.
-				SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a className='font-bold font-sora underline' href='https://membi.dev' target='_blank'>
+						membi —  Co-Founder
+					</a>{' '}
+					<span className='font-light italic'>
+						| May 2026 – August 2026 · SaaS · B2B2C
+					</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built a multi-tenant SaaS platform that enables businesses to create subscription plans, manage customers, track consumption, and provide subscription-based experiences.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Designed and implemented core application architecture across the frontend and backend, including tenant isolation, authentication and authorization, relational data models, REST APIs, subscription workflows, and integrations with external services.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Focused on building the product as a scalable foundation rather than a collection of isolated features, with clear boundaries between organizations, branches, users, customers, roles, permissions, and business operations.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<span className='font-bold font-sora'>
-					Full Stack Developer Junior | Formula - Marketing Agency
-				</span>{' '}
-				| <span className='font-light italic'>October 2025 - Present</span>.
-				Create modern and functional interfaces using Next.js, React, TypeScript
-				and JavaScript (ES6+). The projects are focused on the real estate
-				sector. Implement server-side rendering (SSR) and static site generation
-				(SSG) to optimize user experience and performance. Integrate and consume
-				RESTful APIs, maintain clean and scalable code, and collaborate in agile
-				teams applying good development and version control practices with Git.
-				Create a chatbot using n8n and LLM.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<span className='font-bold font-sora'>
+						Full-Stack Developer — Formula, Marketing Agency
+					</span>{' '}
+					<span className='font-light italic'>| October 2025 – Present</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Develop and maintain production web applications for the real estate sector, working across frontend architecture, backend integrations, performance, and automation.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Build applications with Next.js, React, TypeScript, and Node.js, using SSR and SSG where appropriate to balance performance, SEO, and user experience.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Design and integrate REST APIs, structure reusable application components, and maintain scalable codebases within collaborative development workflows.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Also designed and implemented an AI-powered chatbot using n8n and LLM-based services, integrating automation and conversational capabilities into business workflows.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<span
-					className='font-bold font-sora'
-				>
-					Full Stack | aiblabla
-				</span>{' '}
-				| <span className='font-light italic'>Co-Founder & CTO</span>. A web
-				platform to boost your conversations in any context. It understands,
-				translates, and formulates clear and effective responses in real time,
-				regardless of the situation. Ideal for sales, customer service,
-				meetings, language learning, and more.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<span className='font-bold font-sora'>aiblabla</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built an AI-powered real-time communication platform designed to understand, translate, and formulate responses during conversations.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Led the technical direction of the product, working across real-time communication, AI integrations, speech processing, frontend and backend architecture, and product development.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager'
-					target='_blank'
-				>
-					suscripto.manager
-				</a>{' '}
-				| <span className='font-light italic'>August 2025</span>. A web platform
-				to organize all your subscriptions in one place.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a
+						className='font-bold font-sora underline'
+						href='https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager'
+						target='_blank'
+					>
+						suscripto.manager
+					</a>{' '}
+					<span className='font-light italic'>| August 2025</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built a web application for organizing and managing personal subscriptions in a centralized interface.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://github.com/SebastianUrdaneguiBisalaya/emotify.ai'
-					target='_blank'
-				>
-					emotify.ai
-				</a>{' '}
-				| <span className='font-light italic'>August 2025</span>. An AI-powered
-				web platform for music recommendations integrated with Spotify.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a
+						className='font-bold font-sora underline'
+						href='https://github.com/SebastianUrdaneguiBisalaya/emotify.ai'
+						target='_blank'
+					>
+						emotify.ai
+					</a>{' '}
+					<span className='font-light italic'>| August 2025</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built an AI-powered music recommendation platform integrating generative AI with Spotify to generate personalized recommendations based on user preferences and context.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend'
-					target='_blank'
-				>
-					kooko.ai
-				</a>{' '}
-				| <span className='font-light italic'>June 2025</span>. Forget about
-				paperwork. Send a photo to our Telegram bot, and our AI model will
-				extract the data, making it available on the web dashboard.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a
+						className='font-bold font-sora underline'
+						href='https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend'
+						target='_blank'
+					>
+						kooko.ai
+					</a>{' '}
+					<span className='font-light italic'>| June 2025</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built an AI-powered document processing workflow that allows users to send photos through Telegram, automatically extract structured information, and make the resulting data available through a web dashboard.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://drive.google.com/file/d/1m6yJws18WElIgCyvGVjreQMW86qtawWD/view'
-					target='_blank'
-				>
-					Hackathon Huancavelica Vida Segura
-				</a>{' '}
-				|{' '}
-				<span className='font-light italic'>
-					1<sup>st</sup> Top - March 2025
-				</span>
-				. A competition organized by Innova ESAN and the Incubator of the
-				National University of Huancavelica. The challenge was to design a
-				digital solution to improve the monitoring of child growth in
-				Huancavelica. We developed an MVP that allows parents and health
-				personnel to view check-ups and vaccines from their mobile phones, with
-				automatic alerts and auditory translation into Quechua.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a
+						className='font-bold font-sora underline'
+						href='https://drive.google.com/file/d/1m6yJws18WElIgCyvGVjreQMW86qtawWD/view'
+						target='_blank'
+					>
+						1<sup>st</sup> Place — Hackathon Huancavelica Vida Segura
+					</a>{' '}
+					<span className='font-light italic'>| March 2025</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Developed an MVP focused on improving child health monitoring in Huancavelica.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					The solution connected parents and healthcare personnel through a mobile application, providing access to check-ups and vaccination records, automated alerts, and auditory translation into Quechua.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<span className='font-bold font-sora'>
-					Full-Stack Developer - Make It Real Camp
-				</span>{' '}
-				| <span className='font-light italic'>August - December 2024</span>. In
-				collaboration with my team, I designed and developed a complete web
-				application—frontend and backend—to find local events using technologies
-				like React, TailwindCSS, Typescript, Node.js, Express.js, SQL, and REST
-				APIs. I implemented features such as event search by date range and
-				name, advanced filters by category and price, and a ticket purchasing
-				system integrated with Stripe.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<span className='font-bold font-sora'>
+						Full-Stack Developer — Make It Real Camp
+					</span>{' '}
+					<span className='font-light italic'>| August – December 2024</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Designed and developed a complete event discovery and ticketing platform covering both frontend and backend architecture.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Implemented event search, advanced filtering, date-based queries, and ticket purchasing through Stripe, using React, TypeScript, TailwindCSS, Node.js, Express, SQL, and REST APIs.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<a
-					className='font-bold font-sora underline'
-					href='https://drive.google.com/file/d/1PgR3nWq_D70cUymndbIIoMdnuadQaPiG/view'
-					target='_blank'
-				>
-					Datathon Exprésate Perú con Datos
-				</a>{' '}
-				|{' '}
-				<span className='font-light italic'>
-					4<sup>th</sup> Top - September 2023
-				</span>
-				. A competition organized by the Secretariat of Government and Digital
-				Transformation of Peru. The topic of my analysis was the valuation of
-				rest days due to work accidents at a national level. The dataset was
-				provided by the Ministry of Labor and Employment Promotion.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans w-full mt-[1.25em] mb-[1.25em] leading-7 text-white/85'
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<a
+						className='font-bold font-sora underline'
+						href='https://drive.google.com/file/d/1PgR3nWq_D70cUymndbIIoMdnuadQaPiG/view'
+						target='_blank'
+					>
+						4<sup>th</sup> Place — Datathon Exprésate Perú con Datos
+					</a>{' '}
+					<span className='font-light italic'>| September 2023</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Analyzed national-level data related to rest days resulting from occupational accidents as part of a competition organized by the Secretariat of Government and Digital Transformation of Peru.
+				</p>
+			</motion.div>
+			<motion.div
+				className='w-full mt-[1.25em] mb-[1.25em]'
 				initial='hidden'
 				variants={paragraphVariants}
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				-{' '}
-				<span className='font-bold font-sora'>
-					Business Strategy Intern - Treasury - Banco de Crédito del Perú
-				</span>{' '}
-				| <span className='font-light italic'>January 2023 - May 2024</span>. I
-				led the development of the Contactability Campaign, implementing
-				automated processes to ensure compliance with guidelines and generating
-				email alerts that ensured everyone exceeded their goals. I developed an
-				automated flow that notifies the team when a client reached their target
-				exchange rate, generating an approximate transaction volume of 500K PEN
-				in 4 months. I designed an enablement flow to validate client
-				requirements for operating financial derivatives.
-			</motion.p>
+				<p className='font-reddit-sans leading-7 text-white/85'>
+					-{' '}
+					<span className='font-bold font-sora'>
+						Business Strategy Intern — Treasury, Banco de Crédito del Perú
+					</span>{' '}
+					<span className='font-light italic'>| January 2023 – May 2024</span>
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Designed and automated business processes within the Treasury area, focusing on client contactability, goal tracking, and financial operations.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Built automated workflows that monitored client exchange-rate targets and notified the team when targets were reached, supporting approximately PEN 500K in transaction volume over four months.
+				</p>
+				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
+					Also designed an enablement workflow to validate client requirements for financial derivatives operations.
+				</p>
+			</motion.div>
 		</main>
 	);
 }
