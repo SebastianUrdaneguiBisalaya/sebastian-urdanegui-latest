@@ -148,7 +148,7 @@ export default function Page() {
 					<span className='font-bold font-sora'>
 						Full-Stack Developer — Formula, Marketing Agency
 					</span>{' '}
-					<span className='font-light italic'>| October 2025 – Present</span>
+					<span className='font-light italic'>| October 2025 – August 2026</span>
 				</p>
 				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
 					Develop and maintain production web applications for the real estate sector, working across frontend architecture, backend integrations, performance, and automation.
