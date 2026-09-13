@@ -18,6 +18,13 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		description: 'Upflowi orchestrates uploads — concurrency, chunking, multipart, retries, progress, pause/resume, cancellation, and resumable persistence — without shipping a UI, without locking you into one storage backend, and without ever seeing your cloud credentials.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/upflowi',
+		name: 'upflowi',
+		skills: ['Monorepo', 'Typescript', 'Tsup', 'SDK', 'Vitest', 'Github Actions'],
+		year: '2026',
+	},
+	{
 		description: 'SaaS • B2B2C. Turn your customers into subscribers. Create subscription plans, track usage, and offer a complete experience to your customers from a single platform.',
 		link: 'https://membi.dev',
 		name: 'membi',
