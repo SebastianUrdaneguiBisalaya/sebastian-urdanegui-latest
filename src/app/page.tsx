@@ -63,25 +63,7 @@ export default function Page() {
 				viewport={{ amount: 0.3, once: true }}
 				whileInView="visible"
 			>
-				My background started in analytics and data science with Python, which gave me a strong foundation in problem solving, algorithms, and working with data. That path eventually led me toward software engineering and product development, where I found a stronger interest in turning ideas into complete, usable systems. Along the way, I built and published open-source financial analysis libraries, including{' '}
-				<a
-					className='font-bold'
-					href='https://github.com/SebastianUrdaneguiBisalaya/py-portfolio-analytics'
-					rel='noreferrer'
-					target='_blank'
-				>
-					pyportfolioanalytics{' '}
-				</a>
-				<a className='font-bold underline' href='https://pepy.tech/projects/pyportfolioanalytics?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C0.*' rel='noreferrer' target='_blank'>with over 2.6K downloads</a>, and{' '}
-				<a
-					className='font-bold'
-					href='https://github.com/SebastianUrdaneguiBisalaya/py-financial-analysis'
-					rel='noreferrer'
-					target='_blank'
-				>
-					pyFinancialAnalysis{' '}
-				</a>
-				<a className='font-bold underline' href='https://pepy.tech/projects/pyfinancialanalysis?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C1.*' rel='noreferrer' target='_blank'>with over 2.4K downloads</a>.
+				My background started in analytics and data science with Python, which gave me a strong foundation in problem solving, algorithms, and working with data. That path eventually led me toward software engineering and product development, where I found a stronger interest in turning ideas into complete, usable systems.
 			</motion.p>
 			<motion.p
 				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
