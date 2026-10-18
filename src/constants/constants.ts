@@ -18,6 +18,13 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		description: 'Keyboard shortcuts for the web that stay out of your way: combos, scopes, priorities and conflict resolution, in a framework-agnostic core with React bindings.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/usehotkeys',
+		name: 'usehotkeys',
+		skills: ['Monorepo', 'Typescript', 'Tsup', 'SDK', 'Vitest', 'Github Actions'],
+		year: '2026',
+	},
+	{
 		description: 'Framework-independent authorization engine for the frontend: RBAC, ABAC, and ReBAC behind one evaluation API, plus a small reactive store. Zero runtime dependencies; runs in the browser and in Node.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/useguardrail',
 		name: 'useguardrail',
