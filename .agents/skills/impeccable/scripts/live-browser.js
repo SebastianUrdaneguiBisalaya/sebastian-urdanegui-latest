@@ -37,14 +37,14 @@
   // not a washed theme-adjusted one. These mirror the kit's picker
   // colors in site/styles/kinpaku-kit.css; keep them in sync by hand.
   const C = {
+    ash:       'oklch(55% 0.018 82)',           // warm muted text
     brand:     'oklch(84% 0.19 80.46)',         // kinpaku gold
     brandHov:  'oklch(86% 0.07 84)',            // kinpaku-pale (hover lift)
     brandSoft: 'oklch(84% 0.19 80.46 / 0.18)',  // kinpaku-dim
     ink:       'oklch(4% 0.004 95)',            // lacquer-deep
-    ash:       'oklch(55% 0.018 82)',           // warm muted text
+    mist:      'oklch(90% 0.008 82 / 0.6)',     // light hairline
     paper:     'oklch(98% 0.005 95 / 0.92)',    // light overlay on user pages
     paperSolid:'oklch(98% 0.005 95)',
-    mist:      'oklch(90% 0.008 82 / 0.6)',     // light hairline
     white:     'oklch(99% 0 0)',
   };
   // Picker bar chrome - mirrors .live-demo-gbar / .live-demo-ctx in kinpaku-kit.css.
@@ -55,7 +55,7 @@
   const FONT = 'system-ui, -apple-system, sans-serif';
   const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
   // z-index: detect overlays use 99999, so our UI must be above them
-  const Z = { highlight: 100001, bar: 100005, picker: 100007, toast: 100010 };
+  const Z = { bar: 100005, highlight: 100001, picker: 100007, toast: 100010 };
   const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'; // ease-out-quint
   const PREFIX = 'impeccable-live';
   const IMPECCABLE_COMMAND = (window.__IMPECCABLE_COMMAND_PREFIX__ || '/') + 'impeccable';
@@ -102,7 +102,7 @@
   const ICONS = {};
   const ACTIONS = VOCAB.map((c) => {
     ICONS[c.value] = c.icon;
-    return { value: c.value, label: c.label };
+    return { label: c.label, value: c.value };
   });
 
   // The Live chrome inventory (which surfaces exist, and the element ids each
@@ -150,17 +150,17 @@
   // `queued`, `generating`, `variants_progress`, and `variants_ready` are set
   // locally by this file and never arrive over the wire.
   const PHASE_RANK = {
-    queued: 0,
-    picked_up: 1,
-    scaffolding: 2,
-    scaffold_fallback: 3,
-    source_ready: 4,
-    generation_ready: 5,
-    generating: 5,
-    variants_progress: 5,
-    first_reviewable: 8,
-    second_reviewable: 11,
     all_variants_ready: 12,
+    first_reviewable: 8,
+    generating: 5,
+    generation_ready: 5,
+    picked_up: 1,
+    queued: 0,
+    scaffold_fallback: 3,
+    scaffolding: 2,
+    second_reviewable: 11,
+    source_ready: 4,
+    variants_progress: 5,
     variants_ready: 12,
   };
   function shouldAdvancePhase(current, next) {
@@ -280,9 +280,9 @@
   //
 
   const domHelpers = window.__IMPECCABLE_LIVE_DOM__?.createLiveBrowserDomHelpers({
+    document,
     prefix: PREFIX,
     skipTags: SKIP_TAGS,
-    document,
   });
   if (!domHelpers) {
     console.error('[impeccable] live-browser-dom.js was not loaded. Live mode cannot start safely.');
@@ -290,64 +290,64 @@
     return;
   }
   const {
-    own,
-    pickable,
+    activeElementDeep,
+    cloneWithoutChrome,
+    copyTextViaSelection,
+    cssId,
+    defangOutsideHandlers,
     desc,
-    rectIsUsableAnchor,
-    makeFrozenAnchor,
     hasFrameworkHmrOwnership,
     id8,
-    cssId,
     liveUiRoot,
-    uiAppend,
-    uiAppendToPage,
-    copyTextViaSelection,
-    topLayerHost,
-    watchModalDialogs,
-    cloneWithoutChrome,
-    uiAppendStyle,
-    uiGetById,
-    activeElementDeep,
-    defangOutsideHandlers,
+    makeFrozenAnchor,
+    own,
+    pickable,
+    rectIsUsableAnchor,
     stopFocusOutIntoChrome,
+    topLayerHost,
+    uiAppend,
+    uiAppendStyle,
+    uiAppendToPage,
+    uiGetById,
+    watchModalDialogs,
   } = domHelpers;
 
   window.__IMPECCABLE_LIVE_CHROME_CORE__ = {
-    version: 1,
+    activeElementDeep,
     adapter: window.__IMPECCABLE_LIVE_ADAPTER__ || 'dom',
-    mountContract: LIVE_CHROME_MOUNT_CONTRACT,
-    surfaces: LIVE_UI_SURFACES,
-    componentIds: LIVE_UI_COMPONENT_IDS,
-    root: liveUiRoot,
     append: uiAppend,
     appendStyle: uiAppendStyle,
-    getById: uiGetById,
-    activeElementDeep,
+    componentIds: LIVE_UI_COMPONENT_IDS,
     debugState: () => ({
-      state,
-      currentSessionId,
-      expectedVariants,
       arrivedVariants,
-      visibleVariant,
-      savedSession: loadSession(),
-      sourceFile: currentSourceFile,
-      previewFile: currentPreviewFile,
-      previewMode: currentPreviewMode,
-      barText: barEl?.textContent || null,
       barConnected: !!barEl?.isConnected,
+      barText: barEl?.textContent || null,
+      currentSessionId,
+      evtSourceReadyState: evtSource ? evtSource.readyState : null,
+      expectedVariants,
       hasSvelteComponentSession: !!svelteComponentSession,
-      mountedSvelteVariant: svelteComponentSession?.mountedVariant || 0,
-      pickActive,
-      pendingApplyInFlight,
       hoveredElement: hoveredElement ? {
-        tag: hoveredElement.tagName,
         classes: hoveredElement.className,
         pickable: pickable(hoveredElement),
+        tag: hoveredElement.tagName,
       } : null,
+      mountedSvelteVariant: svelteComponentSession?.mountedVariant || 0,
+      pendingApplyInFlight,
       pendingSvelteComponentRetry: !!pendingSvelteComponentRetryObserver,
+      pickActive,
+      previewFile: currentPreviewFile,
+      previewMode: currentPreviewMode,
       recoveryWaitingForAnchor,
-      evtSourceReadyState: evtSource ? evtSource.readyState : null,
+      savedSession: loadSession(),
+      sourceFile: currentSourceFile,
+      state,
+      visibleVariant,
     }),
+    getById: uiGetById,
+    mountContract: LIVE_CHROME_MOUNT_CONTRACT,
+    root: liveUiRoot,
+    surfaces: LIVE_UI_SURFACES,
+    version: 1,
   };
 
   //
@@ -358,25 +358,25 @@
     highlightEl = document.createElement('div');
     highlightEl.id = PREFIX + '-highlight';
     Object.assign(highlightEl.style, {
-      position: 'fixed', top: '0', left: '0', width: '0', height: '0',
-      border: '2px solid ' + C.brand, borderRadius: '3px',
-      pointerEvents: 'none', zIndex: Z.highlight, boxSizing: 'border-box',
+      border: '2px solid ' + C.brand, borderRadius: '3px', boxSizing: 'border-box', display: 'none', height: '0',
+      left: '0', opacity: '0',
+      pointerEvents: 'none', position: 'fixed', top: '0',
       transition: HIGHLIGHT_TRANSITION,
-      display: 'none', opacity: '0',
+      width: '0', zIndex: Z.highlight,
     });
     uiAppend(highlightEl);
 
     tooltipEl = document.createElement('div');
     tooltipEl.id = PREFIX + '-tooltip';
     Object.assign(tooltipEl.style, {
-      position: 'fixed',
-      background: C.ink, color: C.white,
-      fontFamily: MONO, fontSize: '10px', fontWeight: '500',
-      padding: '2px 6px', borderRadius: '3px',
-      zIndex: Z.highlight + 1, pointerEvents: 'none',
-      whiteSpace: 'nowrap', display: 'none',
-      letterSpacing: '0.02em',
-      transition: TOOLTIP_TRANSITION,
+      background: C.ink,
+      borderRadius: '3px', color: C.white,
+      display: 'none', fontFamily: MONO, fontSize: '10px',
+      fontWeight: '500', letterSpacing: '0.02em',
+      padding: '2px 6px', pointerEvents: 'none',
+      position: 'fixed', transition: TOOLTIP_TRANSITION,
+      whiteSpace: 'nowrap',
+      zIndex: Z.highlight + 1,
     });
     uiAppend(tooltipEl);
   }
@@ -396,20 +396,20 @@
     if (!el || !highlightEl) return;
     if (el.hasAttribute?.('data-impeccable-insert-placeholder')) return;
     const r = el.getBoundingClientRect();
-    const top = (r.top - 2) + 'px', left = (r.left - 2) + 'px';
-    const width = (r.width + 4) + 'px', height = (r.height + 4) + 'px';
+    const left = (r.left - 2) + 'px', top = (r.top - 2) + 'px';
+    const height = (r.height + 4) + 'px', width = (r.width + 4) + 'px';
     const showTagTooltip = shouldShowHighlightTagTooltip();
 
     const hiWasHidden = highlightEl.style.display === 'none' || highlightEl.style.opacity === '0';
     if (hiWasHidden) {
       // Snap to first target without animating from (0,0), then fade in.
       highlightEl.style.transition = 'none';
-      Object.assign(highlightEl.style, { top, left, width, height, display: 'block' });
+      Object.assign(highlightEl.style, { display: 'block', height, left, top, width });
       void highlightEl.offsetWidth;
       highlightEl.style.transition = HIGHLIGHT_TRANSITION;
       highlightEl.style.opacity = '1';
     } else {
-      Object.assign(highlightEl.style, { top, left, width, height, display: 'block', opacity: '1' });
+      Object.assign(highlightEl.style, { display: 'block', height, left, opacity: '1', top, width });
     }
 
     if (!showTagTooltip) {
@@ -423,12 +423,12 @@
     tooltipEl.textContent = desc(el);
     if (hiWasHidden) {
       tooltipEl.style.transition = 'none';
-      Object.assign(tooltipEl.style, { top: tipY, left: tipX, display: 'block' });
+      Object.assign(tooltipEl.style, { display: 'block', left: tipX, top: tipY });
       void tooltipEl.offsetWidth;
       tooltipEl.style.transition = TOOLTIP_TRANSITION;
       tooltipEl.style.opacity = '1';
     } else {
-      Object.assign(tooltipEl.style, { top: tipY, left: tipX, display: 'block', opacity: '1' });
+      Object.assign(tooltipEl.style, { display: 'block', left: tipX, opacity: '1', top: tipY });
     }
   }
 
@@ -468,28 +468,28 @@
     annotOverlayEl = document.createElement('div');
     annotOverlayEl.id = PREFIX + '-annot';
     Object.assign(annotOverlayEl.style, {
-      position: 'fixed', top: '0', left: '0', width: '0', height: '0',
-      pointerEvents: 'auto', zIndex: Z.highlight + 2,
-      display: 'none', overflow: 'visible',
-      cursor: 'crosshair', touchAction: 'none',
+      cursor: 'crosshair', display: 'none', height: '0', left: '0', overflow: 'visible',
+      pointerEvents: 'auto', position: 'fixed',
+      top: '0', touchAction: 'none',
+      width: '0', zIndex: Z.highlight + 2,
     });
 
     annotSvgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     annotSvgEl.id = PREFIX + '-annot-svg';
     Object.assign(annotSvgEl.style, {
-      position: 'absolute', top: '0', left: '0',
-      width: '100%', height: '100%',
+      height: '100%', left: '0', overflow: 'visible',
       // The SVG itself doesn't absorb clicks; individual hit-paths opt-in via
       // pointer-events=stroke so gaps still fall through to the overlay.
-      pointerEvents: 'none', overflow: 'visible',
+      pointerEvents: 'none', position: 'absolute',
+      top: '0', width: '100%',
     });
     annotOverlayEl.appendChild(annotSvgEl);
 
     annotPinsEl = document.createElement('div');
     annotPinsEl.id = PREFIX + '-annot-pins';
     Object.assign(annotPinsEl.style, {
-      position: 'absolute', inset: '0',
-      pointerEvents: 'none',
+      inset: '0', pointerEvents: 'none',
+      position: 'absolute',
     });
     annotOverlayEl.appendChild(annotPinsEl);
 
@@ -498,24 +498,24 @@
     annotClearChipEl.dataset.annotClear = 'true';
     annotClearChipEl.textContent = 'Clear';
     Object.assign(annotClearChipEl.style, {
-      position: 'absolute', top: '8px', right: '8px',
-      background: C.ink, color: C.white,
-      fontFamily: FONT, fontSize: '10px', fontWeight: '500',
-      letterSpacing: '0.08em', textTransform: 'uppercase',
-      padding: '5px 12px', borderRadius: '999px',
-      cursor: 'pointer', pointerEvents: 'auto',
-      display: 'none', userSelect: 'none',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+      background: C.ink, borderRadius: '999px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+      color: C.white, cursor: 'pointer',
+      display: 'none', fontFamily: FONT, fontSize: '10px',
+      fontWeight: '500', letterSpacing: '0.08em',
+      padding: '5px 12px', pointerEvents: 'auto',
+      position: 'absolute', right: '8px',
+      textTransform: 'uppercase', top: '8px',
+      userSelect: 'none',
     });
     annotOverlayEl.appendChild(annotClearChipEl);
 
     placeholderResizeLayerEl = document.createElement('div');
     placeholderResizeLayerEl.id = PREFIX + '-placeholder-resize';
     Object.assign(placeholderResizeLayerEl.style, {
-      position: 'absolute',
+      display: 'none',
       inset: '0',
       pointerEvents: 'none',
-      display: 'none',
+      position: 'absolute',
       zIndex: '2',
     });
     annotOverlayEl.appendChild(placeholderResizeLayerEl);
@@ -560,8 +560,8 @@
     if (!annotOverlayEl || !el) return;
     const r = el.getBoundingClientRect();
     Object.assign(annotOverlayEl.style, {
-      top: r.top + 'px', left: r.left + 'px',
-      width: r.width + 'px', height: r.height + 'px',
+      height: r.height + 'px', left: r.left + 'px',
+      top: r.top + 'px', width: r.width + 'px',
     });
     annotSvgEl.setAttribute('viewBox', '0 0 ' + r.width + ' ' + r.height);
     syncPlaceholderResizeHandles();
@@ -669,10 +669,10 @@
       const p = localCoords(e);
       const pin = annotState.comments[idx];
       annotPointer = {
-        kind: 'pin', idx,
-        startPointer: p,
-        startPin: { x: pin.x, y: pin.y },
+        idx, kind: 'pin',
         moved: false,
+        startPin: { x: pin.x, y: pin.y },
+        startPointer: p,
       };
       try { annotOverlayEl.setPointerCapture(e.pointerId); } catch {}
       e.stopPropagation(); e.preventDefault();
@@ -686,7 +686,7 @@
       return;
     }
     const p = localCoords(e);
-    annotPointer = { kind: 'new', x0: p.x, y0: p.y, moved: false, strokeEl: null, strokePoints: null };
+    annotPointer = { kind: 'new', moved: false, strokeEl: null, strokePoints: null, x0: p.x, y0: p.y };
     try { annotOverlayEl.setPointerCapture(e.pointerId); } catch {}
     e.stopPropagation(); e.preventDefault();
   }
@@ -790,7 +790,7 @@
       redrawStrokes();
     } else {
       const idx = annotState.comments.length;
-      annotState.comments.push({ x: annotPointer.x0, y: annotPointer.y0, text: '' });
+      annotState.comments.push({ text: '', x: annotPointer.x0, y: annotPointer.y0 });
       renderAllPins();
       beginEditPin(idx);
     }
@@ -813,19 +813,19 @@
     const wrap = document.createElement('div');
     if (interactive) wrap.dataset.annotPin = String(idx);
     Object.assign(wrap.style, {
-      position: 'absolute',
-      left: (comment.x - 7) + 'px', top: (comment.y - 7) + 'px',
-      pointerEvents: interactive ? 'auto' : 'none',
-      display: 'flex', alignItems: 'flex-start', gap: '6px',
-      cursor: interactive ? 'grab' : 'default',
+      alignItems: 'flex-start',
+      cursor: interactive ? 'grab' : 'default', display: 'flex',
+      gap: '6px',
+      left: (comment.x - 7) + 'px', pointerEvents: interactive ? 'auto' : 'none', position: 'absolute',
+      top: (comment.y - 7) + 'px',
       touchAction: 'none',
     });
     const dot = document.createElement('div');
     Object.assign(dot.style, {
-      width: '14px', height: '14px', borderRadius: '50%',
-      background: C.brand, border: '2px solid ' + C.white,
-      boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
-      flexShrink: '0',
+      background: C.brand, border: '2px solid ' + C.white, borderRadius: '50%',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.25)', flexShrink: '0',
+      height: '14px',
+      width: '14px',
     });
     wrap.appendChild(dot);
 
@@ -833,10 +833,10 @@
       const bubble = document.createElement('div');
       bubble.textContent = comment.text;
       Object.assign(bubble.style, {
-        background: C.ink, color: C.white,
-        fontFamily: FONT, fontSize: '12px', lineHeight: '1.4',
-        padding: '4px 8px', borderRadius: '3px',
-        marginTop: '-2px', maxWidth: '220px',
+        background: C.ink, borderRadius: '3px',
+        color: C.white, fontFamily: FONT, fontSize: '12px',
+        lineHeight: '1.4', marginTop: '-2px',
+        maxWidth: '220px', padding: '4px 8px',
         pointerEvents: 'none', whiteSpace: 'pre-wrap',
         wordBreak: 'break-word',
       });
@@ -854,17 +854,17 @@
     input.type = 'text';
     input.placeholder = 'Note…';
     Object.assign(input.style, {
-      background: C.ink, color: C.white,
-      fontFamily: FONT, fontSize: '12px', lineHeight: '1.4',
-      padding: '4px 8px', borderRadius: '3px',
-      border: '1px solid ' + C.brand,
-      outline: 'none', marginTop: '-2px',
-      width: '220px', pointerEvents: 'auto',
+      background: C.ink, border: '1px solid ' + C.brand,
+      borderRadius: '3px', color: C.white, fontFamily: FONT,
+      fontSize: '12px', lineHeight: '1.4',
+      marginTop: '-2px',
+      outline: 'none', padding: '4px 8px',
+      pointerEvents: 'auto', width: '220px',
     });
     const originalText = annotState.comments[idx].text || '';
     input.value = originalText;
     wrapEl.appendChild(input);
-    annotEditing = { idx, input, wrapEl, originalText };
+    annotEditing = { idx, input, originalText, wrapEl };
     input.addEventListener('keydown', onAnnotInputKey, true);
     input.addEventListener('blur', () => {
       // Fires on both focus-loss and programmatic blur; commit unless we
@@ -932,16 +932,16 @@
     if (comments.length === 0 && strokes.length === 0) return null;
     const wrap = document.createElement('div');
     Object.assign(wrap.style, {
-      position: 'absolute', top: '0', left: '0',
-      width: rect.width + 'px', height: rect.height + 'px',
-      pointerEvents: 'none', overflow: 'visible',
+      height: rect.height + 'px', left: '0', overflow: 'visible',
+      pointerEvents: 'none', position: 'absolute',
+      top: '0', width: rect.width + 'px',
     });
     if (strokes.length > 0) {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
       Object.assign(svg.style, {
-        position: 'absolute', top: '0', left: '0',
-        width: '100%', height: '100%', overflow: 'visible',
+        height: '100%', left: '0', overflow: 'visible',
+        position: 'absolute', top: '0', width: '100%',
       });
       for (const s of strokes) {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1026,33 +1026,33 @@
     if (anchor) { try { anchorMatches = document.querySelectorAll(anchor).length; } catch { anchorMatches = null; } }
     const clone = sanitizedContextClone(el);
     return {
-      tagName: el.tagName.toLowerCase(), id: el.id || null,
-      classes: [...el.classList],
       anchor, anchorMatches,
-      textContent: (clone.textContent || '').slice(0, 500),
-      outerHTML: (clone.outerHTML || '').slice(0, 10000),
-      computedStyles: {
-        'font-family': cs.fontFamily, 'font-size': cs.fontSize,
-        'font-weight': cs.fontWeight, 'line-height': cs.lineHeight,
-        'color': cs.color, 'background': cs.background,
-        'background-color': cs.backgroundColor,
-        'padding': cs.padding, 'margin': cs.margin,
-        'display': cs.display, 'position': cs.position,
-        'gap': cs.gap, 'border-radius': cs.borderRadius,
-        'box-shadow': cs.boxShadow,
+      boundingRect: { height: Math.round(r.height), width: Math.round(r.width) },
+      classes: [...el.classList], computedStyles: {
+        'background': cs.background, 'background-color': cs.backgroundColor,
+        'border-radius': cs.borderRadius, 'box-shadow': cs.boxShadow,
+        'color': cs.color, 'display': cs.display,
+        'font-family': cs.fontFamily,
+        'font-size': cs.fontSize, 'font-weight': cs.fontWeight,
+        'gap': cs.gap, 'line-height': cs.lineHeight,
+        'margin': cs.margin, 'padding': cs.padding,
+        'position': cs.position,
       },
       cssCustomProperties: props,
+      id: el.id || null,
+      outerHTML: (clone.outerHTML || '').slice(0, 10000),
       parentContext: el.parentElement
         ? '<' + el.parentElement.tagName.toLowerCase()
           + (el.parentElement.id ? ' id="' + el.parentElement.id + '"' : '')
           + (el.parentElement.className ? ' class="' + el.parentElement.className + '"' : '')
           + '>'
         : null,
-      boundingRect: { width: Math.round(r.width), height: Math.round(r.height) },
+      tagName: el.tagName.toLowerCase(),
+      textContent: (clone.textContent || '').slice(0, 500),
     };
   }
 
-  const MANUAL_CONTEXT_SKIP = { script: 1, style: 1, template: 1, noscript: 1, svg: 1, code: 1, pre: 1 };
+  const MANUAL_CONTEXT_SKIP = { code: 1, noscript: 1, pre: 1, script: 1, style: 1, svg: 1, template: 1 };
 
   function contextElementForManualEdit(selectedEl, rows, ops) {
     if (!selectedEl) return selectedEl;
@@ -1140,18 +1140,18 @@
     barEl = document.createElement('div');
     barEl.id = PREFIX + '-bar';
     Object.assign(barEl.style, {
-      position: 'fixed', zIndex: Z.bar,
-      display: 'none', opacity: '0',
-      transform: 'translateY(6px)',
+      background: BP.surface, border: '1px solid ' + BP.border,
+      borderRadius: '8px', boxShadow: BP.shadow,
+      color: BP.text,
+      display: 'none',
+      fontFamily: FONT,
+      fontSize: '13px',
+      maxWidth: '560px',
+      minWidth: '340px',
+      opacity: '0',
+      padding: '5px', position: 'fixed', transform: 'translateY(6px)',
       transition: 'opacity 0.25s ' + EASE + ', transform 0.3s ' + EASE,
-      background: BP.surface,
-      border: '1px solid ' + BP.border,
-      borderRadius: '8px',
-      boxShadow: BP.shadow,
-      transition: 'box-shadow 0.2s ease, opacity 0.25s ' + EASE + ', transform 0.3s ' + EASE,
-      fontFamily: FONT, fontSize: '13px', color: BP.text,
-      padding: '5px',
-      maxWidth: '560px', minWidth: '340px',
+      transition: 'box-shadow 0.2s ease, opacity 0.25s ' + EASE + ', transform 0.3s ' + EASE, zIndex: Z.bar,
     });
     uiAppend(barEl);
     defangOutsideHandlers(barEl);
@@ -1174,7 +1174,7 @@
         : GLOBAL_BAR_RESERVE;
       const top = window.innerHeight - barH - reserve;
       const left = Math.max(GAP, (window.innerWidth - barW) / 2);
-      Object.assign(barEl.style, { top: top + 'px', left: left + 'px' });
+      Object.assign(barEl.style, { left: left + 'px', top: top + 'px' });
       return;
     }
 
@@ -1199,7 +1199,7 @@
     let left = r.left + (r.width - barW) / 2;
     if (left < GAP) left = GAP;
     if (left + barW > window.innerWidth - GAP) left = window.innerWidth - barW - GAP;
-    Object.assign(barEl.style, { top: top + 'px', left: left + 'px' });
+    Object.assign(barEl.style, { left: left + 'px', top: top + 'px' });
   }
 
   function showBar(mode) {
@@ -1332,14 +1332,14 @@
 
   function configureInputFieldStyle(extra = {}) {
     return {
-      flex: '1', minWidth: '0', width: '100%',
-      padding: '0', margin: '0',
-      border: 'none', background: 'transparent',
-      boxSizing: 'border-box',
-      height: CONFIGURE_ROW_TRACK_H,
-      color: CONFIGURE_PILL_TEXT,
-      caretColor: CONFIGURE_PILL_TEXT,
+      background: 'transparent', border: 'none', boxSizing: 'border-box',
+      caretColor: CONFIGURE_PILL_TEXT, color: CONFIGURE_PILL_TEXT,
+      flex: '1', height: CONFIGURE_ROW_TRACK_H,
+      margin: '0',
+      minWidth: '0',
       outline: 'none',
+      padding: '0',
+      width: '100%',
       ...configureRowTextMetrics(),
       ...extra,
     };
@@ -1347,8 +1347,8 @@
 
   function configureInputShellStyle() {
     return {
-      display: 'flex', alignItems: 'center', gap: '6px',
-      flex: '1', minWidth: '0', height: '100%',
+      alignItems: 'center', display: 'flex', flex: '1',
+      gap: '6px', height: '100%', minWidth: '0',
       padding: '0 6px 0 ' + CONFIGURE_BAR_INSET,
     };
   }
@@ -1356,15 +1356,15 @@
   function configureSelectionPillStyle(extra = {}) {
     const P = configureBarPalette();
     return {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      gap: '2px', height: 'auto', flexShrink: '0',
-      padding: CONFIGURE_SELECTION_PILL_PAD,
-      boxSizing: 'border-box',
-      border: CONFIGURE_SELECTION_PILL_BORDER,
-      borderRadius: CONFIGURE_PILL_RADIUS,
-      background: 'transparent',
-      color: P.patina,
+      alignItems: 'center', background: 'transparent', border: CONFIGURE_SELECTION_PILL_BORDER,
+      borderRadius: CONFIGURE_PILL_RADIUS, boxSizing: 'border-box', color: P.patina,
       cursor: 'pointer',
+      display: 'inline-flex',
+      flexShrink: '0',
+      gap: '2px',
+      height: 'auto',
+      justifyContent: 'center',
+      padding: CONFIGURE_SELECTION_PILL_PAD,
       transition: 'background 0.15s ease, color 0.15s ease, border-color 0.15s ease',
       whiteSpace: 'nowrap',
       ...configureRowTextMetrics({
@@ -1377,14 +1377,14 @@
   function configureModifierPillStyle(extra = {}) {
     const P = configureBarPalette();
     return {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      gap: '2px', height: 'auto', minHeight: CONFIGURE_ROW_TRACK_H,
-      padding: CONFIGURE_PILL_PAD_Y + ' 8px', flexShrink: '0',
-      boxSizing: 'border-box',
-      border: '1px solid transparent',
-      borderRadius: CONFIGURE_PILL_RADIUS,
-      background: 'transparent',
-      color: P.textDim, cursor: 'pointer',
+      alignItems: 'center', background: 'transparent', border: '1px solid transparent',
+      borderRadius: CONFIGURE_PILL_RADIUS, boxSizing: 'border-box', color: P.textDim,
+      cursor: 'pointer', display: 'inline-flex',
+      flexShrink: '0',
+      gap: '2px',
+      height: 'auto',
+      justifyContent: 'center',
+      minHeight: CONFIGURE_ROW_TRACK_H, padding: CONFIGURE_PILL_PAD_Y + ' 8px',
       transition: 'background 0.15s ease, color 0.15s ease, border-color 0.15s ease',
       whiteSpace: 'nowrap',
       ...configureRowTextMetrics(),
@@ -1395,13 +1395,13 @@
   function configureInlineControlStyle(extra = {}) {
     const P = configureBarPalette();
     return {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      gap: '2px', height: CONFIGURE_ROW_TRACK_H, flexShrink: '0',
-      padding: '0', margin: '0',
-      boxSizing: 'border-box',
-      border: 'none', borderRadius: '0',
-      background: 'transparent',
-      color: P.textDim, cursor: 'pointer',
+      alignItems: 'center', background: 'transparent', border: 'none',
+      borderRadius: '0', boxSizing: 'border-box', color: P.textDim,
+      cursor: 'pointer', display: 'inline-flex',
+      flexShrink: '0',
+      gap: '2px', height: CONFIGURE_ROW_TRACK_H,
+      justifyContent: 'center',
+      margin: '0', padding: '0',
       transition: 'color 0.12s ease, background 0.12s ease',
       whiteSpace: 'nowrap',
       ...configureRowTextMetrics(),
@@ -1442,24 +1442,24 @@
     if (configureBarTooltipEl) return configureBarTooltipEl;
     const P = configureBarPalette();
     configureBarTooltipEl = el('div', {
-      position: 'fixed',
-      display: 'none',
-      zIndex: String(Z.bar + 7),
-      pointerEvents: 'none',
-      maxWidth: 'min(360px, calc(100vw - 16px))',
-      padding: '6px 9px',
-      borderRadius: '7px',
       background: P.chatSurface,
       border: '1px solid ' + P.hairline,
+      borderRadius: '7px',
       boxShadow: P.shadow,
       color: P.text,
+      display: 'none',
       fontFamily: FONT,
       fontSize: '11px',
       fontWeight: '500',
-      lineHeight: '1.35',
       letterSpacing: '0.01em',
+      lineHeight: '1.35',
+      maxWidth: 'min(360px, calc(100vw - 16px))',
+      padding: '6px 9px',
+      pointerEvents: 'none',
+      position: 'fixed',
       whiteSpace: 'normal',
       wordBreak: 'break-word',
+      zIndex: String(Z.bar + 7),
     });
     configureBarTooltipEl.id = PREFIX + '-configure-bar-tooltip';
     uiAppend(configureBarTooltipEl);
@@ -1525,7 +1525,7 @@
     exitConfigureToPicking('selection-pill-remove', { clearHover: true });
   }
 
-  function buildSelectionPill({ el: targetEl, controlsLocked }) {
+  function buildSelectionPill({ controlsLocked, el: targetEl }) {
     const tag = selectionTagLabel(targetEl);
     const path = elementPath(targetEl);
     const P = configureBarPalette();
@@ -1539,20 +1539,20 @@
     pill.style.flexShrink = '0';
 
     const faceStack = el('span', {
-      display: 'grid', placeItems: 'center',
-      width: '100%', minWidth: '1.25em',
-      lineHeight: CONFIGURE_ROW_TRACK_H,
+      display: 'grid', lineHeight: CONFIGURE_ROW_TRACK_H,
+      minWidth: '1.25em', placeItems: 'center',
+      width: '100%',
     });
     const tagFace = el('span', {
+      color: P.patina,
       gridArea: '1 / 1',
       transition: 'opacity 0.12s ease',
-      color: P.patina,
     });
     const clearFace = el('span', {
+      color: 'oklch(58% 0.15 35)',
       gridArea: '1 / 1',
       opacity: '0',
       transition: 'opacity 0.12s ease',
-      color: 'oklch(58% 0.15 35)',
     });
     tagFace.textContent = tag;
     clearFace.textContent = '\u00D7';
@@ -1608,9 +1608,9 @@
     const label = document.createElement('span');
     label.textContent = actionLabel();
     const caret = el('span', {
-      fontSize: '10px', lineHeight: '1',
-      marginLeft: '2px', pointerEvents: 'none',
-      color: 'inherit',
+      color: 'inherit', fontSize: '10px',
+      lineHeight: '1', marginLeft: '2px',
+      pointerEvents: 'none',
     });
     caret.textContent = '\u25BE';
     caret.setAttribute('aria-hidden', 'true');
@@ -1647,16 +1647,16 @@
     return count;
   }
 
-  function buildConfigureVoiceButton({ id, controlsLocked, onClick }) {
+  function buildConfigureVoiceButton({ controlsLocked, id, onClick }) {
     const voiceBtn = el('button', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      boxSizing: 'border-box',
-      width: CONFIGURE_BAR_H, height: '100%', flexShrink: '0',
-      padding: '0', margin: '0',
-      border: 'none', borderRight: '1px solid ' + BP.hairline,
-      borderRadius: '0', background: 'transparent',
-      color: BP.textDim, cursor: 'pointer',
-      transition: 'color 0.12s ease, background 0.12s ease',
+      alignItems: 'center', background: 'transparent', border: 'none',
+      borderRadius: '0',
+      borderRight: '1px solid ' + BP.hairline, boxSizing: 'border-box', color: BP.textDim,
+      cursor: 'pointer', display: 'inline-flex',
+      flexShrink: '0', height: '100%',
+      justifyContent: 'center', margin: '0',
+      padding: '0', transition: 'color 0.12s ease, background 0.12s ease',
+      width: CONFIGURE_BAR_H,
     });
     voiceBtn.id = id;
     voiceBtn.type = 'button';
@@ -1672,13 +1672,13 @@
 
   function buildConfigureTrailingCluster(controls, voiceBtn, submitBtn) {
     const cluster = el('div', {
-      display: 'inline-flex', alignItems: 'stretch', flexShrink: '0',
-      height: '100%', borderLeft: '1px solid ' + BP.hairline,
+      alignItems: 'stretch', borderLeft: '1px solid ' + BP.hairline, display: 'inline-flex',
+      flexShrink: '0', height: '100%',
     });
     if (controls.length) {
       const controlsWrap = el('div', {
-        display: 'inline-flex', alignItems: 'center', gap: '8px',
-        padding: '0 10px', flexShrink: '0', height: '100%',
+        alignItems: 'center', display: 'inline-flex', flexShrink: '0',
+        gap: '8px', height: '100%', padding: '0 10px',
       });
       controls.forEach((control) => controlsWrap.appendChild(control));
       cluster.appendChild(controlsWrap);
@@ -1689,16 +1689,16 @@
     return cluster;
   }
 
-  function buildConfigureSubmitButton({ controlsLocked, onClick, ariaLabel }) {
+  function buildConfigureSubmitButton({ ariaLabel, controlsLocked, onClick }) {
     const btn = el('button', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      boxSizing: 'border-box', width: CONFIGURE_BAR_H, height: CONFIGURE_BAR_H,
-      padding: '0', flexShrink: '0',
-      border: 'none', borderLeft: '1px solid ' + BP.hairline,
-      borderRadius: '0',
-      background: BP.accent, color: C.ink,
-      cursor: controlsLocked ? 'not-allowed' : 'pointer',
+      alignItems: 'center', background: BP.accent, border: 'none',
+      borderLeft: '1px solid ' + BP.hairline, borderRadius: '0', boxSizing: 'border-box',
+      color: C.ink, cursor: controlsLocked ? 'not-allowed' : 'pointer',
+      display: 'inline-flex', flexShrink: '0',
+      height: CONFIGURE_BAR_H,
+      justifyContent: 'center', padding: '0',
       transition: 'filter 0.12s ease, transform 0.1s ease',
+      width: CONFIGURE_BAR_H,
     });
     btn.type = 'button';
     btn.setAttribute('aria-label', ariaLabel);
@@ -1741,8 +1741,8 @@
     return detectInsertAxisFromStyle({
       display: st.display,
       flexDirection: st.flexDirection,
-      gridTemplateColumns: st.gridTemplateColumns,
       gridAutoFlow: st.gridAutoFlow,
+      gridTemplateColumns: st.gridTemplateColumns,
     });
   }
 
@@ -1813,9 +1813,9 @@
         if (!inX || !inY) continue;
         return {
           anchor: b.el,
-          position: 'before',
           axis: 'row',
-          line: { axis: 'row', left: (aRight + bLeft) / 2, top, width: 0, height: span },
+          line: { axis: 'row', height: span, left: (aRight + bLeft) / 2, top, width: 0 },
+          position: 'before',
         };
       }
     }
@@ -1837,9 +1837,9 @@
       if (!inY || !inX) continue;
       return {
         anchor: b.el,
-        position: 'before',
         axis: 'column',
-        line: { axis: 'column', top: (gapTop + gapBottom) / 2, left: overlapLeft, width: overlap, height: 0 },
+        line: { axis: 'column', height: 0, left: overlapLeft, top: (gapTop + gapBottom) / 2, width: overlap },
+        position: 'before',
       };
     }
     return null;
@@ -1849,25 +1849,25 @@
     axis = axis || 'column';
     if (axis === 'row') {
       const x = position === 'before' ? rect.left - 2 : rect.right + 2;
-      return { axis: 'row', top: rect.top, left: x, width: 0, height: rect.height };
+      return { axis: 'row', height: rect.height, left: x, top: rect.top, width: 0 };
     }
     const y = position === 'before' ? rect.top - 2 : rect.bottom + 2;
-    return { axis: 'column', top: y, left: rect.left, width: rect.width, height: 0 };
+    return { axis: 'column', height: 0, left: rect.left, top: y, width: rect.width };
   }
 
-  function resolveInsertHover({ clientX, clientY, target, rect, axis, siblings }) {
+  function resolveInsertHover({ axis, clientX, clientY, rect, siblings, target }) {
     const gap = hitSiblingInsertGap(clientX, clientY, siblings);
     if (gap) return gap;
     const position = computeInsertPosition(clientX, clientY, rect, axis);
     const line = insertLineCoords(rect, position, axis);
-    return { anchor: target, position, axis, line };
+    return { anchor: target, axis, line, position };
   }
 
   function cursorForInsertAxis(axis) {
     return axis === 'row' ? 'ew-resize' : 'ns-resize';
   }
 
-  function placeholderSizing({ axis, parentDisplay, parentWidth, anchorFlex }) {
+  function placeholderSizing({ anchorFlex, axis, parentDisplay, parentWidth }) {
     const display = parentDisplay || 'block';
     const w = Number.isFinite(parentWidth) ? parentWidth : 0;
     if (axis === 'row') {
@@ -1875,7 +1875,7 @@
         const flex = anchorFlex && anchorFlex !== 'none' && anchorFlex !== '0 1 auto'
           ? anchorFlex
           : '1 1 0';
-        return { kind: 'flex', flex, minWidth: 0 };
+        return { flex, kind: 'flex', minWidth: 0 };
       }
       if (display === 'grid' || display === 'inline-grid') return { kind: 'auto' };
     }
@@ -1919,7 +1919,7 @@
     placeholder.dataset.impeccablePlaceholderWidth = 'explicit';
   }
 
-  function canCreateInsert({ prompt, comments, strokes }) {
+  function canCreateInsert({ comments, prompt, strokes }) {
     const hasPrompt = typeof prompt === 'string' && prompt.trim().length > 0;
     const hasComments = Array.isArray(comments) && comments.length > 0;
     const hasStrokes = Array.isArray(strokes) && strokes.some(
@@ -1928,16 +1928,16 @@
     return hasPrompt || hasComments || hasStrokes;
   }
 
-  function insertCreateDisabledReason({ prompt, comments, strokes }) {
-    if (canCreateInsert({ prompt, comments, strokes })) return null;
+  function insertCreateDisabledReason({ comments, prompt, strokes }) {
+    if (canCreateInsert({ comments, prompt, strokes })) return null;
     return 'Add a prompt or annotate the placeholder to create';
   }
 
   function clampPlaceholderSize(width, height, parentWidth) {
     const maxW = Math.max(PLACEHOLDER_MIN_WIDTH, parentWidth || PLACEHOLDER_MIN_WIDTH);
     return {
-      width: Math.min(maxW, Math.max(PLACEHOLDER_MIN_WIDTH, Math.round(width))),
       height: Math.max(PLACEHOLDER_MIN_HEIGHT, Math.round(height)),
+      width: Math.min(maxW, Math.max(PLACEHOLDER_MIN_WIDTH, Math.round(width))),
     };
   }
 
@@ -1949,10 +1949,10 @@
 
   function resizePlaceholderFromEdge(start, edge, dx, dy, parentWidth) {
     const base = {
-      width: start.width,
       height: start.height,
       marginLeft: start.marginLeft ?? 0,
       marginTop: start.marginTop ?? 0,
+      width: start.width,
     };
     if (edge === 'e') base.width = start.width + dx;
     else if (edge === 'w') {
@@ -1967,10 +1967,10 @@
     if (edge === 'w') base.marginLeft = start.marginLeft + start.width - clamped.width;
     else if (edge === 'n') base.marginTop = start.marginTop + start.height - clamped.height;
     return {
-      width: clamped.width,
       height: clamped.height,
       marginLeft: Math.round(base.marginLeft),
       marginTop: Math.round(base.marginTop),
+      width: clamped.width,
     };
   }
 
@@ -1979,13 +1979,13 @@
     insertLineEl = document.createElement('div');
     insertLineEl.id = PREFIX + '-insert-line';
     Object.assign(insertLineEl.style, {
+      borderTop: '2px dotted ' + C.brand,
+      display: 'none',
+      height: '0',
+      opacity: '0.9',
+      pointerEvents: 'none',
       position: 'fixed',
       zIndex: String(Z.highlight),
-      height: '0',
-      borderTop: '2px dotted ' + C.brand,
-      pointerEvents: 'none',
-      display: 'none',
-      opacity: '0.9',
     });
     uiAppend(insertLineEl);
     defangOutsideHandlers(insertLineEl);
@@ -1998,23 +1998,23 @@
     const coords = resolved.line;
     if (coords.axis === 'row') {
       Object.assign(line.style, {
-        display: 'block',
-        top: coords.top + 'px',
-        left: coords.left + 'px',
-        width: '0',
-        height: coords.height + 'px',
-        borderTop: 'none',
         borderLeft: '2px dotted ' + C.brand,
+        borderTop: 'none',
+        display: 'block',
+        height: coords.height + 'px',
+        left: coords.left + 'px',
+        top: coords.top + 'px',
+        width: '0',
       });
     } else {
       Object.assign(line.style, {
-        display: 'block',
-        top: coords.top + 'px',
-        left: coords.left + 'px',
-        width: coords.width + 'px',
-        height: '0',
         borderLeft: 'none',
         borderTop: '2px dotted ' + C.brand,
+        display: 'block',
+        height: '0',
+        left: coords.left + 'px',
+        top: coords.top + 'px',
+        width: coords.width + 'px',
       });
     }
     insertHoverAnchor = resolved.anchor;
@@ -2144,15 +2144,15 @@
 
   function buildInsertPlaceholderSnapshotFromDom(anchor, placeholder) {
     return {
-      width: Math.round(placeholder.offsetWidth || 0),
+      anchorClasses: anchor.className || '',
+      anchorTag: anchor.tagName || 'DIV',
+      anchorText: (anchor.textContent || '').trim().slice(0, 120),
       height: Math.round(placeholder.offsetHeight || PLACEHOLDER_DEFAULT_HEIGHT),
+      layoutAxis: insertAnchorLayoutAxis || 'column',
       marginLeft: parseFloat(placeholder.style.marginLeft) || 0,
       marginTop: parseFloat(placeholder.style.marginTop) || 0,
       position: insertAnchorPosition || 'before',
-      layoutAxis: insertAnchorLayoutAxis || 'column',
-      anchorTag: anchor.tagName || 'DIV',
-      anchorClasses: anchor.className || '',
-      anchorText: (anchor.textContent || '').trim().slice(0, 120),
+      width: Math.round(placeholder.offsetWidth || 0),
     };
   }
 
@@ -2198,17 +2198,17 @@
 
     if (insertPlaceholderSnapshot) {
       applyPlaceholderDimensions({
-        width: insertPlaceholderSnapshot.width,
         height: insertPlaceholderSnapshot.height,
         marginLeft: insertPlaceholderSnapshot.marginLeft,
         marginTop: insertPlaceholderSnapshot.marginTop,
+        width: insertPlaceholderSnapshot.width,
       });
     }
     selectedElement = ph;
     return ph;
   }
 
-  function applyPlaceholderDimensions({ width, height, marginLeft, marginTop }) {
+  function applyPlaceholderDimensions({ height, marginLeft, marginTop, width }) {
     const ph = placeholderElement;
     if (!ph) return;
     materializePlaceholderWidth(ph);
@@ -2231,16 +2231,16 @@
     const hit = 10;
     const half = hit / 2;
     const specs = [
-      { edge: 'n', top: -half, left: 0, right: 0, height: hit },
-      { edge: 's', bottom: -half, left: 0, right: 0, height: hit },
-      { edge: 'e', top: 0, bottom: 0, right: -half, width: hit },
-      { edge: 'w', top: 0, bottom: 0, left: -half, width: hit },
+      { edge: 'n', height: hit, left: 0, right: 0, top: -half },
+      { bottom: -half, edge: 's', height: hit, left: 0, right: 0 },
+      { bottom: 0, edge: 'e', right: -half, top: 0, width: hit },
+      { bottom: 0, edge: 'w', left: -half, top: 0, width: hit },
     ];
     for (const spec of specs) {
       const handle = el('div', {
-        position: 'absolute',
-        pointerEvents: 'auto',
         cursor: cursorForPlaceholderEdge(spec.edge),
+        pointerEvents: 'auto',
+        position: 'absolute',
       });
       if (spec.top != null) handle.style.top = spec.top + 'px';
       if (spec.bottom != null) handle.style.bottom = spec.bottom + 'px';
@@ -2272,16 +2272,16 @@
     materializePlaceholderWidth(ph);
     placeholderResizeDrag = {
       edge,
-      startX: e.clientX,
-      startY: e.clientY,
+      parentWidth: ph.parentNode?.getBoundingClientRect().width || PLACEHOLDER_MIN_WIDTH,
+      pointerId: e.pointerId,
       start: {
-        width: ph.offsetWidth,
         height: ph.offsetHeight,
         marginLeft: parseFloat(ph.style.marginLeft) || 0,
         marginTop: parseFloat(ph.style.marginTop) || 0,
+        width: ph.offsetWidth,
       },
-      parentWidth: ph.parentNode?.getBoundingClientRect().width || PLACEHOLDER_MIN_WIDTH,
-      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
     };
     try { annotOverlayEl.setPointerCapture(e.pointerId); } catch {}
     e.stopPropagation();
@@ -2296,26 +2296,26 @@
     const pst = getComputedStyle(parent);
     const ast = getComputedStyle(anchor);
     const sizing = placeholderSizing({
+      anchorFlex: ast.flex,
       axis,
       parentDisplay: pst.display,
       parentWidth: parent.getBoundingClientRect().width,
-      anchorFlex: ast.flex,
     });
     const placeholder = document.createElement('div');
     placeholder.id = PREFIX + '-insert-placeholder';
     placeholder.setAttribute('data-impeccable-insert-placeholder', 'true');
     placeholder.setAttribute('aria-hidden', 'true');
     Object.assign(placeholder.style, {
-      boxSizing: 'border-box',
-      height: PLACEHOLDER_DEFAULT_HEIGHT + 'px',
-      minHeight: PLACEHOLDER_MIN_HEIGHT + 'px',
+      background: 'transparent',
       border: '2px dotted ' + BP.accent,
       borderRadius: '0',
-      background: 'transparent',
-      opacity: '1',
-      position: 'relative',
+      boxSizing: 'border-box',
+      height: PLACEHOLDER_DEFAULT_HEIGHT + 'px',
       marginLeft: '',
       marginTop: '',
+      minHeight: PLACEHOLDER_MIN_HEIGHT + 'px',
+      opacity: '1',
+      position: 'relative',
     });
     applyPlaceholderSizingStyles(placeholder, sizing);
     if (position === 'before') parent.insertBefore(placeholder, anchor);
@@ -2342,21 +2342,21 @@
   function ensureInsertCreateTooltip() {
     if (insertCreateTooltipEl) return insertCreateTooltipEl;
     insertCreateTooltipEl = el('div', {
-      position: 'fixed',
-      display: 'none',
-      zIndex: String(Z.bar + 7),
-      pointerEvents: 'none',
-      maxWidth: '240px',
-      padding: '6px 9px',
-      borderRadius: '7px',
       background: BP.chatSurface,
       border: '1px solid ' + BP.hairline,
+      borderRadius: '7px',
       boxShadow: BP.shadow,
       color: BP.text,
+      display: 'none',
       fontFamily: FONT,
       fontSize: '11px',
       fontWeight: '500',
       lineHeight: '1.35',
+      maxWidth: '240px',
+      padding: '6px 9px',
+      pointerEvents: 'none',
+      position: 'fixed',
+      zIndex: String(Z.bar + 7),
     });
     insertCreateTooltipEl.id = PREFIX + '-insert-create-tooltip';
     uiAppend(insertCreateTooltipEl);
@@ -2384,8 +2384,8 @@
 
   function insertCreateGateState(input) {
     return {
-      prompt: input?.value ?? '',
       comments: annotState.comments,
+      prompt: input?.value ?? '',
       strokes: annotState.strokes,
     };
   }
@@ -2433,7 +2433,7 @@
   function buildConfigureRow() {
     const controlsLocked = pendingApplyInFlight === true;
     const row = el('div', {
-      display: 'flex', alignItems: 'stretch', width: '100%', height: CONFIGURE_BAR_H,
+      alignItems: 'stretch', display: 'flex', height: CONFIGURE_BAR_H, width: '100%',
     });
 
     const inputShell = el('div', configureInputShellStyle());
@@ -2472,7 +2472,7 @@
       },
     });
 
-    inputShell.appendChild(buildSelectionPill({ el: selectedElement, controlsLocked }));
+    inputShell.appendChild(buildSelectionPill({ controlsLocked, el: selectedElement }));
     inputShell.appendChild(input);
 
     ensureConfigureInputStyle();
@@ -2493,8 +2493,8 @@
     });
 
     const voiceBtn = buildConfigureVoiceButton({
-      id: PREFIX + '-configure-voice',
       controlsLocked,
+      id: PREFIX + '-configure-voice',
       onClick: (e) => {
         e.stopPropagation();
         if (controlsLocked) { showManualApplyBusyToast(); return; }
@@ -2503,8 +2503,8 @@
     });
 
     const go = buildConfigureSubmitButton({
-      controlsLocked,
       ariaLabel: 'Generate variants',
+      controlsLocked,
       onClick: (e) => { e.stopPropagation(); handleGo(); },
     });
 
@@ -2520,7 +2520,7 @@
   function buildInsertConfigureRow() {
     const controlsLocked = pendingApplyInFlight === true;
     const row = el('div', {
-      display: 'flex', alignItems: 'stretch', width: '100%', height: CONFIGURE_BAR_H,
+      alignItems: 'stretch', display: 'flex', height: CONFIGURE_BAR_H, width: '100%',
     });
     row.addEventListener('pointerdown', (e) => e.stopPropagation());
     row.addEventListener('mousedown', (e) => e.stopPropagation());
@@ -2553,7 +2553,7 @@
       },
     });
 
-    inputShell.appendChild(buildSelectionPill({ el: selectedElement, controlsLocked }));
+    inputShell.appendChild(buildSelectionPill({ controlsLocked, el: selectedElement }));
     inputShell.appendChild(input);
 
     ensureConfigureInputStyle();
@@ -2582,8 +2582,8 @@
     input.addEventListener('blur', () => syncConfigureInputChrome());
 
     const voiceBtn = buildConfigureVoiceButton({
-      id: PREFIX + '-insert-voice',
       controlsLocked,
+      id: PREFIX + '-insert-voice',
       onClick: (e) => {
         e.stopPropagation();
         if (controlsLocked) { showManualApplyBusyToast(); return; }
@@ -2592,8 +2592,8 @@
     });
 
     const create = buildConfigureSubmitButton({
-      controlsLocked,
       ariaLabel: 'Create variants',
+      controlsLocked,
       onClick: (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -2624,14 +2624,14 @@
 
   function buildGeneratingRow() {
     const row = el('div', {
-      display: 'flex', alignItems: 'center', gap: '8px',
+      alignItems: 'center', display: 'flex', gap: '8px',
       padding: '2px 4px',
     });
 
     // Action label
     const label = el('span', {
-      fontWeight: '600', fontSize: '12px', color: BP.text,
-      flexShrink: '0', whiteSpace: 'nowrap',
+      color: BP.text, flexShrink: '0', fontSize: '12px',
+      fontWeight: '600', whiteSpace: 'nowrap',
     });
     label.textContent = configureKind === 'insert' ? 'Insert' : actionLabel();
     row.appendChild(label);
@@ -2641,8 +2641,8 @@
 
     // Status
     const status = el('span', {
-      fontSize: '11px', color: BP.textDim, whiteSpace: 'nowrap',
-      marginLeft: 'auto',
+      color: BP.textDim, fontSize: '11px', marginLeft: 'auto',
+      whiteSpace: 'nowrap',
     });
     status.textContent = recoveryWaitingForAnchor
       ? 'Variants ready. Reveal the selected element to resume.'
@@ -2696,7 +2696,7 @@
       return el('div', { display: 'none' });
     }
     const row = el('div', {
-      display: 'flex', alignItems: 'center', gap: '6px',
+      alignItems: 'center', display: 'flex', gap: '6px',
       padding: '1px 2px',
     });
 
@@ -2712,8 +2712,8 @@
 
     // Counter
     const counter = el('span', {
-      fontFamily: MONO, fontSize: '11px', fontWeight: '500',
-      color: BP.textDim, minWidth: '24px', textAlign: 'center',
+      color: BP.textDim, fontFamily: MONO, fontSize: '11px',
+      fontWeight: '500', minWidth: '24px', textAlign: 'center',
     });
     counter.id = PREFIX + '-variant-counter';
     counter.textContent = cyclingCounterText();
@@ -2733,23 +2733,23 @@
     const paramsPending = !hasParams && (parameterGenerationState === 'pending' || parameterGenerationState === 'loading');
     if (hasParams || paramsPending) {
       const tune = el('button', {
-        display: 'inline-flex', alignItems: 'center', gap: '6px',
-        padding: '4px 10px', borderRadius: '5px',
-        border: '1px solid transparent',
-        background: tuneOpen ? BP.accentSoft : 'transparent',
-        color: tuneOpen ? BP.accent : BP.text,
-        fontFamily: FONT, fontSize: '11px', fontWeight: '500',
+        alignItems: 'center', background: tuneOpen ? BP.accentSoft : 'transparent', border: '1px solid transparent',
+        borderRadius: '5px', color: tuneOpen ? BP.accent : BP.text,
         cursor: paramsPending ? 'wait' : 'pointer',
+        display: 'inline-flex',
+        fontFamily: FONT,
+        fontSize: '11px', fontWeight: '500', gap: '6px',
+        padding: '4px 10px',
         transition: 'color 0.12s ease, background 0.12s ease',
         whiteSpace: 'nowrap',
       });
       if (paramsPending) {
         const spinner = el('span', {
-          width: '11px', height: '11px', borderRadius: '50%',
-          border: '1.5px solid ' + BP.hairline,
+          animation: 'impeccable-spin 0.6s linear infinite', border: '1.5px solid ' + BP.hairline, borderRadius: '50%',
           borderTopColor: BP.accent,
-          animation: 'impeccable-spin 0.6s linear infinite',
-          boxSizing: 'border-box', flexShrink: '0',
+          boxSizing: 'border-box',
+          flexShrink: '0',
+          height: '11px', width: '11px',
         });
         spinner.setAttribute('aria-hidden', 'true');
         tune.appendChild(spinner);
@@ -2762,14 +2762,14 @@
       if (hasParams) {
         const tuneBadge = document.createElement('span');
         Object.assign(tuneBadge.style, {
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          minWidth: '16px', height: '16px', padding: '0 4px',
-          borderRadius: '999px',
-          background: tuneOpen ? C.brand : BP.hairline,
-          color: tuneOpen ? C.ink : 'inherit',
-          fontFamily: MONO, fontSize: '9.5px', fontWeight: '600',
-          lineHeight: '1',
-          boxSizing: 'border-box',
+          alignItems: 'center', background: tuneOpen ? C.brand : BP.hairline, borderRadius: '999px',
+          boxSizing: 'border-box', color: tuneOpen ? C.ink : 'inherit', display: 'inline-flex',
+          fontFamily: MONO,
+          fontSize: '9.5px',
+          fontWeight: '600',
+          height: '16px', justifyContent: 'center', lineHeight: '1',
+          minWidth: '16px',
+          padding: '0 4px',
         });
         tuneBadge.textContent = String(visParams.length);
         tune.appendChild(tuneBadge);
@@ -2797,7 +2797,7 @@
     if (arrivedVariants < expectedVariants) {
       const remaining = expectedVariants - arrivedVariants;
       const progress = el('span', {
-        fontSize: '11px', color: BP.textDim, whiteSpace: 'nowrap',
+        color: BP.textDim, fontSize: '11px', whiteSpace: 'nowrap',
       });
       progress.textContent = remaining + ' more arriving...';
       row.appendChild(progress);
@@ -2805,10 +2805,10 @@
 
     // Accept - primary action, kinpaku gold + lacquer-deep (matches demo .live-demo-ctx-accept)
     const accept = el('button', {
-      padding: '5px 14px', borderRadius: '5px',
-      border: 'none', background: C.brand, color: C.ink,
+      background: C.brand, border: 'none',
+      borderRadius: '5px', color: C.ink, cursor: 'pointer',
       fontFamily: FONT, fontSize: '11px', fontWeight: '600',
-      cursor: 'pointer', transition: 'filter 0.12s ease, transform 0.1s ease',
+      padding: '5px 14px', transition: 'filter 0.12s ease, transform 0.1s ease',
       whiteSpace: 'nowrap',
     });
     accept.textContent = '\u2713 Accept';
@@ -2826,10 +2826,10 @@
 
     // Discard
     const discard = el('button', {
-      padding: '4px 6px', borderRadius: '5px',
-      border: '1px solid ' + BP.hairline, background: 'transparent',
-      fontFamily: FONT, fontSize: '11px', color: BP.textDim,
-      cursor: 'pointer', transition: 'color 0.12s ease, border-color 0.12s ease',
+      background: 'transparent', border: '1px solid ' + BP.hairline,
+      borderRadius: '5px', color: BP.textDim,
+      cursor: 'pointer', fontFamily: FONT, fontSize: '11px',
+      padding: '4px 6px', transition: 'color 0.12s ease, border-color 0.12s ease',
     });
     discard.textContent = '\u2715';
     discard.title = 'Discard all variants';
@@ -2847,19 +2847,19 @@
 
   function buildSavingRow() {
     const row = el('div', {
-      display: 'flex', alignItems: 'center', gap: '8px',
+      alignItems: 'center', display: 'flex', gap: '8px',
       padding: '2px 8px',
     });
     const spinner = el('div', {
-      width: '14px', height: '14px', borderRadius: '50%',
-      border: '2px solid ' + BP.hairline,
+      animation: 'impeccable-spin 0.6s linear infinite', border: '2px solid ' + BP.hairline, borderRadius: '50%',
       borderTopColor: BP.accent,
-      animation: 'impeccable-spin 0.6s linear infinite',
       flexShrink: '0',
+      height: '14px',
+      width: '14px',
     });
     row.appendChild(spinner);
     const label = el('span', {
-      fontSize: '12px', color: BP.textDim, fontWeight: '500',
+      color: BP.textDim, fontSize: '12px', fontWeight: '500',
     });
     label.textContent = 'Applying variant...';
     row.appendChild(label);
@@ -2872,17 +2872,17 @@
 
   function buildConfirmedRow() {
     const row = el('div', {
-      display: 'flex', alignItems: 'center', gap: '8px',
+      alignItems: 'center', display: 'flex', gap: '8px',
       padding: '2px 8px',
     });
     const check = el('span', {
-      fontSize: '15px', lineHeight: '1', flexShrink: '0',
-      color: 'oklch(45% 0.18 145)',
+      color: 'oklch(45% 0.18 145)', flexShrink: '0', fontSize: '15px',
+      lineHeight: '1',
     });
     check.textContent = '\u2713';
     row.appendChild(check);
     const label = el('span', {
-      fontSize: '12px', color: 'oklch(49% 0.08 188)', fontWeight: '600',
+      color: 'oklch(49% 0.08 188)', fontSize: '12px', fontWeight: '600',
     });
     label.textContent = 'Variant applied';
     row.appendChild(label);
@@ -2893,7 +2893,7 @@
 
   function buildDots(clickable) {
     const container = el('div', {
-      display: 'flex', alignItems: 'center', gap: '4px',
+      alignItems: 'center', display: 'flex', gap: '4px',
     });
     for (let i = 1; i <= expectedVariants; i++) {
       const arrived = i <= arrivedVariants;
@@ -2908,16 +2908,16 @@
         : 'transparent';
       const dotBorder = arrived ? 'none' : '1.5px solid ' + BP.hairline;
       const dot = el('div', {
-        width: active ? '8px' : '6px',
-        height: active ? '8px' : '6px',
-        borderRadius: '50%',
         background: dotBg,
         border: dotBorder,
+        borderRadius: '50%',
         boxSizing: 'border-box',
-        transition: 'all 0.2s ' + EASE,
         cursor: (clickable && arrived) ? 'pointer' : 'default',
-        transform: arrived ? 'scale(1)' : 'scale(0.85)',
+        height: active ? '8px' : '6px',
         opacity: arrived ? (active ? '1' : '0.6') : '0.4',
+        transform: arrived ? 'scale(1)' : 'scale(0.85)',
+        transition: 'all 0.2s ' + EASE,
+        width: active ? '8px' : '6px',
       });
       if (clickable && arrived) {
         const idx = i;
@@ -2933,12 +2933,12 @@
 
   function navBtn(text) {
     const b = el('button', {
-      width: '26px', height: '26px', borderRadius: '5px',
-      border: '1px solid ' + BP.hairline, background: 'transparent',
-      color: BP.text, fontFamily: FONT, fontSize: '13px',
-      cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      transition: 'border-color 0.12s ease, background 0.12s ease',
-      padding: '0', lineHeight: '1',
+      alignItems: 'center', background: 'transparent', border: '1px solid ' + BP.hairline,
+      borderRadius: '5px', color: BP.text,
+      cursor: 'pointer', display: 'flex', fontFamily: FONT,
+      fontSize: '13px', height: '26px', justifyContent: 'center', lineHeight: '1',
+      padding: '0',
+      transition: 'border-color 0.12s ease, background 0.12s ease', width: '26px',
     });
     b.textContent = text;
     b.addEventListener('mouseenter', () => { b.style.borderColor = BP.text; });
@@ -2967,40 +2967,40 @@
     pickerEl = document.createElement('div');
     pickerEl.id = PREFIX + '-picker';
     Object.assign(pickerEl.style, {
-      position: 'fixed', zIndex: Z.picker,
-      display: 'none', opacity: '0',
+      background: P.surface, border: '1px solid ' + P.border,
+      borderRadius: '8px', boxShadow: P.shadow,
+      display: 'none',
+      fontFamily: FONT,
+      opacity: '0',
+      padding: '6px',
+      position: 'fixed',
       transform: 'scale(0.96) translateY(4px)',
       transformOrigin: 'bottom right',
       transition: 'opacity 0.18s ' + EASE + ', transform 0.2s ' + EASE,
-      background: P.surface,
-      border: '1px solid ' + P.border,
-      borderRadius: '8px',
-      boxShadow: P.shadow,
-      padding: '6px',
-      fontFamily: FONT,
+      zIndex: Z.picker,
     });
 
     // Build the chip grid
     const grid = el('div', {
-      display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '3px',
+      display: 'grid', gap: '3px', gridTemplateColumns: 'repeat(4, 1fr)',
     });
 
     ACTIONS.forEach(action => {
       const chip = el('button', {
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        gap: '4px',
-        padding: '8px 6px', borderRadius: '6px',
-        border: 'none',
-        background: action.value === selectedAction ? P.accentSoft : 'transparent',
-        color: action.value === selectedAction ? P.accent : P.text,
-        fontFamily: FONT, fontSize: '11px', fontWeight: '500',
-        cursor: 'pointer',
-        transition: 'background 0.1s ease, color 0.1s ease',
-        textAlign: 'center', whiteSpace: 'nowrap',
+        alignItems: 'center', background: action.value === selectedAction ? P.accentSoft : 'transparent', border: 'none',
+        borderRadius: '6px',
+        color: action.value === selectedAction ? P.accent : P.text, cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: FONT,
+        fontSize: '11px', fontWeight: '500', gap: '4px',
+        padding: '8px 6px',
+        textAlign: 'center',
+        transition: 'background 0.1s ease, color 0.1s ease', whiteSpace: 'nowrap',
       });
       const iconWrap = el('span', {
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        height: '20px', opacity: '0.9',
+        alignItems: 'center', display: 'flex', height: '20px',
+        justifyContent: 'center', opacity: '0.9',
       });
       iconWrap.innerHTML = ICONS[action.value] || '';
       const labelEl = el('span', { lineHeight: '1' });
@@ -3056,8 +3056,8 @@
     let left = barRect.right - pickerW;
     left = Math.max(8, Math.min(left, window.innerWidth - pickerW - 8));
     Object.assign(pickerEl.style, {
-      top: top + 'px',
       left: left + 'px',
+      top: top + 'px',
     });
     requestAnimationFrame(() => {
       pickerEl.style.opacity = '1';
@@ -3144,31 +3144,31 @@
     paramsPanelEl = document.createElement('div');
     paramsPanelEl.id = PREFIX + '-params-panel';
     Object.assign(paramsPanelEl.style, {
-      position: 'fixed', zIndex: String(Z.bar - 1),
-      background: P.surfaceDeep,
-      color: P.text,
-      fontFamily: FONT,
-      padding: '14px 18px',
+      background: P.surfaceDeep, borderRadius: '0 0 10px 10px',
       boxSizing: 'border-box',
-      borderRadius: '0 0 10px 10px',
-      pointerEvents: 'none',
-
       // clip-path is the same conceptual reveal as mask but with rock-solid
       // transition support across engines. Closed state clips from the far
       // edge; open = inset(0) shows everything.
       clipPath: 'inset(0 0 100% 0)',
-      transition: 'clip-path 0.44s ' + EASE,
+      color: P.text,
+      fontFamily: FONT,
+      left: '-9999px',
+      padding: '14px 18px',
+      pointerEvents: 'none',
 
+      position: 'fixed',
       // Park off-screen until positionParamsPanel places it. These are NOT
       // in the transition list, so they snap instantly - no fly-in from the
       // top-left when first shown.
-      top: '-9999px', left: '-9999px', width: '0',
+      top: '-9999px',
+
+      transition: 'clip-path 0.44s ' + EASE, width: '0', zIndex: String(Z.bar - 1),
     });
 
     paramsPanelBody = el('div', {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
       gap: '12px 16px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
     });
 
     paramsPanelEl.appendChild(paramsPanelBody);
@@ -3273,18 +3273,18 @@
     for (const p of params) {
       const row = el('div', { display: 'flex', flexDirection: 'column', gap: '6px' });
       const labelRow = el('div', {
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'baseline', gap: '8px',
+        alignItems: 'baseline', display: 'flex',
+        gap: '8px', justifyContent: 'space-between',
       });
       const lbl = el('span', {
-        fontSize: '10.5px', fontWeight: '600', color: P.text,
+        color: P.text, fontSize: '10.5px', fontWeight: '600',
         letterSpacing: '0.03em',
       });
       lbl.textContent = p.label || p.id;
       labelRow.appendChild(lbl);
       const readout = el('span', {
-        fontSize: '10.5px', color: P.textDim,
-        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        color: P.textDim, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        fontSize: '10.5px',
       });
       labelRow.appendChild(readout);
       row.appendChild(labelRow);
@@ -3297,7 +3297,7 @@
         input.step = String(p.step != null ? p.step : 0.05);
         input.value = String(p.default);
         Object.assign(input.style, {
-          width: '100%', accentColor: C.brand, cursor: 'pointer',
+          accentColor: C.brand, cursor: 'pointer', width: '100%',
         });
         readout.textContent = formatRangeValue(input);
         input.addEventListener('input', (e) => {
@@ -3313,20 +3313,20 @@
         const initial = !!p.default;
         readout.textContent = initial ? 'On' : 'Off';
         const track = el('button', {
-          position: 'relative', width: '36px', height: '20px',
-          borderRadius: '10px', border: 'none', padding: '0',
-          cursor: 'pointer',
-          background: initial ? C.brand : P.hairline,
+          alignSelf: 'flex-start', background: initial ? C.brand : P.hairline, border: 'none',
+          borderRadius: '10px', cursor: 'pointer', height: '20px',
+          padding: '0',
+          position: 'relative',
           transition: 'background 0.15s ease',
-          alignSelf: 'flex-start',
+          width: '36px',
         });
         const knob = el('span', {
-          position: 'absolute', top: '2px',
-          left: initial ? '18px' : '2px',
-          width: '16px', height: '16px', borderRadius: '50%',
-          background: C.ink,
-          transition: 'left 0.18s ' + EASE,
+          background: C.ink, borderRadius: '50%',
           boxShadow: '0 1px 2px oklch(0% 0 0 / 0.2)',
+          height: '16px', left: initial ? '18px' : '2px', position: 'absolute',
+          top: '2px',
+          transition: 'left 0.18s ' + EASE,
+          width: '16px',
         });
         track.appendChild(knob);
         track.addEventListener('click', (e) => {
@@ -3342,26 +3342,26 @@
         row.appendChild(track);
       } else if (p.kind === 'steps') {
         const opts = (p.options || []).map(o =>
-          typeof o === 'string' ? { value: o, label: o } : o
+          typeof o === 'string' ? { label: o, value: o } : o
         );
         const activeOpt = opts.find(o => o.value === p.default) || opts[0];
         readout.textContent = activeOpt ? activeOpt.label : String(p.default);
         const segRow = el('div', {
-          display: 'grid',
-          gridTemplateColumns: 'repeat(' + opts.length + ', 1fr)',
-          gap: '1px', padding: '2px',
-          background: P.hairline, borderRadius: '5px',
+          background: P.hairline,
+          borderRadius: '5px',
+          display: 'grid', gap: '1px',
+          gridTemplateColumns: 'repeat(' + opts.length + ', 1fr)', padding: '2px',
         });
         const segBtns = [];
         opts.forEach(o => {
           const active = o.value === p.default;
           const b = el('button', {
-            padding: '5px 4px', border: 'none', borderRadius: '3px',
-            background: active ? C.brand : 'transparent',
+            background: active ? C.brand : 'transparent', border: 'none', borderRadius: '3px',
             color: active ? C.ink : P.text,
+            cursor: 'pointer',
             fontFamily: FONT, fontSize: '10.5px', fontWeight: '500',
-            cursor: 'pointer', whiteSpace: 'nowrap',
-            transition: 'background 0.1s ease, color 0.1s ease',
+            padding: '5px 4px', transition: 'background 0.1s ease, color 0.1s ease',
+            whiteSpace: 'nowrap',
           });
           b.textContent = o.label;
           b.addEventListener('click', (e) => {
@@ -3400,7 +3400,7 @@
   // text-node child in a marker span so the walker emits a row for it. The
   // wrappers are inline display by default and inherit styles, so the page
   // shouldn't visually shift. We unwrap in disableInlineEdit.
-  const MIXED_WRAP_SKIP = { script: 1, style: 1, template: 1, noscript: 1, svg: 1, code: 1, pre: 1 };
+  const MIXED_WRAP_SKIP = { code: 1, noscript: 1, pre: 1, script: 1, style: 1, svg: 1, template: 1 };
 
   function collectEditableTextRows(rootEl, opts) {
     if (!rootEl || rootEl.nodeType !== 1) return [];
@@ -3630,26 +3630,26 @@
   function buildLocatorForLeaf(leafEl, fallbackEl) {
     if (leafEl && (leafEl.id || leafEl.classList.length > 0)) {
       return {
-        tag: leafEl.tagName.toLowerCase(),
-        elementId: leafEl.id || null,
         classes: [...leafEl.classList],
+        elementId: leafEl.id || null,
+        tag: leafEl.tagName.toLowerCase(),
       };
     }
     let cur = leafEl?.parentElement;
     while (cur && cur !== document.body) {
       if (cur.id || cur.classList.length > 0) {
         return {
-          tag: cur.tagName.toLowerCase(),
-          elementId: cur.id || null,
           classes: [...cur.classList],
+          elementId: cur.id || null,
+          tag: cur.tagName.toLowerCase(),
         };
       }
       cur = cur.parentElement;
     }
     return {
-      tag: (fallbackEl || leafEl).tagName.toLowerCase(),
-      elementId: (fallbackEl || leafEl).id || null,
       classes: [...((fallbackEl || leafEl).classList || [])],
+      elementId: (fallbackEl || leafEl).id || null,
+      tag: (fallbackEl || leafEl).tagName.toLowerCase(),
     };
   }
 
@@ -3660,10 +3660,10 @@
     if (file || loc) {
       const parsed = parseSourceLoc(loc);
       return {
-        file: file || '',
-        loc: loc || '',
-        line: parsed.line,
         column: parsed.column,
+        file: file || '',
+        line: parsed.line,
+        loc: loc || '',
       };
     }
     return null;
@@ -3672,8 +3672,8 @@
   function parseSourceLoc(loc) {
     const match = String(loc || '').match(/^(\d+)(?::(\d+))?/);
     return {
-      line: match ? Number(match[1]) : null,
       column: match && match[2] ? Number(match[2]) : null,
+      line: match ? Number(match[1]) : null,
     };
   }
 
@@ -3736,14 +3736,14 @@
     if (!el) return null;
     const clone = sanitizedContextClone(el);
     return {
+      classes: el.classList ? [...el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
+      id: el.id || null,
+      newText,
+      originalText,
+      outerHTML: (clone.outerHTML || '').slice(0, 3000) || null,
       ref: documentRefForElement(el),
       tagName: el.tagName ? el.tagName.toLowerCase() : null,
-      id: el.id || null,
-      classes: el.classList ? [...el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
-      originalText,
-      newText,
       textContent: (clone.textContent || '').slice(0, 500),
-      outerHTML: (clone.outerHTML || '').slice(0, 3000) || null,
     };
   }
 
@@ -3757,9 +3757,9 @@
       if (!text || text.length < 2 || seen.has(text) || skip.has(text)) continue;
       seen.add(text);
       out.push({
+        classes: row.el?.classList ? [...row.el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
         ref: documentRefForElement(row.el),
         tag: row.el?.tagName ? row.el.tagName.toLowerCase() : null,
-        classes: row.el?.classList ? [...row.el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
         text,
       });
       if (out.length >= 12) break;
@@ -3771,12 +3771,12 @@
     if (!el) return null;
     const clone = sanitizedContextClone(el);
     return {
+      classes: el.classList ? [...el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
+      id: el.id || null,
+      outerHTML: (clone.outerHTML || '').slice(0, 10000) || null,
       ref: documentRefForElement(el),
       tagName: el.tagName ? el.tagName.toLowerCase() : null,
-      id: el.id || null,
-      classes: el.classList ? [...el.classList].filter((cls) => cls.indexOf('impeccable-') !== 0) : [],
       textContent: (clone.textContent || '').slice(0, 1000),
-      outerHTML: (clone.outerHTML || '').slice(0, 10000) || null,
     };
   }
 
@@ -3805,12 +3805,12 @@
         }
         const locator = buildLocatorForLeaf(row.el, selectedElement);
         const op = {
+          classes: locator.classes,
+          elementId: locator.elementId,
+          newText,
+          originalText: row.text,
           ref: row.ref,
           tag: locator.tag,
-          elementId: locator.elementId,
-          classes: locator.classes,
-          originalText: row.text,
-          newText,
         };
         op.leaf = copyEditLeafContext(row.el, row.text, newText);
         op.nearbyEditableTexts = nearbyEditableTextsForManualEdit(inlineEditRows, row.el, row.text, newText);
@@ -3832,15 +3832,15 @@
       // authorizes the CORS preflight when the page runs on a non-loopback
       // dev host (ddev, Valet), since the preflight carries no request body.
       const res = await fetch('http://localhost:' + PORT + '/manual-edit-stash?token=' + encodeURIComponent(TOKEN), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          token: TOKEN,
-          id: id8(),
-          pageUrl: location.pathname,
           element: extractContext(contextElement),
+          id: id8(),
           ops,
+          pageUrl: location.pathname,
+          token: TOKEN,
         }),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
@@ -3885,23 +3885,23 @@
     if (pendingIntroAnimation) pendingIntroAnimation.cancel();
     pendingIntroAnimation = pendingPillEl.animate([
       {
+        boxShadow: '0 0 0 0 oklch(84% 0.19 80.46 / 0.45), 0 8px 24px oklch(0% 0 0 / 0.16)',
+        filter: 'brightness(1.2)',
         opacity: 0,
         transform: 'scale(0.82)',
-        filter: 'brightness(1.2)',
-        boxShadow: '0 0 0 0 oklch(84% 0.19 80.46 / 0.45), 0 8px 24px oklch(0% 0 0 / 0.16)',
       },
       {
+        boxShadow: '0 0 0 12px oklch(84% 0.19 80.46 / 0), 0 12px 34px oklch(0% 0 0 / 0.22)',
+        filter: 'brightness(1.15)',
+        offset: 0.55,
         opacity: 1,
         transform: 'scale(1.08)',
-        filter: 'brightness(1.15)',
-        boxShadow: '0 0 0 12px oklch(84% 0.19 80.46 / 0), 0 12px 34px oklch(0% 0 0 / 0.22)',
-        offset: 0.55,
       },
       {
+        boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.1)',
+        filter: 'none',
         opacity: 1,
         transform: 'scale(1)',
-        filter: 'none',
-        boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.1)',
       },
     ], { duration: 620, easing: EASE });
     pendingIntroAnimation.addEventListener('finish', () => { pendingIntroAnimation = null; }, { once: true });
@@ -3946,9 +3946,9 @@
     try {
       sessionStorage.setItem(manualApplyStateKey(), JSON.stringify({
         ...applyState,
+        expiresAt: Date.now() + MANUAL_APPLY_STATE_TTL_MS,
         pageUrl: location.pathname,
         updatedAt: Date.now(),
-        expiresAt: Date.now() + MANUAL_APPLY_STATE_TTL_MS,
       }));
     } catch {
       // Best-effort only. The in-memory flag still covers non-reload flows.
@@ -3961,12 +3961,12 @@
     const totalOps = Number(existing.totalOps) || Number(existing.count) || currentCount;
     if (totalOps <= 0 && currentCount <= 0) return;
     writeManualApplyState({
-      count: Number(existing.count) || currentCount || totalOps,
-      totalOps: totalOps || currentCount,
       completedOps: Number(existing.completedOps) || 0,
-      remainingCount: Number.isFinite(Number(existing.remainingCount)) ? Number(existing.remainingCount) : currentCount,
+      count: Number(existing.count) || currentCount || totalOps,
       phase: existing.phase || 'applying',
+      remainingCount: Number.isFinite(Number(existing.remainingCount)) ? Number(existing.remainingCount) : currentCount,
       startedAt: Number(existing.startedAt) || Date.now(),
+      totalOps: totalOps || currentCount,
       ...(patch || {}),
     });
   }
@@ -4004,12 +4004,12 @@
     const total = Number(count) || 0;
     if (total <= 0) return;
     writeManualApplyState({
-      count: total,
-      totalOps: total,
       completedOps: 0,
-      remainingCount: total,
+      count: total,
       phase: 'applying',
+      remainingCount: total,
       startedAt: Date.now(),
+      totalOps: total,
     });
   }
 
@@ -4020,10 +4020,10 @@
     const completedOps = Math.min(totalOps, (Number(stored.completedOps) || 0) + (Number(chunk.opCount) || 0));
     const remainingCount = Math.max(0, totalOps - completedOps);
     storeManualApplyState(Number(stored.count) || totalOps, {
-      totalOps,
       completedOps,
-      remainingCount,
       phase: remainingCount > 0 ? 'applying' : 'verifying',
+      remainingCount,
+      totalOps,
     });
     setPendingApplyLoading(true, remainingCount);
   }
@@ -4169,7 +4169,7 @@
     try {
       const res = await fetch(
         'http://localhost:' + PORT + '/manual-edit-commit?token=' + encodeURIComponent(TOKEN) + '&pageUrl=' + encodeURIComponent(location.pathname) + '&async=1',
-        { method: 'POST', keepalive: true },
+        { keepalive: true, method: 'POST' },
       );
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
@@ -4262,7 +4262,7 @@
     try {
       const res = await fetch(
         'http://localhost:' + PORT + '/manual-edit-commit?token=' + encodeURIComponent(TOKEN) + '&pageUrl=' + encodeURIComponent(location.pathname) + '&async=1&repair=1',
-        { method: 'POST', keepalive: true },
+        { keepalive: true, method: 'POST' },
       );
       if (!res.ok) throw new Error('HTTP ' + res.status);
       if (pendingKeepFixingBtn) pendingKeepFixingBtn.style.display = 'none';
@@ -4282,9 +4282,9 @@
       const res = await fetch(
         'http://localhost:' + PORT + '/manual-edit-repair-decision?token=' + encodeURIComponent(TOKEN) + '&pageUrl=' + encodeURIComponent(location.pathname),
         {
-          method: 'POST',
+          body: JSON.stringify({ action: 'rollback', pageUrl: location.pathname, token: TOKEN }),
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: TOKEN, pageUrl: location.pathname, action: 'rollback' }),
+          method: 'POST',
         },
       );
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4509,7 +4509,7 @@
       .replace(/#[^#.]+/, '')
       .split('.')
       .filter(Boolean);
-    return { tag, id: idMatch ? idMatch[1] : null, classes, nth };
+    return { classes, id: idMatch ? idMatch[1] : null, nth, tag };
   }
 
   function elementMatchesManualRefSegment(el, segment) {
@@ -4554,14 +4554,14 @@
     editBadgeProxyRoot.setAttribute('aria-hidden', 'true');
     const styles = {
       all: 'initial',
-      position: 'fixed',
-      inset: '0',
-      width: '100vw',
-      height: '100vh',
-      zIndex: String(Z.toast + 1),
-      pointerEvents: 'none',
       background: 'transparent',
+      height: '100vh',
+      inset: '0',
       overflow: 'visible',
+      pointerEvents: 'none',
+      position: 'fixed',
+      width: '100vw',
+      zIndex: String(Z.toast + 1),
     };
     for (const [name, value] of Object.entries(styles)) {
       setImportantStyle(editBadgeProxyRoot, name.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase()), value);
@@ -4574,20 +4574,20 @@
     const cursor = getComputedStyle(target).cursor || 'pointer';
     const styles = {
       all: 'initial',
-      position: 'fixed',
-      left: rect.left + 'px',
-      top: rect.top + 'px',
-      width: rect.width + 'px',
-      height: rect.height + 'px',
-      margin: '0',
-      padding: '0',
+      background: 'transparent',
       border: '0',
       borderRadius: '0',
-      background: 'transparent',
       color: 'transparent',
-      opacity: '0.001',
-      pointerEvents: 'auto',
       cursor,
+      height: rect.height + 'px',
+      left: rect.left + 'px',
+      margin: '0',
+      opacity: '0.001',
+      padding: '0',
+      pointerEvents: 'auto',
+      position: 'fixed',
+      top: rect.top + 'px',
+      width: rect.width + 'px',
       zIndex: String(Z.toast + 2),
     };
     for (const [name, value] of Object.entries(styles)) {
@@ -4599,19 +4599,19 @@
     let event;
     try {
       event = new MouseEvent(type, {
+        altKey: source.altKey,
         bubbles: type !== 'mouseenter' && type !== 'mouseleave',
-        cancelable: true,
-        composed: true,
-        clientX: source.clientX,
-        clientY: source.clientY,
-        screenX: source.screenX,
-        screenY: source.screenY,
         button: source.button || 0,
         buttons: source.buttons || 0,
+        cancelable: true,
+        clientX: source.clientX,
+        clientY: source.clientY,
+        composed: true,
         ctrlKey: source.ctrlKey,
         metaKey: source.metaKey,
+        screenX: source.screenX,
+        screenY: source.screenY,
         shiftKey: source.shiftKey,
-        altKey: source.altKey,
       });
       target.dispatchEvent(event);
     } catch {}
@@ -4697,11 +4697,11 @@
     editBadgeEl = document.createElement('div');
     editBadgeEl.id = PREFIX + '-edit-badge';
     Object.assign(editBadgeEl.style, {
-      position: 'fixed',
-      zIndex: String(Z.highlight + 1),
       cursor: 'default',
       display: 'none',
+      position: 'fixed',
       userSelect: 'none',
+      zIndex: String(Z.highlight + 1),
     });
     uiAppend(editBadgeEl);
     initEditBadgeHitProxies();
@@ -4753,24 +4753,24 @@
     const MUTED = P.textDim;
     const HAIRLINE = P.hairline;
     const calloutStyle = (color, borderColor) => ({
+      appearance: 'none',
+      background: SURFACE,
+      border: '1px solid ' + (borderColor || color),
+      borderRadius: '6px',
+      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.08)',
+      boxSizing: 'border-box',
+      color: color,
+      cursor: 'pointer',
       fontFamily: FONT,
       fontSize: '10px',
       fontWeight: '600',
-      lineHeight: '16px',
       letterSpacing: '0.06em',
-      color: color,
-      background: SURFACE,
-      padding: '2px 8px',
-      border: '1px solid ' + (borderColor || color),
-      borderRadius: '6px',
-      boxSizing: 'border-box',
-      minHeight: '22px',
+      lineHeight: '16px',
       margin: '0',
-      appearance: 'none',
-      whiteSpace: 'nowrap',
-      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.08)',
-      cursor: 'pointer',
+      minHeight: '22px',
+      padding: '2px 8px',
       transition: 'background 0.18s ease, color 0.18s ease, border-color 0.18s ease, filter 0.18s ease',
+      whiteSpace: 'nowrap',
     });
     if (mode === 'idle' || mode === 'idle-disabled') {
       const disabled = mode === 'idle-disabled';
@@ -4784,17 +4784,17 @@
         disabled ? HAIRLINE : ACCENT,
       ));
       Object.assign(btn.style, {
-        padding: '4px',
-        minWidth: '22px',
-        width: '22px',
-        height: '22px',
-        minHeight: '22px',
-        display: 'inline-flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        lineHeight: '0',
-        letterSpacing: '0',
         background: disabled ? SURFACE : ACCENT,
+        display: 'inline-flex',
+        height: '22px',
+        justifyContent: 'center',
+        letterSpacing: '0',
+        lineHeight: '0',
+        minHeight: '22px',
+        minWidth: '22px',
+        padding: '4px',
+        width: '22px',
       });
       if (disabled) {
         btn.style.cursor = 'not-allowed';
@@ -5092,9 +5092,9 @@
   function buildPickedAnchorSnapshot(el) {
     if (!el || el.nodeType !== 1) return null;
     return {
-      tag: el.tagName,
-      id: el.id || '',
       classes: [...el.classList],
+      id: el.id || '',
+      tag: el.tagName,
       text: (el.textContent || '').trim().slice(0, 120),
     };
   }
@@ -5227,7 +5227,7 @@
     return resolveLiveInjectionAnchor(manifest?.originalMarkup || manifest?.anchorMarkup || '');
   }
 
-  function waitForVariantAnchorAndRetry({ filePath, sessionId, srcWrapper, checkpointReason }) {
+  function waitForVariantAnchorAndRetry({ checkpointReason, filePath, sessionId, srcWrapper }) {
     if (pendingVariantAnchorRetryObserver) pendingVariantAnchorRetryObserver.disconnect();
     const origContent = srcWrapper?.querySelector('[data-impeccable-variant="original"] > :first-child');
     if (!origContent) return;
@@ -5251,7 +5251,7 @@
     if (checkpointReason) queueCheckpoint(checkpointReason);
   }
 
-  function enterRecoveryWaitingForAnchor({ filePath, sessionId, srcWrapper, checkpointReason, trackScroll }) {
+  function enterRecoveryWaitingForAnchor({ checkpointReason, filePath, sessionId, srcWrapper, trackScroll }) {
     recoveryWaitingForAnchor = true;
     selectedElement = document.body;
     setLiveState('GENERATING');
@@ -5259,7 +5259,7 @@
     if (trackScroll !== false) startScrollTracking();
     saveSession();
     if (srcWrapper && filePath && sessionId) {
-      waitForVariantAnchorAndRetry({ filePath, sessionId, srcWrapper, checkpointReason });
+      waitForVariantAnchorAndRetry({ checkpointReason, filePath, sessionId, srcWrapper });
     } else if (checkpointReason) {
       queueCheckpoint(checkpointReason);
     }
@@ -5697,9 +5697,9 @@
         svelteComponentSession.mountedInstance = null;
       }
       svelteComponentSession.mountedInstance = runtime.mount(Component, {
-        target: mountTargetEl,
-        props: { ...svelteComponentSession.propValues },
         intro: false,
+        props: { ...svelteComponentSession.propValues },
+        target: mountTargetEl,
       });
       svelteComponentSession.mountedVariant = variantNum;
       svelteComponentSession.runtime = runtime;
@@ -5740,9 +5740,9 @@
       // Every mount failure gets the card, so the variant-switch path (which
       // used to revert with no feedback whatsoever) says what broke too.
       showMountErrorCard(sessionId, {
-        variant: variantNum,
-        url: moduleUrl,
         message: await describeMountFailure(manifest, err),
+        url: moduleUrl,
+        variant: variantNum,
       });
       return false;
     }
@@ -5764,7 +5764,7 @@
 
   function teardownSvelteComponentSession(restoreOriginal) {
     if (!svelteComponentSession) return;
-    const { wrapperEl, detachedOriginal, runtime, mountedInstance } = svelteComponentSession;
+    const { detachedOriginal, mountedInstance, runtime, wrapperEl } = svelteComponentSession;
     removeSvelteComponentVariantStyle(svelteComponentSession);
     if (mountedInstance && runtime?.unmount) {
       try { runtime.unmount(mountedInstance); } catch { /* non-fatal */ }
@@ -5795,7 +5795,7 @@
 
   function commitAcceptedSvelteComponentToDom(sessionId) {
     if (!svelteComponentSession || svelteComponentSession.sessionId !== sessionId) return false;
-    const { wrapperEl, runtime, mountedInstance, manifest } = svelteComponentSession;
+    const { manifest, mountedInstance, runtime, wrapperEl } = svelteComponentSession;
     const anchor = getMountedSvelteComponentAnchor(svelteComponentSession);
     if (!anchor || !wrapperEl?.parentElement) return false;
     const committed = anchor.cloneNode(true);
@@ -5830,10 +5830,10 @@
         const mismatch = 'Manifest at ' + manifestPath + ' belongs to session ' + (manifest.id || 'unknown') + ', not ' + sessionId + '.';
         reportVariantMountFailed(sessionId, visibleVariant || 1, manifestPath, mismatch);
         showMountErrorCard(sessionId, {
-          variant: visibleVariant || 0,
-          url: manifestPath,
           message: 'The variant manifest is for a different session. Ask the agent to republish.',
           previewFile: manifestPath,
+          url: manifestPath,
+          variant: visibleVariant || 0,
         });
         return;
       }
@@ -5846,9 +5846,9 @@
       currentSessionId = sessionId;
       expectedVariants = Number(manifest.count) || expectedVariants || 1;
       rememberSessionFileMeta({
-        sourceFile: manifest.sourceFile,
         previewFile: manifestPath,
         previewMode: componentPreviewMode,
+        sourceFile: manifest.sourceFile,
       });
       if (state !== 'CYCLING') setLiveState('GENERATING');
 
@@ -5887,7 +5887,7 @@
           ? visibleVariant
           : (savedVisibleVariant > 0 && savedVisibleVariant <= arrivedVariants ? savedVisibleVariant : 1);
         enterRecoveryWaitingForAnchor({ checkpointReason: 'component_preview_anchor_missing', trackScroll: true });
-        waitForSvelteComponentTargetAndRetry({ manifestPath, sessionId, manifest });
+        waitForSvelteComponentTargetAndRetry({ manifest, manifestPath, sessionId });
         return;
       }
 
@@ -5913,17 +5913,17 @@
       }
 
       svelteComponentSession = {
-        sessionId,
-        manifest,
-        insertMode,
-        wrapperEl: wrapper,
-        mountTargetEl: mountTarget,
         detachedOriginal,
+        insertMode,
+        manifest,
         mountedInstance: null,
         mountedVariant: 0,
-        runtime: null,
-        propValues: buildSveltePropValuesFromLiveElement(detachedOriginal, manifest),
+        mountTargetEl: mountTarget,
         paramsByVariant,
+        propValues: buildSveltePropValuesFromLiveElement(detachedOriginal, manifest),
+        runtime: null,
+        sessionId,
+        wrapperEl: wrapper,
       };
       if (pendingSvelteComponentRetryObserver) {
         pendingSvelteComponentRetryObserver.disconnect();
@@ -5968,15 +5968,15 @@
       // live helper token and this string is journaled.
       reportVariantMountFailed(sessionId, visibleVariant || 1, manifestPath, err);
       abortSvelteComponentInjection(sessionId, {
-        variant: visibleVariant || 0,
-        url: manifestPath,
         message: 'Could not read the variant manifest. ' + (err?.message || 'Unknown error'),
         previewFile: manifestPath,
+        url: manifestPath,
+        variant: visibleVariant || 0,
       });
     }
   }
 
-  function waitForSvelteComponentTargetAndRetry({ manifestPath, sessionId, manifest }) {
+  function waitForSvelteComponentTargetAndRetry({ manifest, manifestPath, sessionId }) {
     if (pendingSvelteComponentRetryObserver) pendingSvelteComponentRetryObserver.disconnect();
     pendingSvelteComponentRetryObserver = new MutationObserver(() => {
       if (svelteComponentSession?.sessionId === sessionId) {
@@ -6010,10 +6010,10 @@
     const variant = Math.floor(Number(variantNum) || 0);
     if (!sessionId || variant < 1) return;
     sendEvent({
-      type: 'variant_mounted',
       id: sessionId,
-      variant,
+      type: 'variant_mounted',
       url: moduleUrl ? String(moduleUrl).slice(0, MOUNT_URL_MAX) : undefined,
+      variant,
     });
   }
 
@@ -6030,7 +6030,7 @@
     const key = sessionId + '|' + variant + '|' + url + '|' + message;
     if (lastReportedMountFailure === key) return;
     lastReportedMountFailure = key;
-    sendEvent({ type: 'variant_mount_failed', id: sessionId, variant, url, error: message });
+    sendEvent({ error: message, id: sessionId, type: 'variant_mount_failed', url, variant });
   }
 
   function truncateMiddle(value, max) {
@@ -6049,11 +6049,11 @@
    */
   function showMountErrorCard(sessionId, details) {
     mountErrorState = {
-      sessionId: sessionId || currentSessionId || null,
-      variant: Math.floor(Number(details?.variant) || 0),
-      url: details?.url ? String(details.url) : '',
       message: details?.message || 'A variant failed to load.',
       previewFile: details?.previewFile || currentPreviewFile || null,
+      sessionId: sessionId || currentSessionId || null,
+      url: details?.url ? String(details.url) : '',
+      variant: Math.floor(Number(details?.variant) || 0),
     };
     renderMountErrorCard();
   }
@@ -6078,32 +6078,32 @@
     if (mountErrorEl) mountErrorEl.remove();
     const P = BP || barPaletteForTheme(detectPageTheme());
     const card = el('div', {
-      position: 'fixed', bottom: mountErrorCardBottomOffset() + 'px', left: '50%',
-      transform: 'translateX(-50%)',
-      display: 'flex', flexDirection: 'column', gap: '6px',
-      background: P.surface, color: P.text,
-      border: '1px solid oklch(65% 0.18 30 / 0.55)',
-      borderRadius: '8px', padding: '10px 12px',
-      fontFamily: FONT, fontSize: '12px',
-      boxShadow: P.shadow, zIndex: Z.toast,
-      maxWidth: 'min(520px, calc(100vw - 32px))',
-      pointerEvents: 'auto', textAlign: 'left',
+      background: P.surface, border: '1px solid oklch(65% 0.18 30 / 0.55)', borderRadius: '8px',
+      bottom: mountErrorCardBottomOffset() + 'px',
+      boxShadow: P.shadow, color: P.text, display: 'flex',
+      flexDirection: 'column', fontFamily: FONT,
+      fontSize: '12px',
+      gap: '6px', left: '50%',
+      maxWidth: 'min(520px, calc(100vw - 32px))', padding: '10px 12px',
+      pointerEvents: 'auto', position: 'fixed',
+      textAlign: 'left',
+      transform: 'translateX(-50%)', zIndex: Z.toast,
     });
     card.id = PREFIX + '-mount-error';
 
-    const head = el('div', { display: 'flex', alignItems: 'center', gap: '8px' });
-    const glyph = el('span', { fontSize: '13px', lineHeight: '1', color: 'oklch(62% 0.19 30)', flexShrink: '0' });
+    const head = el('div', { alignItems: 'center', display: 'flex', gap: '8px' });
+    const glyph = el('span', { color: 'oklch(62% 0.19 30)', flexShrink: '0', fontSize: '13px', lineHeight: '1' });
     glyph.textContent = '⚠';
     head.appendChild(glyph);
-    const title = el('span', { fontWeight: '600', flex: '1' });
+    const title = el('span', { flex: '1', fontWeight: '600' });
     title.textContent = mountErrorState.variant > 0
       ? 'Variant ' + mountErrorState.variant + ' failed to load'
       : 'Variants failed to load';
     head.appendChild(title);
     const dismiss = el('button', {
-      border: 'none', background: 'transparent', color: P.textDim,
-      cursor: 'pointer', fontFamily: FONT, fontSize: '14px', lineHeight: '1',
-      padding: '0 2px', flexShrink: '0',
+      background: 'transparent', border: 'none', color: P.textDim,
+      cursor: 'pointer', flexShrink: '0', fontFamily: FONT, fontSize: '14px',
+      lineHeight: '1', padding: '0 2px',
     });
     dismiss.textContent = '×';
     dismiss.setAttribute('aria-label', 'Dismiss');
@@ -6126,8 +6126,8 @@
 
     if (mountErrorState.url) {
       const urlLine = el('div', {
-        fontFamily: MONO, fontSize: '11px', color: P.textDim,
-        wordBreak: 'break-all', opacity: '0.85',
+        color: P.textDim, fontFamily: MONO, fontSize: '11px',
+        opacity: '0.85', wordBreak: 'break-all',
       });
       urlLine.textContent = truncateMiddle(mountErrorState.url, 72);
       urlLine.title = mountErrorState.url;
@@ -6136,9 +6136,9 @@
 
     const actions = el('div', { display: 'flex', gap: '8px', marginTop: '2px' });
     const retry = el('button', {
-      border: '1px solid ' + P.hairline, background: 'transparent',
-      color: P.text, fontFamily: FONT, fontSize: '12px', fontWeight: '500',
-      borderRadius: '5px', padding: '4px 10px', cursor: 'pointer',
+      background: 'transparent', border: '1px solid ' + P.hairline,
+      borderRadius: '5px', color: P.text, cursor: 'pointer', fontFamily: FONT,
+      fontSize: '12px', fontWeight: '500', padding: '4px 10px',
     });
     retry.textContent = 'Retry';
     retry.dataset.impeccableMountRetry = 'true';
@@ -6258,7 +6258,7 @@
     const sessionId = currentSessionId;
     if (!sessionId) return;
     console.warn('[impeccable] Discarding orphaned session ' + sessionId + ': ' + reason);
-    sendEvent({ type: 'discard', id: sessionId, orphaned: true }).catch(() => {});
+    sendEvent({ id: sessionId, orphaned: true, type: 'discard' }).catch(() => {});
     markSessionHandled();
     cleanup({ instantChrome: true });
     showToast('The previous live session no longer matches the source file, so it was discarded. Pick an element to start fresh.', 6000);
@@ -6501,10 +6501,10 @@
         if (!liveEl) {
           console.warn('[impeccable] Could not find original element in live DOM.');
           enterRecoveryWaitingForAnchor({
+            checkpointReason: 'variant_anchor_missing',
             filePath,
             sessionId,
             srcWrapper,
-            checkpointReason: 'variant_anchor_missing',
             trackScroll: false,
           });
           return;
@@ -6882,7 +6882,7 @@
         const anchorTop = anchor.getBoundingClientRect().top;
         const anchorDelta = anchorTop - scrollLockAnchorTop;
         if (Math.abs(anchorDelta) >= 0.5) {
-          window.scrollTo({ top: window.scrollY + anchorDelta, left: window.scrollX, behavior: 'instant' });
+          window.scrollTo({ behavior: 'instant', left: window.scrollX, top: window.scrollY + anchorDelta });
           scrollLockTargetY = window.scrollY;
           writeScrollY(scrollLockTargetY);
           return;
@@ -6893,7 +6893,7 @@
       if (Math.abs(delta) < 0.5) {
         return;
       }
-      window.scrollTo({ top: scrollLockTargetY, left: window.scrollX, behavior: 'instant' });
+      window.scrollTo({ behavior: 'instant', left: window.scrollX, top: scrollLockTargetY });
     };
     const schedule = (why) => {
       if (scrollLockRaf != null) return;
@@ -6955,13 +6955,13 @@
       if (scrollLockTargetY == null) return;
       if (performance.now() - userGestureAt < USER_GESTURE_WINDOW_MS) return;
       if (Math.abs(now - scrollLockTargetY) < 0.5) return;
-      window.scrollTo({ top: scrollLockTargetY, left: window.scrollX, behavior: 'instant' });
+      window.scrollTo({ behavior: 'instant', left: window.scrollX, top: scrollLockTargetY });
     }, { passive: true, ...sig });
 
     // Apply target synchronously, not via rAF - racing the browser's
     // restore or a smooth-scroll animation means we want to win now.
     if (Math.abs(window.scrollY - scrollLockTargetY) > 0.5) {
-      window.scrollTo({ top: scrollLockTargetY, left: window.scrollX, behavior: 'instant' });
+      window.scrollTo({ behavior: 'instant', left: window.scrollX, top: scrollLockTargetY });
     }
   }
 
@@ -7179,17 +7179,17 @@
 
   function postAgentTargetResult(targetId, result) {
     fetch('http://localhost:' + PORT + '/agent-target-result?token=' + TOKEN, {
-      method: 'POST',
+      body: JSON.stringify({ clientId: AGENT_TARGET_CLIENT_ID, targetId, token: TOKEN, ...result }),
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: TOKEN, targetId, clientId: AGENT_TARGET_CLIENT_ID, ...result }),
+      method: 'POST',
     }).catch(() => { /* server gone; nothing to report to */ });
   }
 
   function describeAgentTargetCandidate(el) {
     return {
-      tag: el.tagName.toLowerCase(),
-      id: el.id || null,
       classes: [...el.classList].filter((c) => !c.startsWith('impeccable-')),
+      id: el.id || null,
+      tag: el.tagName.toLowerCase(),
       text: (el.textContent || '').trim().slice(0, 80),
     };
   }
@@ -7199,7 +7199,7 @@
     try {
       matched = [...document.querySelectorAll(msg.selector)];
     } catch {
-      return { error: { ok: false, error: 'invalid_selector', selector: msg.selector } };
+      return { error: { error: 'invalid_selector', ok: false, selector: msg.selector } };
     }
     let candidates = matched.filter((el) => pickable(el));
     if (msg.text) {
@@ -7209,31 +7209,31 @@
     if (candidates.length === 0) {
       return {
         error: {
-          ok: false,
           error: 'no_match',
-          selector: msg.selector,
           matchCount: 0,
+          ok: false,
           // How many nodes the raw selector hit before the pickable/text
           // filters: distinguishes a wrong selector from an unpickable match.
           rawMatchCount: matched.length,
+          selector: msg.selector,
         },
       };
     }
     if (Number.isInteger(msg.index)) {
       const el = candidates[msg.index - 1];
       if (!el) {
-        return { error: { ok: false, error: 'index_out_of_range', selector: msg.selector, matchCount: candidates.length } };
+        return { error: { error: 'index_out_of_range', matchCount: candidates.length, ok: false, selector: msg.selector } };
       }
       return { el, matchCount: candidates.length };
     }
     if (candidates.length > 1) {
       return {
         error: {
-          ok: false,
-          error: 'ambiguous',
-          selector: msg.selector,
-          matchCount: candidates.length,
           candidates: candidates.slice(0, 8).map(describeAgentTargetCandidate),
+          error: 'ambiguous',
+          matchCount: candidates.length,
+          ok: false,
+          selector: msg.selector,
         },
       };
     }
@@ -7256,7 +7256,7 @@
     // no-movement case (element already at its final resting position).
     addEventListener('scrollend', finish, true);
     fallback = setTimeout(finish, 1200);
-    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   // One id per page load: the server keys claims and roll-call reports on
@@ -7301,9 +7301,9 @@
 
   function claimAgentTarget(targetId, report) {
     return fetch('http://localhost:' + PORT + '/agent-target-claim?token=' + TOKEN, {
-      method: 'POST',
+      body: JSON.stringify({ clientId: AGENT_TARGET_CLIENT_ID, targetId, token: TOKEN, ...report }),
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: TOKEN, targetId, clientId: AGENT_TARGET_CLIENT_ID, ...report }),
+      method: 'POST',
     }).then((res) => res.json())
       .then((j) => ({ granted: !!j && j.granted === true, pending: !!j && j.pending === true }))
       .catch(() => ({ granted: false, pending: false }));
@@ -7332,7 +7332,7 @@
   function declineAgentTargetBusy(msg, busy) {
     busyDeclinedTargets.set(msg.targetId, msg);
     noteAgentTarget(msg.targetId, 'declined');
-    claimAgentTarget(msg.targetId, { eligible: false, state, reason: busy });
+    claimAgentTarget(msg.targetId, { eligible: false, reason: busy, state });
   }
 
   // A torn-down overlay, or one whose helper connection is gone, cannot
@@ -7430,7 +7430,7 @@
 
   function reportAgentTargetUnresolvable(msg, error) {
     noteAgentTarget(msg.targetId, 'declined');
-    claimAgentTarget(msg.targetId, { eligible: false, state, reason: 'no_match', result: error }).then((answer) => {
+    claimAgentTarget(msg.targetId, { eligible: false, reason: 'no_match', result: error, state }).then((answer) => {
       if (!answer.pending) return;
       setTimeout(() => watchAgentTargetResolution(msg, error), AGENT_TARGET_RESOLVE_WATCH_MS);
     });
@@ -7490,10 +7490,10 @@
     const el = resolved.el;
     if (msg.dryRun) {
       reply({
-        ok: true,
         dryRun: true,
-        matchCount: resolved.matchCount,
         element: describeAgentTargetCandidate(el),
+        matchCount: resolved.matchCount,
+        ok: true,
       });
       return;
     }
@@ -7540,20 +7540,20 @@
         // between Go and its result cannot leave the request pending for a
         // second Go elsewhere.
         const candidate = describeAgentTargetCandidate(el);
-        agentTargetForGo = { targetId: msg.targetId, matchCount: resolved.matchCount, action: msg.action, count: msg.count, element: candidate };
+        agentTargetForGo = { action: msg.action, count: msg.count, element: candidate, matchCount: resolved.matchCount, targetId: msg.targetId };
         handleGo();
         agentTargetForGo = null;
         if (state === 'GENERATING' && currentSessionId) {
           reply({
-            ok: true,
-            matchCount: resolved.matchCount,
-            sessionId: currentSessionId,
             action: msg.action,
             count: msg.count,
             element: candidate,
+            matchCount: resolved.matchCount,
+            ok: true,
+            sessionId: currentSessionId,
           });
         } else {
-          reply({ ok: false, error: 'go_failed', state });
+          reply({ error: 'go_failed', ok: false, state });
         }
       });
     });
@@ -7826,9 +7826,9 @@
     // authorizes the CORS preflight when the page runs on a non-loopback
     // dev host (ddev, Valet), since the preflight carries no request body.
     const doSend = () => fetch('http://localhost:' + PORT + '/events?token=' + encodeURIComponent(TOKEN), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(msg),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     }).then(async res => {
       if (res.ok) return res;
       const body = await res.json().catch(() => ({}));
@@ -7882,21 +7882,21 @@
 
   function checkpointPayload(reason) {
     return {
-      type: 'checkpoint',
-      id: currentSessionId,
-      revision: sessionState.nextCheckpointRevision(),
-      revisionDomain: 'browser',
-      owner: browserOwner,
-      phase: String(state || '').toLowerCase(),
-      reason,
-      pageUrl: location.pathname,
-      expectedVariants,
       arrivedVariants,
-      visibleVariant,
-      sourceFile: currentSourceFile || undefined,
+      expectedVariants,
+      id: currentSessionId,
+      owner: browserOwner,
+      pageUrl: location.pathname,
+      paramValues: { ...paramsCurrentValues },
+      phase: String(state || '').toLowerCase(),
       previewFile: currentPreviewFile || undefined,
       previewMode: currentPreviewMode || undefined,
-      paramValues: { ...paramsCurrentValues },
+      reason,
+      revision: sessionState.nextCheckpointRevision(),
+      revisionDomain: 'browser',
+      sourceFile: currentSourceFile || undefined,
+      type: 'checkpoint',
+      visibleVariant,
     };
   }
 
@@ -7908,14 +7908,14 @@
   function sendSteerCheckpoint(id, reason, extra) {
     if (!id) return Promise.resolve(null);
     return sendEvent({
-      type: 'checkpoint',
       id,
-      revision: sessionState.nextCheckpointRevision(),
-      revisionDomain: 'browser',
       owner: browserOwner,
+      pageUrl: location.pathname,
       phase: 'steer',
       reason,
-      pageUrl: location.pathname,
+      revision: sessionState.nextCheckpointRevision(),
+      revisionDomain: 'browser',
+      type: 'checkpoint',
       ...(extra || {}),
     }).catch(() => null);
   }
@@ -7946,12 +7946,12 @@
       const siblings = layoutFlowChildren(parent);
       const rect = target.getBoundingClientRect();
       const resolved = resolveInsertHover({
+        axis,
         clientX: e.clientX,
         clientY: e.clientY,
-        target,
         rect,
-        axis,
         siblings,
+        target,
       });
       if (
         resolved.anchor !== insertHoverAnchor
@@ -8116,7 +8116,7 @@
     const path = location.pathname;
     if (prefetchedPaths.has(path)) return;
     prefetchedPaths.add(path);
-    sendEvent({ type: 'prefetch', pageUrl: path });
+    sendEvent({ pageUrl: path, type: 'prefetch' });
   }
 
   function shouldPassthroughElementNav(deepActive, e) {
@@ -8235,7 +8235,7 @@
           startScrollTracking();
         }
         showHighlight(next);
-        next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
       return;
     }
@@ -8287,16 +8287,16 @@
     const captureRect = elForCapture.getBoundingClientRect();
     pickedAnchorViewportTop = captureRect.top;
     const snapshot = {
-      comments: annotState.comments.map(c => ({ x: c.x, y: c.y, text: c.text })),
+      comments: annotState.comments.map(c => ({ text: c.text, x: c.x, y: c.y })),
       strokes: annotState.strokes.map(s => ({ points: s.points.map(p => [p[0], p[1]]) })),
     };
     const basePayload = {
-      type: 'generate', id: currentSessionId,
-      action: selectedAction,
-      freeformPrompt: prompt || undefined,
-      count: selectedCount,
-      pageUrl: location.pathname,
+      action: selectedAction, count: selectedCount,
       element: extractContext(elForCapture),
+      freeformPrompt: prompt || undefined,
+      id: currentSessionId,
+      pageUrl: location.pathname,
+      type: 'generate',
     };
     if (snapshot.comments.length > 0) basePayload.comments = snapshot.comments;
     if (snapshot.strokes.length > 0) basePayload.strokes = snapshot.strokes;
@@ -8305,16 +8305,16 @@
       // actOnAgentTarget): the helper resolves that request from this event
       // as well as from the overlay's own result post.
       basePayload.agentTarget = {
-        targetId: agentTargetForGo.targetId,
         clientId: AGENT_TARGET_CLIENT_ID,
         result: {
-          ok: true,
-          matchCount: agentTargetForGo.matchCount,
-          sessionId: currentSessionId,
           action: agentTargetForGo.action,
           count: agentTargetForGo.count,
           element: agentTargetForGo.element,
+          matchCount: agentTargetForGo.matchCount,
+          ok: true,
+          sessionId: currentSessionId,
         },
+        targetId: agentTargetForGo.targetId,
       };
       agentTargetForGo = null;
     }
@@ -8358,10 +8358,10 @@
     const prompt = input ? input.value.trim() : '';
     if (annotEditing) finalizeEditingPin();
     const snapshot = {
-      comments: annotState.comments.map(c => ({ x: c.x, y: c.y, text: c.text })),
+      comments: annotState.comments.map(c => ({ text: c.text, x: c.x, y: c.y })),
       strokes: annotState.strokes.map(s => ({ points: s.points.map(p => [p[0], p[1]]) })),
     };
-    if (!canCreateInsert({ prompt, comments: snapshot.comments, strokes: snapshot.strokes })) return;
+    if (!canCreateInsert({ comments: snapshot.comments, prompt, strokes: snapshot.strokes })) return;
 
     stopVoice({ suppressSubmit: true });
     // A new cycle publishes new modules, so the previous cycle's mount failure
@@ -8388,20 +8388,20 @@
     const captureRect = elForCapture.getBoundingClientRect();
     pickedAnchorViewportTop = captureRect.top;
     const basePayload = {
-      type: 'generate',
-      mode: 'insert',
-      id: currentSessionId,
       count: selectedCount,
-      pageUrl: location.pathname,
-      insert: {
-        position: insertAnchorPosition,
-        anchor: extractContext(insertAnchorElement),
-      },
-      placeholder: {
-        width: Math.round(captureRect.width),
-        height: Math.round(captureRect.height),
-      },
       freeformPrompt: prompt || undefined,
+      id: currentSessionId,
+      insert: {
+        anchor: extractContext(insertAnchorElement),
+        position: insertAnchorPosition,
+      },
+      mode: 'insert',
+      pageUrl: location.pathname,
+      placeholder: {
+        height: Math.round(captureRect.height),
+        width: Math.round(captureRect.width),
+      },
+      type: 'generate',
     };
     if (snapshot.comments.length > 0) basePayload.comments = snapshot.comments;
     if (snapshot.strokes.length > 0) basePayload.strokes = snapshot.strokes;
@@ -8449,7 +8449,7 @@
   // to modern-screenshot as font.cssText.
   const FONT_EXT_RE = /\.(woff2?|ttf|otf|eot)(\?.*)?$/i;
   const FONT_MIME = {
-    woff2: 'font/woff2', woff: 'font/woff', ttf: 'font/ttf', otf: 'font/otf', eot: 'application/vnd.ms-fontobject',
+    eot: 'application/vnd.ms-fontobject', otf: 'font/otf', ttf: 'font/ttf', woff: 'font/woff', woff2: 'font/woff2',
   };
   function bufferToBase64(buf) {
     const bytes = new Uint8Array(buf);
@@ -8575,8 +8575,8 @@
   async function hideCaptureChromeForShaderProxy(fn) {
     const saved = captureChromeNodes().map((node) => ({
       node,
-      visibility: node.style.visibility,
       priority: node.style.getPropertyPriority('visibility'),
+      visibility: node.style.visibility,
     }));
     for (const { node } of saved) {
       node.style.setProperty('visibility', 'hidden', 'important');
@@ -8585,7 +8585,7 @@
     try {
       return await fn();
     } finally {
-      for (const { node, visibility, priority } of saved) {
+      for (const { node, priority, visibility } of saved) {
         node.style.setProperty('visibility', visibility, priority);
       }
     }
@@ -8673,9 +8673,9 @@
       const ms = await loadModernScreenshot();
       const fontCssText = await collectFontCssText();
       const opts = {
-        scale: Math.min(window.devicePixelRatio || 1, 2),
-        font: fontCssText ? { cssText: fontCssText } : undefined,
         filter: (node) => node !== topLayerHost,
+        font: fontCssText ? { cssText: fontCssText } : undefined,
+        scale: Math.min(window.devicePixelRatio || 1, 2),
       };
       if (shouldUseAncestorCropShaderProxy(el)) {
         try {
@@ -8707,7 +8707,7 @@
       const er = el.getBoundingClientRect();
       const ar = backdrop.getBoundingClientRect();
       const sx = (er.left - ar.left) * S, sy = (er.top - ar.top) * S;
-      const sw = er.width * S, sh = er.height * S;
+      const sh = er.height * S, sw = er.width * S;
       const crop = document.createElement('canvas');
       crop.width = Math.max(1, Math.round(sw));
       crop.height = Math.max(1, Math.round(sh));
@@ -8761,7 +8761,7 @@
         const uploadRes = await fetch(
           'http://localhost:' + PORT + '/annotation?token=' + encodeURIComponent(TOKEN) +
           '&eventId=' + encodeURIComponent(basePayload.id),
-          { method: 'POST', headers: { 'Content-Type': 'image/png' }, body: blob },
+          { body: blob, headers: { 'Content-Type': 'image/png' }, method: 'POST' },
         );
         if (uploadRes.ok) {
           const { path: p } = await uploadRes.json();
@@ -8947,7 +8947,7 @@ void main() {
   // backdrop was captured from an ancestor rather than read from a CSS color.
   function averageRgb01(ctx, w, h) {
     const data = ctx.getImageData(0, 0, w, h).data;
-    let r = 0, g = 0, b = 0, n = 0;
+    let b = 0, g = 0, n = 0, r = 0;
     // Stride a few pixels for speed; exact average is unnecessary for a ground.
     for (let i = 0; i < data.length; i += 16) { r += data[i]; g += data[i + 1]; b += data[i + 2]; n++; }
     return n ? [r / n / 255, g / n / 255, b / n / 255] : SHADER_PAPER_FALLBACK;
@@ -8964,7 +8964,7 @@ void main() {
       const i = p * 4;
       if (data[i + 3] < 16) continue;
       const key = (data[i] >> 4) + ',' + (data[i + 1] >> 4) + ',' + (data[i + 2] >> 4);
-      const bucket = buckets.get(key) || { count: 0, r: 0, g: 0, b: 0 };
+      const bucket = buckets.get(key) || { b: 0, count: 0, g: 0, r: 0 };
       bucket.count += 1;
       bucket.r += data[i];
       bucket.g += data[i + 1];
@@ -8989,7 +8989,7 @@ void main() {
     const pts = [];
     for (const x of fx) { pts.push([x, sy - pad], [x, sy + sh + pad]); }
     for (const y of fy) { pts.push([sx - pad, y], [sx + sw + pad, y]); }
-    let r = 0, g = 0, b = 0, n = 0;
+    let b = 0, g = 0, n = 0, r = 0;
     for (const [px, py] of pts) {
       const cx = Math.max(0, Math.min(W - 1, Math.round(px)));
       const cy = Math.max(0, Math.min(H - 1, Math.round(py)));
@@ -9018,8 +9018,8 @@ void main() {
     if (!anchor) return;
     const r = anchor.getBoundingClientRect();
     Object.assign(shaderState.canvas.style, {
-      top: r.top + 'px', left: r.left + 'px',
-      width: r.width + 'px', height: r.height + 'px',
+      height: r.height + 'px', left: r.left + 'px',
+      top: r.top + 'px', width: r.width + 'px',
     });
   }
 
@@ -9063,7 +9063,7 @@ void main() {
     fallback.style.outline = '2px dashed ' + C.brand;
     fallback.style.outlineOffset = '-2px';
     uiAppend(fallback);
-    shaderState = { canvas: fallback, gl: null, program: null, texture: null, rafId: 0, startTime: 0, objectUrl };
+    shaderState = { canvas: fallback, gl: null, objectUrl, program: null, rafId: 0, startTime: 0, texture: null };
   }
 
   async function showShaderOverlay(el, blob, rect, paper) {
@@ -9086,12 +9086,12 @@ void main() {
     canvas.width = Math.max(1, Math.floor(rect.width * dpr));
     canvas.height = Math.max(1, Math.floor(rect.height * dpr));
     Object.assign(canvas.style, {
-      position: 'fixed',
-      top: rect.top + 'px', left: rect.left + 'px',
-      width: rect.width + 'px', height: rect.height + 'px',
       borderRadius: radius,
-      overflow: 'hidden',
-      pointerEvents: 'none',
+      height: rect.height + 'px', left: rect.left + 'px',
+      overflow: 'hidden', pointerEvents: 'none',
+      position: 'fixed',
+      top: rect.top + 'px',
+      width: rect.width + 'px',
       zIndex: Z.bar - 1,
     });
     uiAppend(canvas);
@@ -9176,7 +9176,7 @@ void main() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (abandoned(canvas, gl)) return;
-    shaderState = { canvas, gl, program, texture, rafId: 0, startTime: performance.now(), reduced };
+    shaderState = { canvas, gl, program, rafId: 0, reduced, startTime: performance.now(), texture };
     function frame() {
       if (!shaderState) return;
       const elapsed = (performance.now() - shaderState.startTime) / 1000;
@@ -9205,11 +9205,11 @@ void main() {
     const domVisibleVariant = readVisibleVariantFromDOM(currentSessionId);
     if (domVisibleVariant > 0) visibleVariant = domVisibleVariant;
     const acceptPayload = {
-      type: 'accept',
-      id: currentSessionId,
-      variantId: String(visibleVariant),
-      pageUrl: location.pathname,
       clientSentAt: Date.now(),
+      id: currentSessionId,
+      pageUrl: location.pathname,
+      type: 'accept',
+      variantId: String(visibleVariant),
     };
     if (!currentSessionId || arrivedVariants === 0) return;
     const acceptWrapper = findVariantsWrapper(currentSessionId);
@@ -9232,8 +9232,8 @@ void main() {
     updateBarContent('saving');
     pendingAcceptedSession = {
       id: acceptedSessionId,
-      variant: String(acceptedVariant),
       isSvelteComponent: acceptedIsSvelteComponent,
+      variant: String(acceptedVariant),
       ...acceptedSnapshot,
       finalizing: false,
     };
@@ -9313,9 +9313,9 @@ void main() {
     return {
       acceptedHtml: accepted ? accepted.innerHTML : '',
       acceptedSelector: selectorForAcceptedRoot(root),
+      nextSibling: wrapper?.nextSibling || null,
       parentElement: wrapper?.parentElement || null,
       parentSelector: selectorForAcceptedRoot(wrapper?.parentElement || null),
-      nextSibling: wrapper?.nextSibling || null,
     };
   }
 
@@ -9460,10 +9460,10 @@ void main() {
   function handleDiscard() {
     if (pendingApplyInFlight) { showManualApplyBusyToast(); return; }
     if (!currentSessionId) return;
-    sendEvent({ type: 'discard', id: currentSessionId }, { throwOnError: true })
+    sendEvent({ id: currentSessionId, type: 'discard' }, { throwOnError: true })
       .then(() => {
         markSessionHandled();
-        cleanup({ restoreOriginal: true, instantChrome: true });
+        cleanup({ instantChrome: true, restoreOriginal: true });
       })
       .catch(() => showToast('Could not confirm discard with the live server. Session kept for recovery.', 5000));
   }
@@ -9593,16 +9593,16 @@ void main() {
   // always re-enters GENERATING and lets the injection settle the final state.
   function serverSessionAsSavedShape(session) {
     return {
-      id: session.id,
-      state: 'GENERATING',
-      expected: Number(session.expectedVariants) || 0,
       arrived: Number(session.arrivedVariants) || 0,
-      visible: Number(session.visibleVariant) || 0,
-      sourceFile: session.sourceFile || undefined,
-      previewFile: session.previewFile || undefined,
-      previewMode: session.previewMode || undefined,
+      expected: Number(session.expectedVariants) || 0,
+      id: session.id,
       pageUrl: session.pageUrl || undefined,
       paramValues: session.paramValues && typeof session.paramValues === 'object' ? session.paramValues : {},
+      previewFile: session.previewFile || undefined,
+      previewMode: session.previewMode || undefined,
+      sourceFile: session.sourceFile || undefined,
+      state: 'GENERATING',
+      visible: Number(session.visibleVariant) || 0,
     };
   }
 
@@ -9711,26 +9711,26 @@ void main() {
     // NOTE: scrollY is stored under a separate key (writeScrollY). Storing
     // it here would overwrite the Go-time value every time state changes.
     sessionState.saveSession({
-      id: currentSessionId,
-      appRoot: APP_ROOT || undefined,
-      state,
       action: selectedAction,
+      appRoot: APP_ROOT || undefined,
+      arrived: arrivedVariants,
       count: selectedCount,
       expected: expectedVariants,
-      arrived: arrivedVariants,
-      visible: visibleVariant,
-      sourceFile: currentSourceFile || undefined,
-      previewFile: currentPreviewFile || undefined,
-      previewMode: currentPreviewMode || undefined,
-      pageUrl: location.pathname,
-      paramValues: { ...paramsCurrentValues },
-      parameterState: parameterGenerationState,
-      origin: sessionOrigin || undefined,
+      id: currentSessionId,
       insertPlaceholder: insertPlaceholderSnapshot || undefined,
-      pickedAnchor: pickedAnchorSnapshot || undefined,
-      pickedAnchorViewportTop: Number.isFinite(pickedAnchorViewportTop) ? pickedAnchorViewportTop : undefined,
+      origin: sessionOrigin || undefined,
       pageHash: location.hash || undefined,
       pageSearch: location.search || undefined,
+      pageUrl: location.pathname,
+      parameterState: parameterGenerationState,
+      paramValues: { ...paramsCurrentValues },
+      pickedAnchor: pickedAnchorSnapshot || undefined,
+      pickedAnchorViewportTop: Number.isFinite(pickedAnchorViewportTop) ? pickedAnchorViewportTop : undefined,
+      previewFile: currentPreviewFile || undefined,
+      previewMode: currentPreviewMode || undefined,
+      sourceFile: currentSourceFile || undefined,
+      state,
+      visible: visibleVariant,
     });
   }
 
@@ -9880,14 +9880,14 @@ void main() {
       ? Math.max(16, window.innerHeight - barRect.top + 12)
       : 16;
     const currentToast = el('div', {
-      position: 'fixed', bottom: barTopFromBottom + 'px', left: '50%',
-      transform: 'translateX(-50%) translateY(8px)',
-      background: C.ink, color: C.white,
+      background: C.ink, borderRadius: '8px', bottom: barTopFromBottom + 'px',
+      color: C.white,
       fontFamily: FONT, fontSize: '12px',
-      padding: '8px 16px', borderRadius: '8px',
-      zIndex: Z.toast, opacity: '0',
-      transition: 'opacity 0.25s ' + EASE + ', transform 0.25s ' + EASE,
-      pointerEvents: 'none', maxWidth: '420px', textAlign: 'center',
+      left: '50%', maxWidth: '420px',
+      opacity: '0', padding: '8px 16px',
+      pointerEvents: 'none', position: 'fixed',
+      textAlign: 'center',
+      transform: 'translateX(-50%) translateY(8px)', transition: 'opacity 0.25s ' + EASE + ', transform 0.25s ' + EASE, zIndex: Z.toast,
     });
     toastEl = currentToast;
     currentToast.id = PREFIX + '-toast';
@@ -10235,22 +10235,22 @@ void main() {
       if (raw) {
         const prefs = JSON.parse(raw);
         return {
-          pickActive: !!prefs.pickActive,
           insertActive: !!prefs.insertActive,
+          pickActive: !!prefs.pickActive,
         };
       }
       const legacy = localStorage.getItem(PICK_PREFS_KEY);
       if (legacy) {
         const prefs = JSON.parse(legacy);
-        return { pickActive: !!prefs.pickActive, insertActive: false };
+        return { insertActive: false, pickActive: !!prefs.pickActive };
       }
     } catch { /* ignore */ }
-    return { pickActive: false, insertActive: false };
+    return { insertActive: false, pickActive: false };
   }
 
   function saveInteractionPrefs() {
     try {
-      localStorage.setItem(INTERACTION_PREFS_KEY, JSON.stringify({ pickActive, insertActive }));
+      localStorage.setItem(INTERACTION_PREFS_KEY, JSON.stringify({ insertActive, pickActive }));
     } catch { /* ignore */ }
   }
 
@@ -10382,28 +10382,28 @@ void main() {
     // Picker chrome always uses neo-kinpaku styling (homepage /live-mode demo
     // bars in kinpaku-kit.css), regardless of host page light/dark theme.
     return {
-      surface: C.ink,
-      surfaceDeep: C.ink,
+      accent: C.brand,
+      accentSoft: C.brandSoft,
       // Quiet neutral hairline (was the loud kinpaku gold border). Gold lives on
       // the brand mark and the active control instead.
       border: 'oklch(92% 0 0 / 0.13)',
-      // Crisp graphite pill behind the active toggle (was a murky kinpaku-dim
-      // wash); the gold text/icon carries the "selected" signal.
-      toggleActive: 'oklch(27% 0 0)',
+      chatSurface: 'oklch(22% 0.012 82)',
+      exitHover: 'oklch(58% 0.15 35 / 0.18)',
       // Neutral hairline for internal control borders / dividers (was a warm
       // gold rule that read as muddy champagne edges on the pill / input / count).
       hairline: 'oklch(92% 0 0 / 0.12)',
-      text: 'oklch(91% 0 0)',
-      textDim: 'oklch(72% 0 0)',
-      accent: C.brand,
-      accentSoft: C.brandSoft,
-      exitHover: 'oklch(58% 0.15 35 / 0.18)',
-      shadow: PICKER_SHADOW,
-      chatSurface: 'oklch(22% 0.012 82)',
       // Verdigris patina - secondary state (see site/styles/kinpaku-tokens.css)
       patina: 'oklch(70% 0.12 188)',
       patinaPale: 'oklch(82% 0.07 188)',
       patinaSoft: 'oklch(70% 0.12 188 / 0.28)',
+      shadow: PICKER_SHADOW,
+      surface: C.ink,
+      surfaceDeep: C.ink,
+      text: 'oklch(91% 0 0)',
+      textDim: 'oklch(72% 0 0)',
+      // Crisp graphite pill behind the active toggle (was a murky kinpaku-dim
+      // wash); the gold text/icon carries the "selected" signal.
+      toggleActive: 'oklch(27% 0 0)',
     };
   }
 
@@ -10524,13 +10524,13 @@ void main() {
   function buildSteerQueueHint() {
     const P = pageChatPalette();
     const hint = el('span', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end',
-      flex: '1', minWidth: '0', marginLeft: 'auto',
-      padding: '0 10px 0 6px',
-      fontFamily: FONT, fontSize: '10.5px', fontWeight: '500',
-      color: P.patinaPale,
-      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-      pointerEvents: 'none',
+      alignItems: 'center', color: P.patinaPale, display: 'inline-flex',
+      flex: '1', fontFamily: FONT, fontSize: '10.5px',
+      fontWeight: '500',
+      justifyContent: 'flex-end', marginLeft: 'auto', minWidth: '0',
+      overflow: 'hidden',
+      padding: '0 10px 0 6px', pointerEvents: 'none', textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     });
     hint.id = PREFIX + '-page-chat-queue';
     return hint;
@@ -10631,7 +10631,7 @@ void main() {
     if (!shouldFocusSteerChat() || own(e.target)) return;
     steerFocusSuspended = true;
     steerFocusPauseUntil = performance.now() + STEER_PAGE_FOCUS_PAUSE_MS;
-    pagePointerGesture = { x: e.clientX, y: e.clientY, dragged: false };
+    pagePointerGesture = { dragged: false, x: e.clientX, y: e.clientY };
     if (pageChatInput && activeElementDeep() === pageChatInput) {
       pageChatInput.blur();
     }
@@ -10688,12 +10688,12 @@ void main() {
   function steerFocusLog(reason, extra) {
     if (!steerFocusDebugEnabled()) return;
     console.log('[impeccable.steer]', reason, {
-      state,
-      pickActive,
-      pageChatReady: !!pageChatInput,
-      pageChatExpanded,
       active: steerFocusTargetLabel(activeElementDeep()),
+      pageChatExpanded,
+      pageChatReady: !!pageChatInput,
+      pickActive,
       shouldSteer: shouldFocusSteerChat(),
+      state,
       ...(extra || {}),
     });
   }
@@ -10720,9 +10720,9 @@ void main() {
       const before = activeElementDeep();
       input.focus();
       steerFocusLog('focusConfigureInput result', {
-        reason,
-        before: steerFocusTargetLabel(before),
         after: steerFocusTargetLabel(activeElementDeep()),
+        before: steerFocusTargetLabel(before),
+        reason,
         stuck: activeElementDeep() !== input,
       });
     }, 60);
@@ -10776,8 +10776,8 @@ void main() {
     steerFocusLog('focusSteerChat called', { reason });
     if (!pageChatInput || !shouldSteerAutoFocus()) {
       steerFocusLog('focusSteerChat skipped', {
-        reason,
         hasInput: !!pageChatInput,
+        reason,
         shouldSteer: shouldFocusSteerChat(),
         suspended: steerFocusSuspended,
       });
@@ -10791,9 +10791,9 @@ void main() {
     syncPageChatFocusRing();
     syncPageChatChrome();
     steerFocusLog('focusSteerChat result', {
-      reason,
-      before: steerFocusTargetLabel(before),
       after: steerFocusTargetLabel(activeElementDeep()),
+      before: steerFocusTargetLabel(before),
+      reason,
       stuck: activeElementDeep() !== pageChatInput,
     });
   }
@@ -10807,19 +10807,19 @@ void main() {
   function buildSteerProcessingDots() {
     const P = pageChatPalette();
     const wrap = el('span', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end',
-      gap: '5px', flex: '0 0 auto', minWidth: '0', marginLeft: 'auto',
+      alignItems: 'center', display: 'inline-flex', flex: '0 0 auto',
+      gap: '5px', justifyContent: 'flex-end', marginLeft: 'auto', minWidth: '0',
       padding: '0 12px 0 8px',
       pointerEvents: 'none',
     });
     wrap.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < 3; i++) {
       wrap.appendChild(el('span', {
-        display: 'inline-block',
-        width: '4px', height: '4px', borderRadius: '50%',
-        background: P.patinaPale,
-        boxShadow: '0 0 6px ' + P.patinaSoft,
         animation: 'impeccable-steer-dot 1.05s ease-in-out ' + (i * 0.14) + 's infinite',
+        background: P.patinaPale, borderRadius: '50%', boxShadow: '0 0 6px ' + P.patinaSoft,
+        display: 'inline-block',
+        height: '4px',
+        width: '4px',
       }));
     }
     return wrap;
@@ -10983,8 +10983,8 @@ void main() {
     else if (opts?.message) showToast(String(opts.message), 4000);
     if (completedId) {
       sendSteerCheckpoint(completedId, opts?.error ? 'steer_error' : 'steer_done', {
-        message: opts?.message || opts?.error || '',
         file: opts?.file || '',
+        message: opts?.message || opts?.error || '',
       });
     }
     if (keepExpanded) focusPageChatInput('steer-error-restore');
@@ -11109,7 +11109,7 @@ void main() {
       return;
     }
 
-    releaseVoiceEngine({ suppressSubmit: true, abort: true });
+    releaseVoiceEngine({ abort: true, suppressSubmit: true });
     voiceSuppressSubmit = false;
     voiceCtx = ctx;
     if (ctx.beforeStart) ctx.beforeStart();
@@ -11143,7 +11143,7 @@ void main() {
       const code = event.error || 'unknown';
       console.warn('[impeccable.voice] recognition error:', code);
       const message = steerVoiceErrorMessage(code);
-      stopVoice({ suppressSubmit: true, message: message || undefined });
+      stopVoice({ message: message || undefined, suppressSubmit: true });
     };
 
     rec.onend = () => {
@@ -11157,21 +11157,21 @@ void main() {
     } catch (err) {
       console.warn('[impeccable.voice] start failed:', err);
       stopVoice({
-        suppressSubmit: true,
         message: err?.message?.includes('already started')
           ? 'Voice input already running'
           : 'Could not start voice input',
+        suppressSubmit: true,
       });
     }
   }
 
   function steerVoiceContext() {
     return {
-      mode: 'steer',
-      input: pageChatInput,
       beforeStart: () => {
         if (!pageChatExpanded) expandPageChat({ focus: false });
       },
+      input: pageChatInput,
+      mode: 'steer',
       submit: submitSteerMessage,
     };
   }
@@ -11181,9 +11181,9 @@ void main() {
       configureKind === 'insert' ? PREFIX + '-insert-input' : PREFIX + '-input',
     );
     return {
-      mode: 'configure',
-      input,
       beforeStart: () => { input?.focus(); },
+      input,
+      mode: 'configure',
       submit: configureKind === 'insert' ? handleInsertCreate : handleGo,
     };
   }
@@ -11191,7 +11191,7 @@ void main() {
   function toggleSteerVoice() {
     if (voiceListening && voiceCtx?.mode === 'steer') {
       voiceSuppressSubmit = true;
-      stopVoice({ suppressSubmit: true, abort: true });
+      stopVoice({ abort: true, suppressSubmit: true });
       return;
     }
     startVoice(steerVoiceContext());
@@ -11200,7 +11200,7 @@ void main() {
   function toggleConfigureVoice() {
     if (voiceListening && voiceCtx?.mode === 'configure') {
       voiceSuppressSubmit = true;
-      stopVoice({ suppressSubmit: true, abort: true });
+      stopVoice({ abort: true, suppressSubmit: true });
       return;
     }
     startVoice(configureVoiceContext());
@@ -11219,10 +11219,10 @@ void main() {
     // is what creates the session journal server-side, and a checkpoint for
     // a not-yet-created session is rejected as unknown_session.
     sendEvent({
-      type: 'steer',
       id,
       message: text,
       pageUrl: location.href,
+      type: 'steer',
     }).then((res) => {
       if (!res) {
         unlockSteerChat({ error: 'Could not reach live server', restoreMessage: text });
@@ -11236,7 +11236,7 @@ void main() {
   function maybeCompleteSteer(msg) {
     if (!steerRequestId || msg.id !== steerRequestId) return false;
     if (msg.type === 'steer_done') {
-      unlockSteerChat({ message: msg.message, file: msg.file });
+      unlockSteerChat({ file: msg.file, message: msg.message });
       if (msg.file && /\.svelte(?:$|\?)/.test(String(msg.file))) {
         setTimeout(() => {
           if (!steerLocked) showToast('Steer applied. Reload if the page has not refreshed yet.', 5000);
@@ -11286,35 +11286,35 @@ void main() {
 
   function initPageChat(parent, P) {
     pageChatEl = el('div', {
-      display: 'inline-flex', alignItems: 'center',
-      height: '28px', margin: '0 4px 0 ' + (GLOBAL_BAR_SECTION_GAP - GLOBAL_BAR_INNER_GAP) + 'px',
-      borderRadius: '7px',
-      background: P.chatSurface,
-      border: '1px solid transparent',
-      overflow: 'hidden',
+      alignItems: 'center', background: P.chatSurface,
+      border: '1px solid transparent', borderRadius: '7px',
       cursor: 'pointer',
+      display: 'inline-flex',
       flexShrink: '0',
-      width: PAGE_CHAT_COLLAPSED_W,
+      height: '28px',
+      margin: '0 4px 0 ' + (GLOBAL_BAR_SECTION_GAP - GLOBAL_BAR_INNER_GAP) + 'px',
+      overflow: 'hidden',
       transition: 'border-color 0.15s ease',
+      width: PAGE_CHAT_COLLAPSED_W,
     });
     pageChatEl.id = PREFIX + '-page-chat';
     pageChatEl.dataset.expanded = 'false';
     pageChatEl.title = 'Steer the page';
 
     const chatIcon = el('span', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      width: '28px', height: '28px', flexShrink: '0',
-      color: P.textDim, pointerEvents: 'none',
+      alignItems: 'center', color: P.textDim, display: 'inline-flex',
+      flexShrink: '0', height: '28px', justifyContent: 'center',
+      pointerEvents: 'none', width: '28px',
     });
     chatIcon.innerHTML = ICON_PAGE_CHAT;
 
     pageChatHint = el('span', {
-      fontSize: '11.5px', fontWeight: '500',
-      color: P.textDim,
-      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-      flex: '1', minWidth: '0',
-      pointerEvents: 'none',
+      color: P.textDim, flex: '1',
+      fontSize: '11.5px',
+      fontWeight: '500', minWidth: '0', overflow: 'hidden',
+      pointerEvents: 'none', textOverflow: 'ellipsis',
       transition: 'opacity 0.15s ease',
+      whiteSpace: 'nowrap',
     });
     pageChatHint.textContent = 'Steer';
 
@@ -11324,21 +11324,21 @@ void main() {
     pageChatInput.placeholder = PAGE_CHAT_PLACEHOLDER_COLLAPSED;
     pageChatInput.setAttribute('aria-label', 'Steer the page');
     Object.assign(pageChatInput.style, {
-      flex: '1', minWidth: '0', width: '0',
-      padding: '0', border: 'none', background: 'transparent',
-      fontFamily: FONT, fontSize: '11.5px', color: P.text,
-      outline: 'none', opacity: '0', pointerEvents: 'none',
-      caretColor: P.accent,
+      background: 'transparent', border: 'none', caretColor: P.accent,
+      color: P.text, flex: '1', fontFamily: FONT,
+      fontSize: '11.5px', minWidth: '0', opacity: '0',
+      outline: 'none', padding: '0', pointerEvents: 'none',
       transition: 'opacity 0.15s ease',
+      width: '0',
     });
 
     pageChatVoiceBtn = el('button', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      padding: '0', boxSizing: 'border-box',
-      width: '28px', height: '28px', flexShrink: '0',
-      border: 'none', background: 'transparent',
-      color: P.textDim, cursor: 'pointer',
-      transition: 'color 0.12s ease, background 0.12s ease',
+      alignItems: 'center', background: 'transparent', border: 'none',
+      boxSizing: 'border-box', color: P.textDim,
+      cursor: 'pointer', display: 'inline-flex', flexShrink: '0',
+      height: '28px', justifyContent: 'center',
+      padding: '0', transition: 'color 0.12s ease, background 0.12s ease',
+      width: '28px',
     });
     pageChatVoiceBtn.id = PREFIX + '-page-chat-voice';
     pageChatVoiceBtn.type = 'button';
@@ -11349,14 +11349,14 @@ void main() {
     // buildConfigureSubmitButton. Enter still submits; the button exists so a
     // typed steer does not look like a dead-end text field.
     pageChatSendBtn = el('button', {
-      display: 'none', alignItems: 'center', justifyContent: 'center',
-      padding: '0', boxSizing: 'border-box',
-      width: '28px', height: '28px', flexShrink: '0',
-      border: 'none', borderLeft: '1px solid ' + P.hairline,
-      borderRadius: '0',
-      background: P.accent, color: C.ink,
-      cursor: 'pointer',
+      alignItems: 'center', background: P.accent, border: 'none',
+      borderLeft: '1px solid ' + P.hairline, borderRadius: '0',
+      boxSizing: 'border-box', color: C.ink, cursor: 'pointer',
+      display: 'none', flexShrink: '0',
+      height: '28px',
+      justifyContent: 'center', padding: '0',
       transition: 'filter 0.12s ease, opacity 0.12s ease',
+      width: '28px',
     });
     pageChatSendBtn.id = PREFIX + '-page-chat-send';
     pageChatSendBtn.type = 'button';
@@ -11527,24 +11527,24 @@ void main() {
     if (agentPollTooltipEl) return agentPollTooltipEl;
     const P = barPaletteForTheme(globalBarEl?.dataset.theme || detectPageTheme());
     agentPollTooltipEl = el('div', {
-      position: 'fixed',
-      display: 'none',
-      opacity: '0',
-      zIndex: String(Z.bar + 6),
-      pointerEvents: 'none',
-      maxWidth: '220px',
-      padding: '6px 9px',
-      borderRadius: '7px',
       background: P.chatSurface,
       border: '1px solid ' + P.hairline,
+      borderRadius: '7px',
       boxShadow: P.shadow,
       color: P.text,
+      display: 'none',
       fontFamily: FONT,
       fontSize: '11px',
       fontWeight: '500',
-      lineHeight: '1.35',
       letterSpacing: '0.01em',
+      lineHeight: '1.35',
+      maxWidth: '220px',
+      opacity: '0',
+      padding: '6px 9px',
+      pointerEvents: 'none',
+      position: 'fixed',
       whiteSpace: 'normal',
+      zIndex: String(Z.bar + 6),
     });
     agentPollTooltipEl.id = PREFIX + '-agent-poll-tooltip';
     agentPollTooltipEl.textContent = agentStatusText() || AGENT_DISCONNECTED_TIP;
@@ -11642,22 +11642,22 @@ void main() {
     // it exactly as before.
     const barHiddenFromStart = window.__IMPECCABLE_LIVE_BAR_HIDDEN__ === true;
     globalBarEl = el('div', {
-      position: 'fixed', bottom: '14px', left: '50%',
-      transform: 'translateX(-50%) translateY(20px)',
-      zIndex: Z.bar + 5,
-      display: barHiddenFromStart ? 'none' : 'flex', alignItems: 'stretch',
-      gap: '0',
-      width: 'max-content',
-      background: P.surface,
-      border: '1px solid ' + P.border,
+      alignItems: 'stretch', background: P.surface, border: '1px solid ' + P.border,
       borderRadius: '8px',
-      boxShadow: P.shadow,
-      fontFamily: FONT, fontSize: '12px', lineHeight: '1',
-      opacity: '0',
-      overflow: 'hidden',          // clip the full-bleed brand mark to the bar radius
-      maxWidth: 'calc(100vw - 16px)',
-      boxSizing: 'border-box',
+      bottom: '14px',
+      boxShadow: P.shadow, boxSizing: 'border-box',
+      display: barHiddenFromStart ? 'none' : 'flex',
+      fontFamily: FONT,
+      fontSize: '12px',
+      gap: '0',
+      left: '50%',
+      lineHeight: '1',
+      maxWidth: 'calc(100vw - 16px)', opacity: '0', overflow: 'hidden',          // clip the full-bleed brand mark to the bar radius
+      position: 'fixed',
+      transform: 'translateX(-50%) translateY(20px)',
       transition: 'opacity 0.3s ' + EASE + ', transform 0.3s ' + EASE,
+      width: 'max-content',
+      zIndex: Z.bar + 5,
     });
     globalBarEl.id = PREFIX + '-global-bar';
     globalBarEl.dataset.theme = theme;
@@ -11668,12 +11668,12 @@ void main() {
 
     // Brand mark - kinpaku Impeccable icon (site header / favicon paths).
     const brand = el('span', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      alignSelf: 'stretch', position: 'relative',
-      padding: '0 ' + (GLOBAL_BAR_SECTION_GAP - GLOBAL_BAR_INNER_PAD_LEFT) + 'px 0 14px',
-      background: 'transparent',
-      color: P.accent,
+      alignItems: 'center', alignSelf: 'stretch', background: 'transparent',
+      color: P.accent, display: 'inline-flex',
       flexShrink: '0',
+      justifyContent: 'center',
+      padding: '0 ' + (GLOBAL_BAR_SECTION_GAP - GLOBAL_BAR_INNER_PAD_LEFT) + 'px 0 14px',
+      position: 'relative',
     });
     brand.id = PREFIX + '-global-bar-brand';
     brand.dataset.agentConnected = 'false';
@@ -11681,18 +11681,18 @@ void main() {
     brand.setAttribute('aria-label', 'Impeccable live mode - agent not polling');
 
     const brandMark = el('span', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      alignItems: 'center', display: 'inline-flex', justifyContent: 'center',
       position: 'relative',
     });
     brandMark.dataset.brandMark = 'true';
     brandMark.innerHTML = brandMarkSvg(P.accent, 18);
 
     const agentDot = el('span', {
-      position: 'absolute', right: '-1px', bottom: '7px',
-      width: '6px', height: '6px', borderRadius: '50%',
-      background: 'oklch(77% 0.13 82)',
-      boxShadow: '0 0 0 2px ' + P.surface,
-      display: 'none', pointerEvents: 'none',
+      background: 'oklch(77% 0.13 82)', borderRadius: '50%', bottom: '7px',
+      boxShadow: '0 0 0 2px ' + P.surface, display: 'none', height: '6px',
+      pointerEvents: 'none',
+      position: 'absolute',
+      right: '-1px', width: '6px',
     });
     agentDot.dataset.agentDot = 'true';
     agentDot.setAttribute('aria-hidden', 'true');
@@ -11707,27 +11707,27 @@ void main() {
 
     // Inner wrapper: holds the toggles with normal bar padding.
     const inner = el('div', {
-      display: 'flex', alignItems: 'center',
-      padding: '4px 5px 4px ' + GLOBAL_BAR_INNER_PAD_LEFT + 'px', gap: GLOBAL_BAR_INNER_GAP + 'px',
-      flex: '0 0 auto',
+      alignItems: 'center', display: 'flex',
+      flex: '0 0 auto', gap: GLOBAL_BAR_INNER_GAP + 'px',
+      padding: '4px 5px 4px ' + GLOBAL_BAR_INNER_PAD_LEFT + 'px',
     });
     inner.id = PREFIX + '-global-bar-inner';
     globalBarEl.appendChild(inner);
 
     // Button factory: icon-only at rest, label slides in on hover/active.
-    function makeIconBtn({ id, svg, label, ariaLabel, labelFont, onClick }) {
+    function makeIconBtn({ ariaLabel, id, label, labelFont, onClick, svg }) {
       const b = el('button', {
-        position: 'relative',
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        alignItems: 'center',
+        background: 'transparent', border: 'none', borderRadius: '7px',
         boxSizing: 'border-box',
-        flex: '0 0 auto',
-        minWidth: '30px',
-        padding: '6px 8px', borderRadius: '7px',
-        border: 'none', background: 'transparent',
-        color: P.textDim, fontFamily: FONT, fontSize: '11.5px', fontWeight: '500',
+        color: P.textDim,
         cursor: 'pointer',
-        transition: 'background 0.15s ease, color 0.15s ease',
-        whiteSpace: 'nowrap', overflow: 'hidden',
+        display: 'inline-flex', flex: '0 0 auto',
+        fontFamily: FONT, fontSize: '11.5px',
+        fontWeight: '500', justifyContent: 'center', minWidth: '30px', overflow: 'hidden',
+        padding: '6px 8px',
+        position: 'relative',
+        transition: 'background 0.15s ease, color 0.15s ease', whiteSpace: 'nowrap',
       });
       b.id = id;
       b.title = ariaLabel || label || '';
@@ -11758,36 +11758,36 @@ void main() {
 
     // Pick toggle - restored from localStorage; both pick and insert may be off.
     const pickBtn = makeIconBtn({
-      id: PREFIX + '-pick-toggle',
-      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>',
-      label: 'Pick',
       ariaLabel: 'Pick element',
+      id: PREFIX + '-pick-toggle',
+      label: 'Pick',
       onClick: () => togglePick(),
+      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>',
     });
     inner.appendChild(pickBtn);
 
     const insertBtn = makeIconBtn({
-      id: PREFIX + '-insert-toggle',
-      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
-      label: 'Insert',
       ariaLabel: 'Insert new element',
+      id: PREFIX + '-insert-toggle',
+      label: 'Insert',
       onClick: () => toggleInsert(),
+      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
     });
     inner.appendChild(insertBtn);
 
     // Detect toggle
     const detectBtn = makeIconBtn({
-      id: PREFIX + '-detect-toggle',
-      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
-      label: 'Detect',
       ariaLabel: 'Detect anti-patterns',
+      id: PREFIX + '-detect-toggle',
+      label: 'Detect',
       onClick: () => toggleDetect(),
+      svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
     });
     const detectBadge = el('span', {
+      background: P.accent, borderRadius: '7px',
+      color: C.ink, display: 'none', fontFamily: MONO,
       fontSize: '10px', fontWeight: '600',
-      padding: '0px 5px', borderRadius: '7px', lineHeight: '16px',
-      background: P.accent, color: C.ink,
-      display: 'none', fontFamily: MONO, marginLeft: '4px',
+      lineHeight: '16px', marginLeft: '4px', padding: '0px 5px',
     });
     detectBadge.id = PREFIX + '-detect-badge';
     detectBtn.appendChild(detectBadge);
@@ -11795,17 +11795,17 @@ void main() {
 
     // DESIGN.md panel toggle - quartet of color squares as the mark.
     const designBtn = makeIconBtn({
+      ariaLabel: 'Toggle DESIGN.md panel',
       id: PREFIX + '-design-toggle',
+      label: 'DESIGN.md',
+      labelFont: MONO,
+      onClick: () => toggleDesignPanel(),
       svg: `<span style="display:inline-grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;width:14px;height:14px;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 0 1px oklch(92% 0 0 / 0.13);flex-shrink:0">
         <span style="background:oklch(84% 0.19 80.46)"></span>
         <span style="background:oklch(70% 0.12 188)"></span>
         <span style="background:oklch(91% 0 0)"></span>
         <span style="background:oklch(34% 0 0)"></span>
       </span>`,
-      label: 'DESIGN.md',
-      ariaLabel: 'Toggle DESIGN.md panel',
-      labelFont: MONO,
-      onClick: () => toggleDesignPanel(),
     });
     inner.appendChild(designBtn);
 
@@ -11814,67 +11814,67 @@ void main() {
     // Pending manual edits live outside the bar so applying staged copy edits
     // reads as a distinct next step instead of another chrome toggle.
     pendingDockEl = el('div', {
-      position: 'fixed',
-      left: '0',
+      alignItems: 'center',
       bottom: '0',
+      display: 'none',
+      fontFamily: FONT,
+      gap: '6px',
+      left: '0',
+      pointerEvents: 'auto',
+      position: 'fixed',
       transform: 'translate(-100%, 50%)',
       zIndex: String(Z.bar + 6),
-      display: 'none',
-      alignItems: 'center',
-      gap: '6px',
-      fontFamily: FONT,
-      pointerEvents: 'auto',
     });
     pendingDockEl.id = PREFIX + '-pending-dock';
 
     pendingPillEl = el('button', {
-      display: 'none',
       alignItems: 'center',
-      gap: '8px',
+      background: P.accent,
+      border: 'none',
+      borderRadius: '999px',
+      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.1)',
+      color: C.ink,
+      cursor: 'pointer',
+      display: 'none',
       fontFamily: FONT,
       fontSize: '12px',
       fontWeight: '600',
+      gap: '8px',
       letterSpacing: '0',
-      color: C.ink,
-      background: P.accent,
       padding: '7px 12px 7px 14px',
-      border: 'none',
-      borderRadius: '999px',
-      whiteSpace: 'nowrap',
-      cursor: 'pointer',
-      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.16), 0 1px 3px oklch(0% 0 0 / 0.1)',
       transition: 'filter 0.12s ease, transform 0.1s ease, box-shadow 0.18s ease',
+      whiteSpace: 'nowrap',
     });
     pendingPillEl.title = 'Apply copy edits to source';
     pendingPillSpinnerEl = el('span', {
-      display: 'none',
-      width: '12px',
-      height: '12px',
-      borderRadius: '50%',
-      border: '2px solid currentColor',
-      borderTopColor: 'transparent',
-      color: C.ink,
-      opacity: '0.9',
       animation: 'impeccable-spin 0.6s linear infinite',
-      flex: '0 0 auto',
+      border: '2px solid currentColor',
+      borderRadius: '50%',
+      borderTopColor: 'transparent',
       boxSizing: 'border-box',
+      color: C.ink,
+      display: 'none',
+      flex: '0 0 auto',
+      height: '12px',
+      opacity: '0.9',
+      width: '12px',
     });
     pendingPillLabelEl = el('span', { lineHeight: '1', whiteSpace: 'nowrap' });
     pendingPillLabelEl.textContent = 'Apply copy edits';
     pendingPillCountEl = el('span', {
-      display: 'inline-flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      minWidth: '17px',
-      height: '17px',
-      padding: '0 5px',
-      borderRadius: '999px',
       background: 'oklch(4% 0.004 95 / 0.18)',
+      borderRadius: '999px',
       color: C.ink,
+      display: 'inline-flex',
       fontFamily: MONO,
       fontSize: '10px',
       fontWeight: '700',
+      height: '17px',
+      justifyContent: 'center',
       lineHeight: '1',
+      minWidth: '17px',
+      padding: '0 5px',
     });
     ensureSpinKeyframes();
     pendingPillEl.appendChild(pendingPillSpinnerEl);
@@ -11896,39 +11896,39 @@ void main() {
     pendingPillEl.addEventListener('click', onPendingPillClick);
 
     pendingTrashBtn = el('button', {
-      position: 'relative',
-      display: 'none',
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: '0', boxSizing: 'border-box',
-      width: '30px', height: '30px', borderRadius: '999px',
-      border: '1px solid ' + P.hairline,
       background: P.chatSurface,
-      color: P.textDim,
+      border: '1px solid ' + P.hairline,
+      borderRadius: '999px',
+      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.12), 0 1px 3px oklch(0% 0 0 / 0.08)', boxSizing: 'border-box',
+      color: P.textDim, cursor: 'pointer', display: 'none',
+      height: '30px',
+      justifyContent: 'center',
       overflow: 'visible',
-      boxShadow: '0 4px 16px oklch(0% 0 0 / 0.12), 0 1px 3px oklch(0% 0 0 / 0.08)',
-      cursor: 'pointer',
+      padding: '0',
+      position: 'relative',
       transition: 'color 0.12s ease, background 0.12s ease, box-shadow 0.18s ease',
+      width: '30px',
     });
     pendingTrashBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M3 4h8"/><path d="M5 4V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1"/><path d="M4 4l.5 7a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1L10 4"/></svg>';
     const pendingTrashTooltipEl = el('span', {
-      position: 'absolute',
-      bottom: 'calc(100% + 8px)',
-      left: '50%',
-      transform: 'translateX(-50%) translateY(4px)',
-      opacity: '0',
-      pointerEvents: 'none',
-      padding: '8px 16px',
-      borderRadius: '8px',
       background: C.ink,
+      borderRadius: '8px',
+      bottom: 'calc(100% + 8px)',
       color: C.white,
       fontFamily: FONT,
       fontSize: '12px',
       fontWeight: '400',
+      left: '50%',
       lineHeight: '1',
-      whiteSpace: 'nowrap',
+      opacity: '0',
+      padding: '8px 16px',
+      pointerEvents: 'none',
+      position: 'absolute',
       textAlign: 'center',
+      transform: 'translateX(-50%) translateY(4px)',
       transition: 'opacity 0.16s ease, transform 0.18s ' + EASE,
+      whiteSpace: 'nowrap',
     });
     pendingTrashTooltipEl.textContent = 'Discard copy edits';
     pendingTrashTooltipEl.setAttribute('role', 'tooltip');
@@ -11955,22 +11955,22 @@ void main() {
 
     const makePendingDecisionBtn = (label, accent) => {
       const btn = el('button', {
-        display: 'none',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: '30px',
-        padding: '0 12px',
-        borderRadius: '999px',
-        border: '1px solid ' + (accent ? P.accent : P.hairline),
         background: accent ? P.accent : P.chatSurface,
+        border: '1px solid ' + (accent ? P.accent : P.hairline),
+        borderRadius: '999px',
+        boxShadow: '0 4px 16px oklch(0% 0 0 / 0.12), 0 1px 3px oklch(0% 0 0 / 0.08)',
         color: accent ? C.ink : P.textDim,
+        cursor: 'pointer',
+        display: 'none',
         fontFamily: FONT,
         fontSize: '12px',
         fontWeight: '600',
+        height: '30px',
+        justifyContent: 'center',
         letterSpacing: '0',
-        cursor: 'pointer',
+        padding: '0 12px',
         whiteSpace: 'nowrap',
-        boxShadow: '0 4px 16px oklch(0% 0 0 / 0.12), 0 1px 3px oklch(0% 0 0 / 0.08)',
       });
       btn.textContent = label;
       return btn;
@@ -11989,10 +11989,10 @@ void main() {
 
     // Thin divider before the exit button
     const divider = el('span', {
-      width: '1px', height: '18px',
-      background: P.hairline,
+      background: P.hairline, flexShrink: '0',
+      height: '18px',
       margin: '0 4px 0 2px',
-      flexShrink: '0',
+      width: '1px',
     });
     inner.appendChild(divider);
 
@@ -12006,13 +12006,13 @@ void main() {
     // DevTools look fine. Every other chrome button sets padding inline;
     // this one needed it too.
     const exitBtn = el('button', {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      padding: '0', boxSizing: 'border-box',
-      width: '24px', height: '24px', borderRadius: '6px',
+      alignItems: 'center', background: 'transparent', border: 'none',
+      borderRadius: '6px', boxSizing: 'border-box',
+      color: P.textDim, cursor: 'pointer', display: 'inline-flex',
       flexShrink: '0',
-      border: 'none', background: 'transparent',
-      color: P.textDim, fontFamily: FONT, fontSize: '0', lineHeight: '0',
-      cursor: 'pointer', transition: 'color 0.12s ease, background 0.12s ease',
+      fontFamily: FONT, fontSize: '0',
+      height: '24px', justifyContent: 'center', lineHeight: '0', padding: '0',
+      transition: 'color 0.12s ease, background 0.12s ease', width: '24px',
     });
     exitBtn.id = PREFIX + '-exit';
     exitBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/></svg>';
@@ -12142,14 +12142,14 @@ void main() {
       }
     }
     window.postMessage({
-      source: 'impeccable-command',
       action: 'scan',
       config: {
-        scanId,
         disabledRules: ignores.disabledRules || [],
         disabledValues: ignores.disabledValues || [],
+        scanId,
         skipScan: ignores.skipScan === true,
       },
+      source: 'impeccable-command',
     }, '*');
   }
 
@@ -12168,7 +12168,7 @@ void main() {
         detectPendingScan = true;
       }
     } else {
-      window.postMessage({ source: 'impeccable-command', action: 'remove' }, '*');
+      window.postMessage({ action: 'remove', source: 'impeccable-command' }, '*');
       activeDetectScanId = null;
       pendingDetectScanId = null;
       detectCount = 0;
@@ -12321,7 +12321,7 @@ void main() {
     document.removeEventListener('focusout', stopFocusOutIntoChrome, true);
     window.removeEventListener('message', onDetectMessage);
     // Remove detection overlays
-    window.postMessage({ source: 'impeccable-command', action: 'remove' }, '*');
+    window.postMessage({ action: 'remove', source: 'impeccable-command' }, '*');
     setLiveState('IDLE');
     document.getElementById(PICK_CURSOR_STYLE_ID)?.remove();
     removeVariantStateStylesheet();
@@ -12339,20 +12339,20 @@ void main() {
   let designHost = null;
   let designShadow = null;
   let designState = {
-    open: false,
-    tab: 'visual',          // 'visual' | 'raw'
-    parsed: null,           // parseDesignMd output (frontmatter + body sections)
-    sidecar: null,          // .impeccable/design.json v2 payload (extensions + components + narrative)
+    collapsed: {            // narrative-section accordion state
+      dosdonts: true, overview: true, rules: true,
+    },
+    error: null,
     hasMd: false,
     hasSidecar: false,
+    loading: false,
+    mdNewerThanJson: false, // stale-hint flag
+    open: false,
+    parsed: null,           // parseDesignMd output (frontmatter + body sections)
     present: null,          // true/false once fetch resolves
     raw: null,              // raw DESIGN.md for the raw tab
-    mdNewerThanJson: false, // stale-hint flag
-    loading: false,
-    error: null,
-    collapsed: {            // narrative-section accordion state
-      rules: true, dosdonts: true, overview: true,
-    },
+    sidecar: null,          // .impeccable/design.json v2 payload (extensions + components + narrative)
+    tab: 'visual',          // 'visual' | 'raw'
   };
 
   function loadDesignPrefs() {
@@ -12372,8 +12372,8 @@ void main() {
   function saveDesignPrefs() {
     try {
       localStorage.setItem(DESIGN_PREFS_KEY, JSON.stringify({
-        tab: designState.tab,
         collapsed: designState.collapsed,
+        tab: designState.tab,
       }));
     } catch { /* ignore */ }
   }
@@ -12382,10 +12382,10 @@ void main() {
     designHost = document.createElement('div');
     designHost.id = PREFIX + '-design-host';
     Object.assign(designHost.style, {
-      position: 'fixed', top: '0', left: '0',
-      width: '0', height: '0',
+      height: '0', left: '0', pointerEvents: 'none',
+      position: 'fixed', top: '0',
+      width: '0',
       zIndex: String(Z.bar + 10),
-      pointerEvents: 'none',
     });
     designShadow = designHost.attachShadow({ mode: 'open' });
 
@@ -12416,16 +12416,16 @@ void main() {
   // Neutral panel palette - deliberately NOT Impeccable-branded. The panel is
   // a viewer of the project's design system, not an Impeccable surface.
   const DP = {
+    amber:    'oklch(77% 0.13 82)',         // stale-hint accent
+    amberBg:  'oklch(89% 0.055 84)',
     canvas:   'oklch(94% 0 0)',            // panel background
-    tile:     'oklch(98.5% 0 0)',          // card-on-canvas
-    tileAlt:  'oklch(96% 0 0)',            // subtler tile for inner surfaces
+    hairline: 'oklch(88% 0 0)',
+    hairlineSoft: 'oklch(92% 0 0)',
     ink:      'oklch(15% 0 0)',
     ink2:     'oklch(35% 0 0)',
     meta:     'oklch(55% 0 0)',
-    hairline: 'oklch(88% 0 0)',
-    hairlineSoft: 'oklch(92% 0 0)',
-    amber:    'oklch(77% 0.13 82)',         // stale-hint accent
-    amberBg:  'oklch(89% 0.055 84)',
+    tile:     'oklch(98.5% 0 0)',          // card-on-canvas
+    tileAlt:  'oklch(96% 0 0)',            // subtler tile for inner surfaces
   };
 
   function designPanelCss(BP) {
@@ -12920,12 +12920,12 @@ void main() {
     return Object.entries(fmColors).map(([key, value]) => {
       const m = meta[key] || {};
       return {
-        role: m.role || humanizeKey(key),
-        name: m.displayName || humanizeKey(key),
-        value: normalizeCssColor(m.canonical || value),
         canonical: m.canonical || null,
         description: m.description || findProseDescription(proseColors, key, m.displayName),
+        name: m.displayName || humanizeKey(key),
+        role: m.role || humanizeKey(key),
         tonalRamp: m.tonalRamp || null,
+        value: normalizeCssColor(m.canonical || value),
       };
     });
   }
@@ -12935,20 +12935,20 @@ void main() {
     const meta = typographyMeta || {};
     return Object.entries(fmTypography).map(([key, spec]) => {
       const m = meta[key] || {};
-      const { family, fallback } = splitFontFamily(spec?.fontFamily);
+      const { fallback, family } = splitFontFamily(spec?.fontFamily);
       return {
-        role: key,
-        name: m.displayName || humanizeKey(key),
-        family,
         fallback,
-        weight: spec?.fontWeight ?? 400,
+        family,
+        letterSpacing: spec?.letterSpacing,
+        lineHeight: spec?.lineHeight != null ? String(spec.lineHeight) : '',
+        name: m.displayName || humanizeKey(key),
+        purpose: m.purpose,
+        role: key,
+        sampleSize: spec?.fontSize || '1rem',
         // fontStyle isn't in Stitch's frontmatter schema; the sidecar carries
         // it when a role is rendered in italic (e.g. display italic).
         style: m.style || 'normal',
-        sampleSize: spec?.fontSize || '1rem',
-        lineHeight: spec?.lineHeight != null ? String(spec.lineHeight) : '',
-        letterSpacing: spec?.letterSpacing,
-        purpose: m.purpose,
+        weight: spec?.fontWeight ?? 400,
       };
     });
   }
@@ -12959,9 +12959,9 @@ void main() {
   }
 
   function splitFontFamily(stack) {
-    if (!stack || typeof stack !== 'string') return { family: '', fallback: '' };
+    if (!stack || typeof stack !== 'string') return { fallback: '', family: '' };
     const parts = stack.split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, ''));
-    return { family: parts[0] || '', fallback: parts.slice(1).join(', ') };
+    return { fallback: parts.slice(1).join(', '), family: parts[0] || '' };
   }
 
   function humanizeKey(k) {
@@ -12986,9 +12986,11 @@ void main() {
     if (!parsed) return {};
     const md = parsed;
     return {
+      donts: md.dosDonts?.donts || [],
+      dos: md.dosDonts?.dos || [],
+      keyCharacteristics: md.overview?.keyCharacteristics || [],
       northStar: md.overview?.creativeNorthStar,
       overview: (md.overview?.philosophy || []).join(' '),
-      keyCharacteristics: md.overview?.keyCharacteristics || [],
       rules: [
         ...(md.colors?.rules || []).map((r) => ({ ...r, section: 'colors' })),
         ...(md.typography?.rules || []).map((r) => ({ ...r, section: 'typography' })),
@@ -12996,8 +12998,6 @@ void main() {
         ...(md.elevation?.rules || []).map((r) => ({ ...r, section: 'elevation' })),
         ...(md.shapes?.rules || []).map((r) => ({ ...r, section: 'shapes' })),
       ],
-      dos: md.dosDonts?.dos || [],
-      donts: md.dosDonts?.donts || [],
     };
   }
 
@@ -13233,11 +13233,11 @@ void main() {
   function titleForKind(kind, count) {
     const labels = {
       button: 'Buttons',
+      card: 'Cards',
+      chip: 'Chips',
+      custom: 'Components',
       input: 'Inputs',
       nav: 'Navigation',
-      chip: 'Chips',
-      card: 'Cards',
-      custom: 'Components',
     };
     return labels[kind] || (kind ? kind.charAt(0).toUpperCase() + kind.slice(1) + 's' : 'Components');
   }
@@ -13266,11 +13266,11 @@ void main() {
     const body = document.createElement('div');
     body.className = 'coll-body';
     wrap.appendChild(body);
-    return { wrap, body };
+    return { body, wrap };
   }
 
   function renderRulesCollapsible(rules) {
-    const { wrap, body } = buildCollapsible('rules', 'Named Rules', rules.length);
+    const { body, wrap } = buildCollapsible('rules', 'Named Rules', rules.length);
     for (const r of rules) {
       const card = document.createElement('div');
       card.className = 'rule-card';
@@ -13289,7 +13289,7 @@ void main() {
 
   function renderDosDontsCollapsible(n) {
     const total = (n.dos?.length || 0) + (n.donts?.length || 0);
-    const { wrap, body } = buildCollapsible('dosdonts', "Do's and Don'ts", total);
+    const { body, wrap } = buildCollapsible('dosdonts', "Do's and Don'ts", total);
     const grid = document.createElement('div');
     grid.className = 'dos';
     for (const d of n.dos || []) {
@@ -13309,7 +13309,7 @@ void main() {
   }
 
   function renderOverviewCollapsible(n) {
-    const { wrap, body } = buildCollapsible('overview', 'Overview', null);
+    const { body, wrap } = buildCollapsible('overview', 'Overview', null);
     const ov = document.createElement('div');
     ov.className = 'overview-body';
     if (n.northStar) {
@@ -13421,7 +13421,7 @@ void main() {
         const t = bullet ? 'ul' : 'ol';
         if (listType && listType !== t) flushList();
         listType = t;
-        listBuf.push({ indent, html: inlineMd(m[3]) });
+        listBuf.push({ html: inlineMd(m[3]), indent });
         continue;
       }
 

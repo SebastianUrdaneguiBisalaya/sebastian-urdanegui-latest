@@ -10,11 +10,11 @@
   if (!root) return;
 
   function createLiveBrowserDomHelpers({
+    crypto = root.crypto,
+    css = root.CSS,
+    document: doc = root.document,
     prefix,
     skipTags,
-    document: doc = root.document,
-    css = root.CSS,
-    crypto = root.crypto,
   } = {}) {
     if (!prefix) throw new Error('prefix required');
     if (!doc) throw new Error('document required');
@@ -49,18 +49,18 @@
       const r = el.getBoundingClientRect();
       if (!rectIsUsableAnchor(r)) return null;
       const rect = {
+        bottom: r.bottom, height: r.height,
+        left: r.left, right: r.right,
+        top: r.top, width: r.width,
         x: r.x, y: r.y,
-        top: r.top, left: r.left,
-        right: r.right, bottom: r.bottom,
-        width: r.width, height: r.height,
       };
       return {
         __impeccableFrozenAnchor: true,
-        tagName: el.tagName || 'DIV',
-        id: el.id || '',
         classList: el.classList ? [...el.classList] : [],
-        hasAttribute: () => false,
         getBoundingClientRect: () => rect,
+        hasAttribute: () => false,
+        id: el.id || '',
+        tagName: el.tagName || 'DIV',
       };
     }
 
@@ -125,7 +125,7 @@
     // Same box as the SvelteKit shadow host: 0x0, fixed, chrome overflows it.
     // `all: initial` also clears the popover UA box.
     for (const [name, value] of Object.entries({
-      all: 'initial', position: 'fixed', top: '0', left: '0', width: '0', height: '0', overflow: 'visible',
+      all: 'initial', height: '0', left: '0', overflow: 'visible', position: 'fixed', top: '0', width: '0',
     })) topLayerHost.style.setProperty(name, value, 'important');
     const pageRoots = new WeakSet(); // chrome nodes mounted on the page itself
     const openModals = [];           // in the order they opened; last is topmost
@@ -139,7 +139,7 @@
     }
 
     function syncTopLayerHost(records = []) {
-      for (const { type, target, oldValue } of records) {
+      for (const { oldValue, target, type } of records) {
         if (type !== 'attributes' || oldValue !== null || !target.matches('dialog:modal')) continue;
         // Opened, or closed and reopened in one task (the observer sees only
         // the end state): either way it is back on top of the top layer, so
@@ -180,7 +180,7 @@
       openModals.push(...doc.querySelectorAll('dialog:modal'));
       raiseHitModal();
       const observer = new MutationObserver(syncTopLayerHost);
-      observer.observe(doc, { subtree: true, childList: true, attributes: true, attributeOldValue: true, attributeFilter: ['open'] });
+      observer.observe(doc, { attributeFilter: ['open'], attributeOldValue: true, attributes: true, childList: true, subtree: true });
       syncTopLayerHost();
       return () => {
         observer.disconnect();
@@ -290,31 +290,31 @@
     }
 
     return {
-      own,
-      pickable,
+      activeElementDeep,
+      cloneWithoutChrome,
+      copyTextViaSelection,
+      cssId,
+      defangOutsideHandlers,
       desc,
-      rectIsUsableAnchor,
-      makeFrozenAnchor,
       hasFrameworkHmrOwnership,
       id8,
-      cssId,
       liveUiRoot,
-      uiAppend,
-      uiAppendToPage,
-      copyTextViaSelection,
-      topLayerHost,
-      watchModalDialogs,
-      cloneWithoutChrome,
-      uiAppendStyle,
-      uiGetById,
-      activeElementDeep,
-      defangOutsideHandlers,
+      makeFrozenAnchor,
+      own,
+      pickable,
+      rectIsUsableAnchor,
       stopFocusOutIntoChrome,
+      topLayerHost,
+      uiAppend,
+      uiAppendStyle,
+      uiAppendToPage,
+      uiGetById,
+      watchModalDialogs,
     };
   }
 
   root.__IMPECCABLE_LIVE_DOM__ = {
-    version: 1,
     createLiveBrowserDomHelpers,
+    version: 1,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

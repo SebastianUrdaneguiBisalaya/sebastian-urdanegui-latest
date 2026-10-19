@@ -40,7 +40,7 @@
     return randomUUID(cryptoImpl).replace(/-/g, '').slice(0, 8);
   }
 
-  function createLiveBrowserSessionState({ prefix, storage, idFactory }) {
+  function createLiveBrowserSessionState({ idFactory, prefix, storage }) {
     if (!prefix) throw new Error('prefix required');
     const store = storage || root.localStorage;
     const makeId = idFactory || function () { return randomId8(); };
@@ -157,24 +157,24 @@
     }
 
     return {
-      owner,
-      sessionKey,
-      handledKey,
-      scrollKey,
-      saveSession,
-      loadSession,
-      clearSession,
-      nextCheckpointRevision,
-      seedCheckpointRevision,
-      currentCheckpointRevision,
-      markHandled,
-      isHandled,
       clearHandled,
-      writeScrollY,
-      readScrollY,
       clearScrollY,
+      clearSession,
+      currentCheckpointRevision,
+      handledKey,
+      isHandled,
+      loadSession,
+      markHandled,
+      nextCheckpointRevision,
+      owner,
+      readScrollY,
+      saveSession,
+      scrollKey,
+      seedCheckpointRevision,
+      sessionKey,
+      writeScrollY,
     };
   }
 
-  root.__IMPECCABLE_LIVE_SESSION__ = { createLiveBrowserSessionState, randomUUID, randomId8 };
+  root.__IMPECCABLE_LIVE_SESSION__ = { createLiveBrowserSessionState, randomId8, randomUUID };
 })(typeof window !== 'undefined' ? window : globalThis);

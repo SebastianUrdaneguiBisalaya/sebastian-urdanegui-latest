@@ -236,7 +236,7 @@
   }
 
   root.__IMPECCABLE_LIVE_IGNORES__ = {
-    version: 1,
     resolveDetectIgnores,
+    version: 1,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
