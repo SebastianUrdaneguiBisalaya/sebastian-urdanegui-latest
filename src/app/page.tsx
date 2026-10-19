@@ -1,326 +1,188 @@
 'use client';
 
 import { motion, type Variants } from 'motion/react';
-import Image from 'next/image';
 
-const paragraphVariants: Variants = {
-	hidden: {
-		opacity: 0,
-		y: 10
-	},
+const sectionVariants: Variants = {
+	hidden: { opacity: 0, y: 12 },
 	visible: {
 		opacity: 1,
-		transition: {
-			duration: 1.2,
-			ease: 'easeOut'
-		},
+		transition: { duration: 0.7, ease: 'easeOut' },
 		y: 0,
-	}
+	},
+};
+
+interface Entry {
+	description: string[];
+	meta?: string;
+	period: string;
+	role: string;
+	roleHref?: string;
 }
+
+const entries: Entry[] = [
+	{
+		description: [
+			'Built a multi-tenant SaaS platform for businesses to create subscription plans, manage customers, track consumption, and run subscription-based experiences.',
+			'Designed the core architecture end to end — tenant isolation, auth, relational data models, REST APIs, subscription workflows, and third-party integrations.',
+		],
+		meta: 'SaaS · B2B2C',
+		period: '2026.05 — 2026.08',
+		role: 'membi — Co-Founder',
+		roleHref: 'https://membi.dev',
+	},
+	{
+		description: [
+			'Build and maintain production web apps for the real estate sector with Next.js, React, TypeScript, and Node.js, mixing SSR and SSG for performance and SEO.',
+			'Design REST APIs, structure reusable components, and shipped an AI chatbot on n8n and LLM services for business-workflow automation.',
+		],
+		period: '2025.10 — 2026.08',
+		role: 'Full-Stack Developer, Formula',
+	},
+	{
+		description: [
+			'Led technical direction for an AI-powered real-time communication platform that understands, translates, and formulates responses during conversations — speech processing, AI integrations, and the full frontend/backend architecture.',
+		],
+		period: '2025',
+		role: 'aiblabla — Technical Lead',
+		roleHref: 'https://aiblabla.com',
+	},
+	{
+		description: [
+			'A centralized web app for organizing personal subscriptions.',
+		],
+		period: '2025.08',
+		role: 'suscripto.manager',
+		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager',
+	},
+	{
+		description: [
+			'An AI music-recommendation platform combining generative AI with the Spotify API for personalized, context-aware picks.',
+		],
+		period: '2025.08',
+		role: 'emotify.ai',
+		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/emotify.ai',
+	},
+	{
+		description: [
+			'AI document-processing pipeline: send a photo over Telegram, extract structured data automatically, review it on a web dashboard.',
+		],
+		period: '2025.06',
+		role: 'kooko.ai',
+		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend',
+	},
+	{
+		description: [
+			'An MVP connecting parents and healthcare workers in Huancavelica: check-ups, vaccination records, automated alerts, and audio translation into Quechua.',
+		],
+		meta: '1st place',
+		period: '2025.03',
+		role: 'Hackathon Huancavelica Vida Segura',
+		roleHref: 'https://drive.google.com/file/d/1m6yJws18WElIgCyvGVjreQMW86qtawWD/view',
+	},
+	{
+		description: [
+			'Designed and built a full event-discovery and ticketing platform — search, advanced filtering, date queries, and Stripe checkout — with React, TypeScript, TailwindCSS, Node.js, Express, and SQL.',
+		],
+		period: '2024.08 — 2024.12',
+		role: 'Full-Stack Developer, Make It Real Camp',
+	},
+	{
+		description: [
+			'Analyzed national data on rest days from occupational accidents for a competition run by the Secretariat of Government and Digital Transformation of Peru.',
+		],
+		meta: '4th place',
+		period: '2023.09',
+		role: 'Datathon Exprésate Perú con Datos',
+		roleHref: 'https://drive.google.com/file/d/1PgR3nWq_D70cUymndbIIoMdnuadQaPiG/view',
+	},
+	{
+		description: [
+			'Automated Treasury workflows around client exchange-rate targets, supporting roughly PEN 500K in transaction volume over four months, plus an enablement flow for validating financial-derivative requests.',
+		],
+		period: '2023.01 — 2024.05',
+		role: 'Business Strategy Intern, Treasury — BCP',
+	},
+];
 
 export default function Page() {
 	return (
-		<main className='pb-4'>
-			<motion.a
-				className='flex justify-center sm:block cursor-pointer'
-				href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/'
-				initial='hidden'
-				target='_blank'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<Image
-					alt='Profile image'
-					className='sm:float-right self-center mt-4 mb-4 sm:ml-4 rounded-full'
-					height={130}
-					src='/image-profile.webp'
-					width={130}
-				/>
-			</motion.a>
-			<motion.p
-				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				I am a Full-Stack Developer and Product Engineer from Lima, Peru, focused on designing and building web and mobile products from idea to production.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				Rather than being defined by a specific technology stack, I focus on how software is structured, how its components interact, and how technical decisions translate into reliable, maintainable products. I enjoy working across the entire development lifecycle—from designing architectures and APIs to building interfaces, integrating external services, and optimizing applications for real-world use.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				My background started in analytics and data science with Python, which gave me a strong foundation in problem solving, algorithms, and working with data. That path eventually led me toward software engineering and product development, where I found a stronger interest in turning ideas into complete, usable systems.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				Today, I work primarily with modern JavaScript/TypeScript ecosystems and Python, building applications that involve APIs, databases, authentication, third-party integrations, automation, real-time communication, and AI-powered features. I’m particularly interested in multi-tenant SaaS architectures, developer tooling, and products that solve practical problems for businesses and users.
-			</motion.p>
-			<motion.p
-				className='font-reddit-sans mt-[1.25em] mb-[1.25em] text-white/85 leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				I’m driven by the idea of building software that goes beyond working code: products that are simple to use, technically sound, and capable of growing with the people who depend on them.
-			</motion.p>
-			<motion.h2
-				className='text-left font-sora text-white/95 text-lg w-full mt-[1.25em] mb-[1.25em] leading-7'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				Experience
-			</motion.h2>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a className='font-bold font-sora underline' href='https://membi.dev' target='_blank'>
-						membi —  Co-Founder
-					</a>{' '}
-					<span className='font-light italic'>
-						| May 2026 – August 2026 · SaaS · B2B2C
-					</span>
+		<motion.main
+			animate='visible'
+			className='pb-16'
+			initial='hidden'
+			variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+		>
+			<motion.section variants={sectionVariants}>
+				<p className='font-sora text-xl sm:text-2xl leading-snug text-white tracking-tight w-full'>
+					I build web and mobile products from idea to production.
 				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built a multi-tenant SaaS platform that enables businesses to create subscription plans, manage customers, track consumption, and provide subscription-based experiences.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Designed and implemented core application architecture across the frontend and backend, including tenant isolation, authentication and authorization, relational data models, REST APIs, subscription workflows, and integrations with external services.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Focused on building the product as a scalable foundation rather than a collection of isolated features, with clear boundaries between organizations, branches, users, customers, roles, permissions, and business operations.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<span className='font-bold font-sora'>
-						Full-Stack Developer — Formula, Marketing Agency
-					</span>{' '}
-					<span className='font-light italic'>| October 2025 – August 2026</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Develop and maintain production web applications for the real estate sector, working across frontend architecture, backend integrations, performance, and automation.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Build applications with Next.js, React, TypeScript, and Node.js, using SSR and SSG where appropriate to balance performance, SEO, and user experience.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Design and integrate REST APIs, structure reusable application components, and maintain scalable codebases within collaborative development workflows.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Also designed and implemented an AI-powered chatbot using n8n and LLM-based services, integrating automation and conversational capabilities into business workflows.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<span className='font-bold font-sora'>aiblabla</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built an AI-powered real-time communication platform designed to understand, translate, and formulate responses during conversations.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Led the technical direction of the product, working across real-time communication, AI integrations, speech processing, frontend and backend architecture, and product development.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a
-						className='font-bold font-sora underline'
-						href='https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager'
-						target='_blank'
-					>
-						suscripto.manager
-					</a>{' '}
-					<span className='font-light italic'>| August 2025</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built a web application for organizing and managing personal subscriptions in a centralized interface.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a
-						className='font-bold font-sora underline'
-						href='https://github.com/SebastianUrdaneguiBisalaya/emotify.ai'
-						target='_blank'
-					>
-						emotify.ai
-					</a>{' '}
-					<span className='font-light italic'>| August 2025</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built an AI-powered music recommendation platform integrating generative AI with Spotify to generate personalized recommendations based on user preferences and context.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a
-						className='font-bold font-sora underline'
-						href='https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend'
-						target='_blank'
-					>
-						kooko.ai
-					</a>{' '}
-					<span className='font-light italic'>| June 2025</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built an AI-powered document processing workflow that allows users to send photos through Telegram, automatically extract structured information, and make the resulting data available through a web dashboard.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a
-						className='font-bold font-sora underline'
-						href='https://drive.google.com/file/d/1m6yJws18WElIgCyvGVjreQMW86qtawWD/view'
-						target='_blank'
-					>
-						1<sup>st</sup> Place — Hackathon Huancavelica Vida Segura
-					</a>{' '}
-					<span className='font-light italic'>| March 2025</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Developed an MVP focused on improving child health monitoring in Huancavelica.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					The solution connected parents and healthcare personnel through a mobile application, providing access to check-ups and vaccination records, automated alerts, and auditory translation into Quechua.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<span className='font-bold font-sora'>
-						Full-Stack Developer — Make It Real Camp
-					</span>{' '}
-					<span className='font-light italic'>| August – December 2024</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Designed and developed a complete event discovery and ticketing platform covering both frontend and backend architecture.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Implemented event search, advanced filtering, date-based queries, and ticket purchasing through Stripe, using React, TypeScript, TailwindCSS, Node.js, Express, SQL, and REST APIs.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<a
-						className='font-bold font-sora underline'
-						href='https://drive.google.com/file/d/1PgR3nWq_D70cUymndbIIoMdnuadQaPiG/view'
-						target='_blank'
-					>
-						4<sup>th</sup> Place — Datathon Exprésate Perú con Datos
-					</a>{' '}
-					<span className='font-light italic'>| September 2023</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Analyzed national-level data related to rest days resulting from occupational accidents as part of a competition organized by the Secretariat of Government and Digital Transformation of Peru.
-				</p>
-			</motion.div>
-			<motion.div
-				className='w-full mt-[1.25em] mb-[1.25em]'
-				initial='hidden'
-				variants={paragraphVariants}
-				viewport={{ amount: 0.3, once: true }}
-				whileInView="visible"
-			>
-				<p className='font-reddit-sans leading-7 text-white/85'>
-					-{' '}
-					<span className='font-bold font-sora'>
-						Business Strategy Intern — Treasury, Banco de Crédito del Perú
-					</span>{' '}
-					<span className='font-light italic'>| January 2023 – May 2024</span>
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Designed and automated business processes within the Treasury area, focusing on client contactability, goal tracking, and financial operations.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Built automated workflows that monitored client exchange-rate targets and notified the team when targets were reached, supporting approximately PEN 500K in transaction volume over four months.
-				</p>
-				<p className='font-reddit-sans leading-7 text-white/85 mt-2'>
-					Also designed an enablement workflow to validate client requirements for financial derivatives operations.
-				</p>
-			</motion.div>
-		</main>
+				<div className='mt-6 flex flex-col gap-4 w-full'>
+					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+						I care less about any one stack and more about how software is
+						structured — how its pieces interact, and how technical decisions
+						turn into something reliable and maintainable. I work across the
+						whole lifecycle: architecture, APIs, interfaces, integrations, and
+						getting applications ready for real use.
+					</p>
+					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+						I started in analytics and data science with Python, which is
+						where the problem-solving came from. That path led into software
+						engineering, where I found more interest in shipping complete
+						systems than in any single layer of them.
+					</p>
+					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+						Today that&apos;s mostly TypeScript/JavaScript and Python — APIs,
+						databases, auth, integrations, automation, real-time features, and
+						AI. I keep coming back to multi-tenant SaaS architecture and
+						developer tooling: things that solve a real, specific problem for
+						the people using them.
+					</p>
+				</div>
+			</motion.section>
+
+			<motion.section className='mt-14' variants={sectionVariants}>
+				<h2 className='font-sora text-sm font-medium text-white/50 pb-6 border-b border-white/10'>
+					Experience
+				</h2>
+				<ol className='flex flex-col'>
+					{entries.map((entry, idx) => (
+						<li
+							className='flex flex-col sm:flex-row gap-1.5 sm:gap-6 py-6 border-b border-white/[0.06] last:border-b-0'
+							key={idx}
+						>
+							<span className='font-mono text-xs text-white/42 shrink-0 sm:w-[136px] sm:pt-0.5'>
+								{entry.period}
+							</span>
+							<div className='flex flex-col gap-1.5 min-w-0'>
+								<p className='font-sora text-[15px] font-medium text-white'>
+									{entry.roleHref ? (
+										<a
+											className='hover:text-[var(--accent)] transition-colors duration-300 ease-out'
+											href={entry.roleHref}
+											rel='noopener noreferrer'
+											target='_blank'
+										>
+											{entry.role}
+										</a>
+									) : (
+										entry.role
+									)}
+									{entry.meta && (
+										<span className='font-mono text-xs text-white/42 font-normal ml-2'>
+											{entry.meta}
+										</span>
+									)}
+								</p>
+								{entry.description.map((line, lineIdx) => (
+									<p className='font-reddit-sans text-sm leading-6 text-white/65' key={lineIdx}>
+										{line}
+									</p>
+								))}
+							</div>
+						</li>
+					))}
+				</ol>
+			</motion.section>
+		</motion.main>
 	);
 }

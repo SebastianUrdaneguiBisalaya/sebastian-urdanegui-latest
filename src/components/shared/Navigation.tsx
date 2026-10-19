@@ -8,43 +8,41 @@ import { navigationsPaths } from '@/constants/constants';
 import { cn } from '@/libs/cn';
 
 const variants: Variants = {
-	hidden: {
-		opacity: 0,
-		y: 10
-	},
-	visible: {
-		opacity: 1,
-		transition: {
-			duration: 1.2,
-			ease: 'easeOut'
-		},
-		y: 0,
-	}
-}
+	hidden: { opacity: 0, y: 10 },
+	visible: { opacity: 1, transition: { delay: 0.3, duration: 0.6, ease: 'easeOut' }, y: 0 },
+};
 
 export default function Navigation() {
 	const pathname = usePathname();
 	return (
 		<motion.div
-			className='fixed z-50 inset-x bottom-4 bg-[rgba(255,255,255,0.045)] border-t border-t-[rgba(255,255,255,0.4)] border-l border-l-[rgba(255,255,255,0.3)] shadow-[3px_3px_3px_rgba(0,0,0,0.089)] backdrop-blur-[10px] rounded-full w-fit self-center h-fit'
+			animate='visible'
+			className='fixed z-50 inset-x bottom-5 bg-[#0a0a0a]/80 border border-white/10 backdrop-blur-md rounded-full w-fit self-center h-fit'
 			initial='hidden'
 			variants={variants}
-			viewport={{ amount: 0.3, once: true }}
-			whileInView="visible"
 		>
-			<div className='flex flex-row items-center py-2 px-4 gap-2'>
-				{navigationsPaths.map(item => (
-					<Link
-						className={cn(
-							'font-sora font-medium text-sm leading-7 px-3 py-1 cursor-pointer hover:scale-[1.05] transition-all duration-500 ease-out text-gray-300 hover:text-white',
-							pathname === item.slug && 'text-white scale-[1.05]'
-						)}
-						href={item.slug}
-						key={item.slug}
-					>
-						{item.name}
-					</Link>
-				))}
+			<div className='flex flex-row items-center py-1.5 px-1.5 gap-1'>
+				{navigationsPaths.map(item => {
+					const active = pathname === item.slug;
+					return (
+						<Link
+							className={cn(
+								'relative font-sora font-medium text-sm leading-7 px-3.5 py-1 rounded-full cursor-pointer transition-colors duration-300 ease-out text-white/55 hover:text-white',
+								active && 'text-white bg-white/[0.06]'
+							)}
+							href={item.slug}
+							key={item.slug}
+						>
+							{item.name}
+							{active && (
+								<span
+									className='absolute left-1/2 -translate-x-1/2 bottom-0.5 h-[3px] w-[3px] rounded-full'
+									style={{ background: 'var(--accent)' }}
+								/>
+							)}
+						</Link>
+					);
+				})}
 			</div>
 		</motion.div>
 	);

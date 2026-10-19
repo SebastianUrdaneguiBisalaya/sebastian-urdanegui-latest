@@ -1,21 +1,26 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import { Sora, Reddit_Sans } from 'next/font/google';
+import { Sora, Reddit_Sans, JetBrains_Mono } from 'next/font/google';
 
 import Footer from '@/components/shared/Footer';
 import Lenis from '@/components/shared/Lenis';
 import Navbar from '@/components/shared/Navbar';
 import Navigation from '@/components/shared/Navigation';
 
-const geistSans = Sora({
+const sora = Sora({
 	subsets: ['latin'],
 	variable: '--font-sora',
 });
 
-const geistMono = Reddit_Sans({
+const redditSans = Reddit_Sans({
 	subsets: ['latin'],
 	variable: '--font-reddit-sans',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+	subsets: ['latin'],
+	variable: '--font-jetbrains-mono',
 });
 
 export const metadata: Metadata = {
@@ -62,12 +67,12 @@ export default function RootLayout({
 				<meta content="summary_large_image" name="twitter:card" />
 			</head>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${sora.variable} ${redditSans.variable} ${jetbrainsMono.variable} antialiased`}
 			>
-				<div className='max-w-3xl w-full min-h-screen h-full flex flex-col p-4'>
+				<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
 					<Navbar />
 					<Navigation />
-					{children}
+					<div className='flex-1 flex flex-col'>{children}</div>
 					<Footer />
 				</div>
 				<Lenis />

@@ -5,46 +5,37 @@ import { motion, type Variants } from 'motion/react';
 import Card from '@/components/blog/Card';
 import { blogList } from '@/constants/constants';
 
-const cardVariants: Variants = {
-	hidden: (idx: number) => ({
-		opacity: 0,
-		x: idx % 2 === 0 ? 60 : -60,
-	}),
-	visible: (idx: number) => ({
-		opacity: 1,
-		transition: {
-			delay: idx * 0.12,
-			duration: 1.2,
-			ease: 'easeOut',
-		},
-		x: 0,
-	})
-}
+const sectionVariants: Variants = {
+	hidden: { opacity: 0, y: 12 },
+	visible: { opacity: 1, transition: { duration: 0.7, ease: 'easeOut' }, y: 0 },
+};
 
 export default function Page() {
 	return (
-		<main className='pb-4'>
-			<div className='flex flex-col items-start w-full gap-6'>
-				{blogList.map((project, idx) => (
-					<motion.div
-						className='w-full'
-						custom={idx + 1}
-						initial='hidden'
-						key={idx}
-						variants={cardVariants}
-						viewport={{ amount: 0.3, once: true }}
-						whileInView="visible"
-					>
-						<Card
-							description={project.description}
-							link={project.link}
-							name={project.name}
-							skills={project.skills}
-							year={project.year}
-						/>
-					</motion.div>
-				))}
-			</div>
+		<main className='pb-16'>
+			<motion.section
+				initial='hidden'
+				variants={sectionVariants}
+				viewport={{ amount: 0.1, once: true }}
+				whileInView='visible'
+			>
+				<ul className='flex flex-col'>
+					{blogList.map((post, idx) => (
+						<li
+							className='py-6 border-b border-white/[0.06] last:border-b-0'
+							key={idx}
+						>
+							<Card
+								description={post.description}
+								link={post.link}
+								name={post.name}
+								skills={post.skills}
+								year={post.year}
+							/>
+						</li>
+					))}
+				</ul>
+			</motion.section>
 		</main>
 	);
 }

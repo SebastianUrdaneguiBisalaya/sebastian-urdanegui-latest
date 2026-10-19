@@ -19,29 +19,22 @@ export default function Card({
 }: Project) {
 	return (
 		<Link
-			className='w-full h-fit flex flex-row items-stretch gap-6 group'
+			className='w-full h-fit flex flex-col sm:flex-row items-start gap-1.5 sm:gap-6 group'
 			href={link ?? '/'}
 			rel='noopener noreferrer'
 			target='_blank'
 		>
-			<div className='flex flex-col'>
-				<span className='font-sora text-white/70 font-medium group-hover:text-white transition-all duration-500 ease-out'>
-					{year}
-				</span>
-			</div>
-			<div className='flex flex-col items-start gap-1'>
-				<h3
-					className='font-sora font-medium text-white cursor-pointer group-hover:scale-[1.07] transition-all duration-500 ease-out'
-				>
-					{name} —
+			<span className='font-mono text-xs text-white/42 shrink-0 sm:w-[64px] sm:pt-0.5'>
+				{year}
+			</span>
+			<div className='flex flex-col items-start gap-1.5 min-w-0'>
+				<h3 className='font-sora text-[15px] font-medium text-white group-hover:text-[var(--accent)] transition-colors duration-300 ease-out'>
+					{name}
 				</h3>
-				<p className='font-reddit-sans text-sm text-white/85'>{description}</p>
-				<div className='flex flex-wrap items-center gap-2 pt-2'>
+				<p className='font-reddit-sans text-sm leading-6 text-white/65'>{description}</p>
+				<div className='flex flex-wrap items-center gap-x-3 gap-y-1 pt-1'>
 					{skills.map((item, idx) => (
-						<span
-							className='font-reddit-sans text-xs text-white/80 bg-white/10 rounded-2xl px-2 py-1 whitespace-nowrap'
-							key={idx}
-						>
+						<span className='font-mono text-xs text-white/42' key={idx}>
 							{item}
 						</span>
 					))}
