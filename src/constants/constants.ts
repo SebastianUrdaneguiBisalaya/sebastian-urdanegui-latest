@@ -72,7 +72,7 @@ const projectsList: Project[] = [
 	{
 		description:
 			'An AI-powered platform that understands, translates, and formulates real-time responses during conversations.',
-		link: 'https://aiblabla.com',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/ai-blabla-web-platform',
 		name: 'aiblabla',
 		skills: [
 			'React.js',

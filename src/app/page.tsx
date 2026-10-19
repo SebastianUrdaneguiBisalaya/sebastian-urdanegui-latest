@@ -28,7 +28,6 @@ const entries: Entry[] = [
 		meta: 'SaaS · B2B2C',
 		period: '2026.05 — 2026.08',
 		role: 'membi — Co-Founder',
-		roleHref: 'https://membi.dev',
 	},
 	{
 		description: [
@@ -44,7 +43,7 @@ const entries: Entry[] = [
 		],
 		period: '2025',
 		role: 'aiblabla — Technical Lead',
-		roleHref: 'https://aiblabla.com',
+		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/ai-blabla-web-platform',
 	},
 	{
 		description: [
