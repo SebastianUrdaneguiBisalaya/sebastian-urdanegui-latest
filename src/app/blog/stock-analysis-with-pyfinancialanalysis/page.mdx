@@ -1,0 +1,217 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+
+<DocsToc>
+    <DocsTocItem id='what-it-does' title='What it does' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='prices-in-a-dataframe' title='Prices in a DataFrame' />
+    <DocsTocItem id='company-information' title='Company information' />
+    <DocsTocItem id='growth-and-the-base-date' title='Growth and the base date' />
+    <DocsTocItem id='risk-standard-deviation-and-variance' title='Risk: standard deviation and variance' />
+    <DocsTocItem id='charts' title='Charts' />
+    <DocsTocItem id='the-dashboard' title='The dashboard' />
+    <DocsTocItem id='limitations-today' title='Limitations today' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: October 25, 2026
+
+# **Stock Market Analysis in Python with pyFinancialAnalysis**
+
+In 2022 I wanted to answer simple questions about a stock without rewriting the same pandas and matplotlib code every time. How much did it grow? How volatile is it compared with another one? What did it do since a given date?
+
+**pyFinancialAnalysis** is the result: a small Python package, published on PyPI, that turns those questions into one-line calls. It was designed for Google Colab, but it works in any notebook. This post walks through it. The code is from 2022 and the post is from today, so there is a section at the end about what to check before you rely on it.
+
+The [repository](https://github.com/SebastianUrdaneguiBisalaya/py-financial-analysis) has the full source.
+
+## What it does
+
+The package has four modules, and each one builds on the previous one:
+
+- `informations` downloads data from Yahoo Finance through `yfinance`.
+- `analysis` computes growth, standard deviation and variance on a DataFrame.
+- `graphics` draws charts from the same DataFrame.
+- `dashboard` combines the main results in a single figure.
+
+<MermaidDiagram
+    title='How the modules fit together'
+    code={`
+flowchart LR
+    A["Yahoo Finance<br/>(yfinance)"] --> B["informations<br/>get_company_stock_information"]
+    B --> C["DataFrame<br/>one column per ticker"]
+    C --> D["analysis<br/>growth, std, variance"]
+    C --> E["graphics<br/>line, candlestick, histograms"]
+    D --> E
+    D --> F["dashboard<br/>financial_dashboard"]
+    `}
+/>
+
+The only data structure you pass around is a DataFrame indexed by date, with one column per ticker. If you build that DataFrame yourself, every function except the ones that call Yahoo Finance works with it.
+
+## Installation
+
+export const code1 = `pip install pyFinancialAnalysis`
+
+<CodeBlock language='bash' code={code1} />
+
+It depends on `yfinance`, `pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly`, `scipy` and `tqdm`. In Colab, the first line of a notebook is enough:
+
+export const code2 = `!pip install pyFinancialAnalysis`
+
+<CodeBlock language='python' code={code2} />
+
+## Prices in a DataFrame
+
+Everything starts with `get_company_stock_information`. It takes a list of tickers, a date range and the price column you want (`"Close"`, `"Open"`, `"High"`, `"Low"` or `"Volume"`).
+
+export const code3 = `from pyFinancialAnalysis.informations import get_company_stock_information
+
+stock_dataframe = get_company_stock_information(
+    ["AAPL", "AMZN"], "2022-01-01", "2022-10-30", "Close"
+)
+stock_dataframe.head()`
+
+<CodeBlock filename='notebook.ipynb' language='python' code={code3} />
+
+Internally it calls `yf.Ticker(ticker).history(...)` for each symbol and stores the chosen column. The result has the dates as index and `AAPL` and `AMZN` as columns. The other functions assume that shape.
+
+## Company information
+
+Two functions return facts about a company instead of prices.
+
+`get_basic_information_company` returns the full `yfinance` info as a pandas `Series`. `get_specific_information` picks one dataset by number:
+
+- `1`: major holders.
+- `2`: institutional holders.
+- `3`: market capitalization.
+- `4`: dividends.
+- `5` and `6`: option calls and puts for an expiration date.
+- `7`: the 15 latest analyst recommendations.
+
+export const code4 = `from pyFinancialAnalysis.informations import (
+    get_basic_information_company,
+    get_specific_information,
+)
+
+get_basic_information_company("AAPL")
+get_specific_information("AAPL", 4)                 # dividends
+get_specific_information("AAPL", 5, "2022-12-16")   # option calls for that expiry`
+
+<CodeBlock language='python' code={code4} />
+
+For options, the date must be one of the expiration dates Yahoo Finance offers. Otherwise the function prints a message asking for a valid `YYYY-MM-DD` date.
+
+## Growth and the base date
+
+`stock_growth` is the daily percentage change of each column: `(price_today - price_yesterday) / price_yesterday * 100`.
+
+`stock_base_growth` answers a different question: how is the stock doing relative to a starting day? It divides every price by the price on a **base date** and multiplies by 100, so the base date is always `100`. A value of `112` means 12% above the base.
+
+export const code5 = `from pyFinancialAnalysis.analysis import (
+    stock_growth,
+    stock_base_growth,
+    average_stock_growth,
+    average_stock_growth_base,
+)
+
+daily = stock_growth(stock_dataframe)
+since_base = stock_base_growth(stock_dataframe, "2022-03-01")
+
+average_stock_growth(stock_dataframe)                  # mean daily growth per stock
+average_stock_growth_base(stock_dataframe, "2022-03-01")`
+
+<CodeBlock language='python' code={code5} />
+
+Base growth is the useful one when you compare stocks with very different prices. Apple at 150 and a stock at 12 cannot share a chart, but both start at 100 on the base date.
+
+The base date has to be a trading day that exists in the DataFrame. `find_index_date` looks it up and, when the date is missing (a weekend, a holiday, or outside the range), prints an explanation instead of failing with a long traceback.
+
+## Risk: standard deviation and variance
+
+The same two views exist for risk. `stock_standard_deviation` and `stock_variance` are computed on the daily growth series, and the `_base` versions on the base-100 series.
+
+export const code6 = `from pyFinancialAnalysis.analysis import (
+    stock_standard_deviation,
+    stock_variance,
+    stock_standard_deviation_base,
+    stock_variance_base,
+)
+
+stock_standard_deviation(stock_dataframe)
+stock_variance(stock_dataframe)
+stock_standard_deviation_base(stock_dataframe, "2022-03-01")`
+
+<CodeBlock language='python' code={code6} />
+
+Because the input is already in percentage units, the standard deviation is in percentage points per day, and the variance is in squared percentage points. Compare the standard deviation across stocks: a higher value means a bumpier ride.
+
+## Charts
+
+The `graphics` module mirrors `analysis`. Each chart takes the same DataFrame:
+
+export const code7 = `from pyFinancialAnalysis.graphics import (
+    stock_price_graph_linear,
+    stock_price_growth_graph,
+    stock_price_growth_base_graph,
+    stock_average_growth_graph_bar,
+    stock_standard_deviation_graph_bar,
+    stock_chart_candlestick,
+    stock_histogram,
+    stock_histplot,
+)
+
+stock_price_graph_linear(stock_dataframe)
+stock_price_growth_graph(stock_dataframe)
+stock_price_growth_base_graph(stock_dataframe, "2022-03-01")
+stock_average_growth_graph_bar(stock_dataframe)
+stock_standard_deviation_graph_bar(stock_dataframe)`
+
+<CodeBlock language='python' code={code7} />
+
+A few of them do not take the DataFrame:
+
+- `stock_chart_candlestick("AAPL", start, end)` takes **one ticker as a string** and draws an interactive Plotly candlestick from open, high, low and close.
+- `stock_histogram(["AAPL", "AMZN"], start, end, "Close")` draws Plotly distribution plots for between 1 and 5 tickers.
+- `stock_histplot([...], start, end, "Close")` draws one seaborn histogram with a density curve per ticker.
+
+They download their own data because they need columns other than the one you chose, or a different layout.
+
+## The dashboard
+
+`financial_dashboard` puts the most useful views in one figure, so you can decide at a glance:
+
+1. Historical price, with a green line at each stock's maximum and a red line at its minimum.
+2. Growth relative to the base date.
+3. Standard deviation per stock.
+4. Variance per stock.
+5. A step histogram of prices.
+
+export const code8 = `from pyFinancialAnalysis.dashboard import financial_dashboard
+from pyFinancialAnalysis.informations import get_company_stock_information
+
+stocks = get_company_stock_information(
+    ["AAPL", "AMZN"], "2022-01-01", "2022-10-30", "Close"
+)
+financial_dashboard(stocks, "2022-10-10")`
+
+<CodeBlock language='python' code={code8} />
+
+The title includes the date it was generated, which is handy when you save the figure and come back to it later. The function assigns up to eight colors in order, so it is meant for a handful of stocks, not a whole index.
+
+## Limitations today
+
+This code is four years old, and some of it shows.
+
+- **`yfinance` has changed.** I wrote the package against the 2022 API. Functions that read `Ticker.history` are the most likely to keep working. `get_specific_information` depends on the exact shape of `major_holders`, `recommendations` and the option chain, so check those first. I have not re-run the whole package against the current `yfinance`.
+- **Parallel code paths.** `stock_histogram` repeats the same block for 1 to 5 tickers. It works, but a loop would be shorter, and it is the first thing I would refactor.
+- **No tests.** The `tests` folder is a placeholder. If you extend the package, add tests for `analysis` first: those functions are pure and need no network.
+- **It is descriptive, not predictive.** Growth and standard deviation describe the past. They are a starting point for questions, not investment advice.
+
+## Summary
+
+- One DataFrame with a column per ticker feeds every function.
+- Use `stock_growth` for day-to-day changes and `stock_base_growth` to compare stocks from the same starting point.
+- Standard deviation and variance give a first read on risk.
+- `financial_dashboard` is the shortest path from a ticker list to a decision-ready figure.
+- Before using it today, re-check the functions that rely on the shape of `yfinance` data.

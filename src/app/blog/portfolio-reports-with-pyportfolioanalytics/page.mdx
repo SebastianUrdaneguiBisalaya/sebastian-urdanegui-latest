@@ -1,0 +1,209 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+
+<DocsToc>
+    <DocsTocItem id='where-it-came-from' title='Where it came from' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='closing-prices' title='Closing prices' />
+    <DocsTocItem id='log-returns' title='Log returns' />
+    <DocsTocItem id='annualized-return-and-volatility' title='Annualized return and volatility' />
+    <DocsTocItem id='covariance-and-correlation' title='Covariance and correlation' />
+    <DocsTocItem id='buying-and-selling-the-portfolio' title='Buying and selling the portfolio' />
+    <DocsTocItem id='the-pdf-report' title='The PDF report' />
+    <DocsTocItem id='limitations-today' title='Limitations today' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: October 25, 2026
+
+# **Portfolio Analytics and PDF Reports in Python with pyportfolioanalytics**
+
+In 2022 and early 2023 I took an introductory course on stock markets. The final project was a financial report for a portfolio: price trends, returns, risk, correlations and the result of buying and selling. Doing that by hand in a notebook takes hours, and it has to be redone for every portfolio.
+
+**pyportfolioanalytics** automates it. You give it tickers, dates, weights and an initial investment, and it returns the charts and a PDF report. The code is from that time and this post is from today, so the last section covers what to check before using it now.
+
+The [repository](https://github.com/SebastianUrdaneguiBisalaya/py-portfolio-analytics) has the source, the sample notebook and an example report.
+
+## Where it came from
+
+It started as the same idea as my other package, [pyFinancialAnalysis](/blog/stock-analysis-with-pyfinancialanalysis), with a different goal. That one explores single stocks. This one treats a set of stocks as a **portfolio**, where the weight of each position matters and the report is the deliverable.
+
+Two things are worth knowing up front:
+
+- The user-facing text (chart titles, labels and the report) is in **Spanish**, because the course was in Spanish.
+- The report assumes amounts in Peruvian soles (`S/.`).
+
+<MermaidDiagram
+    title='From tickers to report'
+    code={`
+flowchart TD
+    A["Tickers, dates,<br/>weights, investment"] --> B["stock_price_close<br/>closing prices"]
+    B --> C["return_daily<br/>log returns"]
+    C --> D["Mean and volatility<br/>annualized"]
+    C --> E["Covariance and<br/>correlation matrices"]
+    B --> F["BuySellStocks<br/>shares, income, benefit"]
+    B --> G["Price chart<br/>and histogram"]
+    D --> H["PNG files in plots/"]
+    E --> H
+    F --> H
+    G --> H
+    H --> I["ReportFinancial.report()<br/>pdfs/report.pdf"]
+    `}
+/>
+
+## Installation
+
+export const code1 = `pip install pyportfolioanalytics==0.4.0`
+
+<CodeBlock language='bash' code={code1} />
+
+In Google Colab, install the system libraries first. `reportlab` and the drawing libraries need them, and installing them upfront avoids dependency errors:
+
+export const code2 = `!apt-get install -y python3-dev libffi-dev libcairo2-dev
+!pip install pyportfolioanalytics==0.4.0`
+
+<CodeBlock language='python' code={code2} />
+
+The package imports `matplotlib` with the non-interactive `Agg` backend, so that it can save images without a display. If you want charts inline in a notebook, run `%matplotlib inline` **after** the import:
+
+export const code3 = `from pyportfolioanalytics.utils import (
+    stock_price_close,
+    return_daily,
+    covariance_matrix,
+    plot_price_close,
+    histogram_yield,
+    plot_yield_deviation_mean,
+    plot_cov_matrix,
+    plot_corr_matrix,
+    plot_logarithmic_yield,
+    BuySellStocks,
+    ReportFinancial,
+)
+
+import matplotlib.pyplot as plt
+%matplotlib inline`
+
+<CodeBlock filename='notebook.ipynb' language='python' code={code3} />
+
+## Closing prices
+
+All examples use the same portfolio: Apple, Amazon, Netflix, Tesla, Google and Airbnb, from `2022-01-01` to `2023-03-31`.
+
+export const code4 = `stocks = ["AAPL", "AMZN", "NFLX", "TSLA", "GOOGL", "ABNB"]
+
+prices = stock_price_close(stocks, start="2022-01-01", end="2023-03-31")
+prices.head()
+
+plot_price_close(stocks, "2022-01-01", "2023-03-31")`
+
+<CodeBlock language='python' code={code4} />
+
+`stock_price_close` downloads each ticker with `yfinance` and returns a DataFrame with one closing-price column per stock. If you omit the dates, they default to `2022-01-01` and `2023-01-01`.
+
+## Log returns
+
+Prices are not comparable between stocks, returns are. The package uses **logarithmic returns**: `ln(price_today / price_yesterday)`.
+
+export const code5 = `returns = return_daily(stocks, "2022-01-01", "2023-03-31")
+
+plot_logarithmic_yield(stocks, "2022-01-01", "2023-03-31")
+histogram_yield(stocks, "2022-01-01", "2023-03-31")`
+
+<CodeBlock language='python' code={code5} />
+
+Log returns add up over time, so the return for a month is the sum of its daily returns. That is why they are the usual choice when you later multiply by the number of trading days to annualize. The histogram shows how daily returns are distributed: a narrow one means a calm stock, a wide one with long tails means a wild one.
+
+## Annualized return and volatility
+
+`plot_yield_deviation_mean` draws one chart with both numbers, using 252 trading days per year:
+
+- **Average return:** `mean daily log return * 252 * 100`, shown as bars.
+- **Volatility:** `sqrt(daily variance * 252) * 100`, shown as an orange line on a second axis.
+
+export const code6 = `fig = plot_yield_deviation_mean(stocks, "2022-01-01", "2023-03-31")`
+
+<CodeBlock language='python' code={code6} />
+
+Read them together. A stock with a high return and a high volatility earned that return by taking more risk. This is the first thing a portfolio report should show.
+
+## Covariance and correlation
+
+A portfolio is not the sum of its stocks. How they move together decides the total risk, and two matrices describe that.
+
+export const code7 = `cov = covariance_matrix(stocks, "2022-01-01", "2023-03-31")
+
+plot_cov_matrix(stocks, "2022-01-01", "2023-03-31")
+plot_corr_matrix(stocks, "2022-01-01", "2023-03-31")`
+
+<CodeBlock language='python' code={code7} />
+
+- The **covariance matrix** has the variance of each stock on the diagonal and how pairs move together elsewhere. Its values depend on the scale of the returns.
+- The **correlation matrix** rescales the same information to the range `-1` to `1`, which is easier to read. Values close to `1` mean two stocks move together, so holding both adds little diversification.
+
+## Buying and selling the portfolio
+
+`BuySellStocks` simulates a simple strategy: buy on the first day of the range, sell on the last one.
+
+export const code8 = `operation = BuySellStocks(
+    ticker=stocks,
+    start="2022-01-01",
+    end="2023-03-31",
+    weights=[0.2, 0.1, 0.1, 0.25, 0.25, 0.1],
+    investment=100000,
+)
+
+operation.first_price_stock()          # purchase table
+operation.last_price_stock()           # sale table
+operation.benefits_buy_sell_stock()    # net benefit
+operation.plot_income_outcome_benefits()`
+
+<CodeBlock language='python' code={code8} />
+
+The logic is:
+
+1. The investment for each stock is `investment * weight`.
+2. The number of shares is that amount divided by the first closing price, **rounded to a whole number**.
+3. The income is those shares times the last closing price.
+4. The benefit is the total income minus the initial investment.
+
+Because shares are whole numbers, part of the money is never invested, and the benefit is a little different from what exact fractions would give. The weights are expected to add up to `1`, and the package does not check it.
+
+## The PDF report
+
+`ReportFinancial` runs everything and writes the report:
+
+export const code9 = `report = ReportFinancial(
+    stocks,
+    "2022-01-01",
+    "2023-03-31",
+    [0.2, 0.1, 0.1, 0.25, 0.25, 0.1],
+    100000,
+    "Your Name",
+)
+report.report()`
+
+<CodeBlock language='python' code={code9} />
+
+It creates two folders in the current directory:
+
+- `plots/` with the PNG files: prices, log returns, histogram, return and volatility, covariance, correlation and the benefit chart.
+- `pdfs/report.pdf`, built with `reportlab`. It has the author name, a grid of the first four charts, both matrices, the purchase and sale tables, a sentence stating whether the operation ended in a gain or a loss, and the benefit chart.
+
+The PNG files are useful on their own, for slides or a document. In Colab, download `pdfs/report.pdf` from the file panel on the left.
+
+## Limitations today
+
+- **Only for the date range you give.** All results are historical. The report describes what happened, not what will.
+- **`yfinance` has changed since 2022.** The package indexes `yf.download(...)["Close"]` and assumes one column per ticker. Recent `yfinance` versions can return multi-level columns, which would break that line. Check this first if prices fail to load. I have not re-run the package against the latest version.
+- **Slow by design.** Each helper downloads the data again, so one report triggers many downloads. Passing a DataFrame around would be faster and I would do that in a rewrite.
+- **Spanish and soles are hard-coded** in the report text.
+- **The strategy is simple.** One purchase, one sale, no fees, taxes or dividends.
+
+## Summary
+
+- Give it tickers, dates, weights and an investment, and it produces the charts and a PDF.
+- Log returns are the base for annualized return, volatility, covariance and correlation.
+- Read return and volatility together, and use the correlation matrix to judge diversification.
+- `BuySellStocks` rounds shares to whole numbers, so the result differs slightly from an exact calculation.
+- Before using it today, check that `yfinance` still returns the shape the package expects.
