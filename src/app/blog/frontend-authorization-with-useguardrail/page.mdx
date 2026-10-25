@@ -1,0 +1,407 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+<DocsToc>
+    <DocsTocItem id='core-concepts' title='Core concepts' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='step-1-define-your-rules' title='Step 1: Define your rules' />
+    <DocsTocItem id='step-2-create-a-store-and-a-provider' title='Step 2: Create a store and a provider' />
+    <DocsTocItem id='step-3-use-it-in-components' title='Step 3: Use it in components' />
+    <DocsTocItem id='how-decisions-are-combined' title='How decisions are combined' />
+    <DocsTocItem id='beyond-roles-ownership-and-plans-with-abac' title='Beyond roles: ownership and plans with ABAC' />
+    <DocsTocItem id='typed-actions-and-resources' title='Typed actions and resources' />
+    <DocsTocItem id='loading-state-without-flashes' title='Loading state without flashes' />
+    <DocsTocItem id='nextjs-app-router' title='Next.js (App Router)' />
+    <DocsTocItem id='enforce-the-same-rules-on-the-server' title='Enforce the same rules on the server' />
+    <DocsTocItem id='multi-tenancy' title='Multi-tenancy' />
+    <DocsTocItem id='connect-your-backend-with-adapters' title='Connect your backend with adapters' />
+    <DocsTocItem id='debugging-and-testing' title='Debugging and testing' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: October 25, 2026
+
+# **Frontend Authorization with useguardrail in React and Next.js**
+
+Most apps end up with permission checks scattered across components: `if (user.role === 'admin')` here, `user.plan !== 'free'` there. It works until roles multiply, tenants appear, or a rule needs to know who owns a record.
+
+**useguardrail** moves those decisions into one place. You describe who can do what with **RBAC** (roles), **ABAC** (attributes) and **ReBAC** (relationships), evaluate it synchronously, and let your UI react to the answer. The core is framework-independent and has zero runtime dependencies. `@useguardrail/react` adds a provider, two hooks and a `Can` component.
+
+This guide takes you from the first check to a production-ready Next.js setup. The [repository](https://github.com/SebastianUrdaneguiBisalaya/useguardrail) has the full API reference.
+
+> **Client-side authorization is UX, not security.** Use it to decide what to show, enable or route to. Your backend must always re-enforce every decision.
+
+## Core concepts
+
+- **Subject**: who is asking, `{ id, roles?, attributes? }`.
+- **Resource**: what is being accessed, `{ type, id?, attributes? }`.
+- **Action**: what they want to do, a string such as `"update"`.
+- **Context**: the situation, `{ tenantId?, attributes? }`.
+- **Evaluator**: one authorization model (RBAC, ABAC or ReBAC). It allows, denies, or has no opinion.
+- **Engine**: combines evaluators into one decision.
+- **Store**: holds the engine, subject, context and loading status. Your UI subscribes to it.
+
+## Installation
+
+<InstallSnippet packages='@useguardrail/core @useguardrail/react' />
+
+It requires React 18 or 19 and ships ESM and CommonJS builds with types.
+
+## Step 1: Define your rules
+
+Start with roles. Permissions follow the `resource:action` format, and `inherits` lets a role reuse another one.
+
+export const code1 = `import { createEngine, createRbacEvaluator } from '@useguardrail/core';
+
+export const engine = createEngine({
+  evaluators: [
+    createRbacEvaluator({
+      roles: {
+        viewer: { permissions: ['invoice:read'] },
+        editor: { permissions: ['invoice:update'], inherits: ['viewer'] },
+      },
+    }),
+  ],
+});`
+
+<CodeBlock filename='lib/authorization.ts' language='ts' code={code1} />
+
+The engine is stateless, so it is safe to share between requests.
+
+## Step 2: Create a store and a provider
+
+The store couples the engine with the current user. In a client-only app (Vite, CRA) create it once, outside React:
+
+export const code2 = `import { createAuthorizationStore } from '@useguardrail/core';
+import { AuthorizationProvider } from '@useguardrail/react';
+import { engine } from './authorization';
+
+const store = createAuthorizationStore({
+  engine,
+  subject: { id: 'user:ana', roles: ['editor'] },
+  context: { tenantId: 'acme' },
+});
+
+export function App() {
+  return (
+    <AuthorizationProvider store={store}>
+      <Invoice id='42' />
+    </AuthorizationProvider>
+  );
+}`
+
+<CodeBlock filename='src/App.tsx' language='tsx' code={code2} />
+
+For Next.js, do not create the store at module level. See [Next.js](#nextjs-app-router).
+
+## Step 3: Use it in components
+
+export const code3 = `import { Can, useCan } from '@useguardrail/react';
+
+export function Invoice({ id }: { id: string }) {
+  const canEdit = useCan('update', { type: 'invoice', id });
+
+  return (
+    <>
+      <button disabled={!canEdit}>Edit</button>
+      <Can action='delete' resource={{ type: 'invoice', id }} fallback={<span>Read only</span>}>
+        <button>Delete</button>
+      </Can>
+    </>
+  );
+}`
+
+<CodeBlock filename='src/Invoice.tsx' language='tsx' code={code3} />
+
+- `useCan(action, resource)` returns a `boolean`. Use it to disable or branch.
+- `<Can>` renders its children when allowed and `fallback` otherwise.
+- A component re-renders only when **its own** answer changes, not on every store update.
+
+Outside React, call the store directly: `store.can('update', { type: 'invoice', id: '42' })`.
+
+## How decisions are combined
+
+The rules are intentionally conservative:
+
+- If any evaluator denies, the result is `deny`.
+- If at least one allows and none deny, the result is `allow`.
+- If no evaluator has an opinion, the result is `deny`.
+- If an evaluator throws or returns a malformed decision, the result is `deny`.
+
+Evaluation never throws. Misconfiguration, such as a role inheritance cycle, throws a typed error when you create the engine, not while rendering.
+
+<MermaidDiagram
+    title='Decision flow'
+    code={`
+flowchart TD
+    A["can(action, resource)"] --> B["Engine runs the evaluators<br/>RBAC, ABAC, ReBAC"]
+    B --> C{"Any evaluator denies,<br/>throws or misbehaves?"}
+    C -- Yes --> D["deny"]
+    C -- No --> E{"At least one allows?"}
+    E -- Yes --> F["allow"]
+    E -- No --> G["deny (default deny)"]
+    `}
+/>
+
+
+## Beyond roles: ownership and plans with ABAC
+
+Roles cannot express "authors can edit their own posts". An ABAC policy compares fields instead:
+
+export const code4 = `import { createAbacEvaluator } from '@useguardrail/core';
+
+const ownership = createAbacEvaluator({
+  policies: [
+    {
+      id: 'authors-edit-their-posts',
+      effect: 'allow',
+      actions: ['update', 'delete'],
+      resources: ['post'],
+      conditions: [{ field: 'subject.id', op: 'eq', valueFrom: 'resource.attributes.authorId' }],
+    },
+    {
+      id: 'reports-need-a-paid-plan',
+      effect: 'allow',
+      actions: ['read'],
+      resources: ['report'],
+      conditions: [{ field: 'context.attributes.plan', op: 'in', value: ['pro', 'enterprise'] }],
+    },
+  ],
+});
+
+// The resource you check carries the attribute:
+store.can('update', { type: 'post', id: '9', attributes: { authorId: 'user:ana' } });`
+
+<CodeBlock language='ts' code={code4} />
+
+Operators are `eq`, `neq`, `in`, `nin`, `gt`, `gte`, `lt`, `lte`, `contains` and `exists`. Conditions can be grouped with `all`, `any` and `not`. Pass the evaluator next to the RBAC one: `evaluators: [rbac, ownership]`.
+
+For "who can see this document through a folder or a team", use the ReBAC evaluator with `createRelationGraph`. It follows relation tuples, usersets and inheritance, and it is cycle-safe.
+
+## Typed actions and resources
+
+By default actions and resource types are plain strings, so a typo fails silently as `deny`. Declare a schema once and the compiler checks everything.
+
+export const code5 = `import { forSchema } from '@useguardrail/react';
+
+type AppSchema = {
+  invoice: 'read' | 'update' | 'delete';
+  user: 'read' | 'invite';
+};
+
+export const { AuthorizationProvider, Can, useCan, useAccess } = forSchema<AppSchema>();
+
+// useCan('invite', { type: 'invoice' })  -> compile error: invite is a user action`
+
+<CodeBlock filename='lib/authorization-ui.ts' language='ts' code={code5} />
+
+Declare the schema with `type`, not `interface`. The same schema goes to `forSchema` from `@useguardrail/core` for your evaluators. There is no runtime cost: it only retypes the same components.
+
+## Loading state without flashes
+
+Evaluation is synchronous, but fetching the session is not. If the store starts without a subject, every check is denied and the UI flashes "no access". Start in `loading` instead:
+
+export const code6 = `import { createAuthorizationStore } from '@useguardrail/core';
+import { Can, useAccess } from '@useguardrail/react';
+
+const store = createAuthorizationStore({ engine, status: 'loading' });
+
+void store.load(async ({ signal }) => {
+  const me = await fetch('/api/me', { signal }).then((r) => r.json());
+  return { subject: { id: me.id, roles: me.roles }, context: { tenantId: me.org } };
+});
+
+function Actions({ id }: { id: string }) {
+  return (
+    <Can action='update' resource={{ type: 'invoice', id }} loading={<Skeleton />} fallback={<ReadOnlyBadge />}>
+      <EditButton />
+    </Can>
+  );
+}
+
+function InvoicePage({ id }: { id: string }) {
+  const access = useAccess('read', { type: 'invoice', id }); // 'loading' | 'allowed' | 'denied'
+  if (access === 'loading') return <Skeleton />;
+  return access === 'allowed' ? <Invoice id={id} /> : <NoAccess />;
+}`
+
+<CodeBlock language='tsx' code={code6} />
+
+`load` never rejects, applies subject, context and engine atomically, and ignores stale results when called again. That makes it safe for refreshing permissions or switching tenants: a newer call cancels the previous one.
+
+## Next.js (App Router)
+
+Server rendering adds one rule that matters: **a server process serves many users**. A store created at module level would hand one user's subject to the next request.
+
+The React hooks use the store's initial snapshot on the server and during hydration, so the first client render always matches the server HTML. The recipe is to fetch the session in a Server Component, pass it as plain props, and create the store inside a client component.
+
+<MermaidDiagram
+    title='Server rendering and enforcement' variant='sequence'
+    code={`
+sequenceDiagram
+    participant B as Browser
+    participant S as Next.js server
+    B->>S: Request page
+    S->>S: getSession()
+    Note over S: Server Component passes the session<br/>as plain props to Providers
+    S->>S: Providers creates the store (one per request)
+    S-->>B: HTML rendered with the initial snapshot
+    B->>B: Hydrate with the same initial snapshot
+    B->>S: DELETE /api/invoices/42
+    S->>S: engine.evaluate(...)
+    S-->>B: 204 or 403
+    `}
+/>
+
+
+export const code7 = `'use client';
+
+import { createAuthorizationStore } from '@useguardrail/core';
+import { AuthorizationProvider } from '@useguardrail/react';
+import { useState, type ReactNode } from 'react';
+import { engine } from '@/lib/authorization';
+
+interface Session {
+  subject: { id: string; roles: string[] };
+  context: { tenantId: string };
+}
+
+export function Providers({ session, children }: { session: Session; children: ReactNode }) {
+  // One store per component instance, on the server and in the browser.
+  const [store] = useState(() =>
+    createAuthorizationStore({ engine, subject: session.subject, context: session.context }),
+  );
+
+  return <AuthorizationProvider store={store}>{children}</AuthorizationProvider>;
+}`
+
+<CodeBlock filename='app/providers.tsx' language='tsx' code={code7} />
+
+export const code8 = `import { getSession } from '@/lib/session';
+import { Providers } from './providers';
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession(); // cookies, database, your auth provider...
+
+  return (
+    <html lang='en'>
+      <body>
+        <Providers session={session}>{children}</Providers>
+      </body>
+    </html>
+  );
+}`
+
+<CodeBlock filename='app/layout.tsx' language='tsx' code={code8} />
+
+Any component that calls `useCan` or renders `Can` needs `'use client'`, like any React hook. The package itself ships with that directive, so importing it from a Server Component is fine.
+
+Keep in mind:
+
+- Changes after creation (`setSubject`, `setStatus`, `load`) are not part of the server render. The client applies them right after hydration.
+- Do not call `load` on the server. Rendering is synchronous. Use `status: 'loading'` only for client-side fetching.
+
+## Enforce the same rules on the server
+
+The UI check is a convenience. The real check belongs in your route handlers and Server Actions. Because the core has no browser dependency, you can reuse the **same engine** there:
+
+export const code9 = `import { engine } from '@/lib/authorization';
+import { getSession } from '@/lib/session';
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const session = await getSession();
+
+  const decision = engine.evaluate({
+    subject: session.subject,
+    action: 'delete',
+    resource: { type: 'invoice', id },
+    context: session.context,
+  });
+
+  if (decision.effect !== 'allow') {
+    return Response.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  // ...delete the invoice
+  return new Response(null, { status: 204 });
+}`
+
+<CodeBlock filename='app/api/invoices/[id]/route.ts' language='ts' code={code9} />
+
+One definition of the rules, enforced on the server and mirrored in the UI.
+
+## Multi-tenancy
+
+The tenant always travels in `context.tenantId`, never in module-level state. For ReBAC, `createTenantRelationGraph` gives each tenant its own graph, so a relation in one tenant can never grant access in another, even when the references look alike.
+
+export const code10 = `import { createRebacEvaluator, createTenantRelationGraph } from '@useguardrail/core';
+
+const graph = createTenantRelationGraph({
+  tuples: {
+    acme: [{ object: 'doc:1', relation: 'viewer', subject: 'user:ana' }],
+    globex: [{ object: 'doc:1', relation: 'viewer', subject: 'user:bob' }],
+  },
+});
+
+const rebac = createRebacEvaluator({ graph, requirements: { doc: { read: 'viewer' } } });
+
+store.setContext({ tenantId: 'acme' }); // switching tenant switches the graph`
+
+<CodeBlock language='ts' code={code10} />
+
+With no tenant, or an unknown one, the evaluator has no opinion and the result is `deny`.
+
+## Connect your backend with adapters
+
+Your API rarely returns the exact shape the engine expects. `@useguardrail/adapters` maps responses with dot paths, so the engine never needs to know what your API looks like.
+
+export const code11 = `import { createSessionAdapter } from '@useguardrail/adapters';
+
+const adaptSession = createSessionAdapter({
+  subjectId: 'user.id',
+  roles: 'user.roles',
+  tenantId: 'organization.id',
+});
+
+const { subject, context } = adaptSession(await fetchMe());`
+
+<CodeBlock language='ts' code={code11} />
+
+There are also adapters for role lists and for relation tuples, including OpenFGA and SpiceDB responses.
+
+## Debugging and testing
+
+Rules are plain data, so you can test them without rendering anything. When a button is unexpectedly hidden, `explain` tells you why:
+
+export const code12 = `import { createEngine, createRbacEvaluator } from '@useguardrail/core';
+import { expect, it } from 'vitest';
+
+it('viewers cannot update invoices', () => {
+  const engine = createEngine({
+    evaluators: [createRbacEvaluator({ roles: { viewer: { permissions: ['invoice:read'] } } })],
+  });
+  const request = {
+    subject: { id: 'user:ana', roles: ['viewer'] },
+    action: 'update',
+    resource: { type: 'invoice' },
+    context: {},
+  };
+
+  expect(engine.evaluate(request).effect).toBe('deny');
+  console.log(engine.explain(request).trace); // which evaluator decided, and why
+});`
+
+<CodeBlock language='ts' code={code12} />
+
+In the UI, `useAuthorizationStore().explain(action, resource)` returns the decision, the store status and the per-evaluator trace. The hook does not subscribe, so it never causes a re-render.
+
+## Summary
+
+- Define rules once, as data, and share the engine between server and client.
+- Use `useCan` and `Can` in the UI, and type them with a schema.
+- Model loading explicitly so users never see a false "no access".
+- In Next.js, create the store per request inside a client component, never at module level.
+- Treat the UI as a hint. The server decides.

@@ -21,6 +21,7 @@ export default function Lenis() {
 	return (
 		<ReactLenis
 			options={{
+				allowNestedScroll: true,
 				autoRaf: false,
 			}}
 			ref={lenisRef}

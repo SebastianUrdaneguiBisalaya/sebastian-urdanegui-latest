@@ -28,13 +28,13 @@ export default function Navigation() {
 						<Link
 							className={cn(
 								'relative font-sora font-medium text-sm leading-7 px-3.5 py-1 rounded-full cursor-pointer transition-colors duration-300 ease-out text-foreground/55 hover:text-foreground',
-								active && 'text-foreground bg-foreground/[0.06]'
+								active && 'text-foreground bg-foreground/6'
 							)}
 							href={item.slug}
 							key={item.slug}
 						>
 							{item.name}
-							{active && <span className='absolute left-1/2 -translate-x-1/2 bottom-0.5 h-[3px] w-[3px] rounded-full' style={{ background: 'var(--accent)' }} />}
+							{active && <span className='absolute left-1/2 -translate-x-1/2 bottom-0.5 h-0.75 w-0.75 rounded-full' style={{ background: 'var(--accent)' }} />}
 						</Link>
 					);
 				})}

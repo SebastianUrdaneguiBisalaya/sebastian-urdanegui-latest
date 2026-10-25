@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
 	color-scheme: light;
 	--background: #fafaf8;
@@ -10,7 +12,12 @@
 	--border-subtle: rgb(20 20 19 / 8%);
 	--border-strong: rgb(20 20 19 / 20%);
 	--accent: #94650f;
-	--code-background: #f1f1ee;
+	--muted: #eeeeeb;
+	--code-tag: #1c5fa8;
+	--json-key: #8a5a0b;
+	--json-value: #2f7a57;
+	--destructive: #b3261e;
+	--success: #1f7a45;
 }
 
 .dark {
@@ -23,7 +30,12 @@
 	--border-subtle: rgb(247 247 246 / 6%);
 	--border-strong: rgb(247 247 246 / 18%);
 	--accent: #d9a441;
-	--code-background: #000;
+	--muted: #171717;
+	--code-tag: #7fb3e6;
+	--json-key: #d9a441;
+	--json-value: #8fc9a9;
+	--destructive: #f08a8a;
+	--success: #7ec699;
 }
 
 @theme inline {
@@ -36,7 +48,23 @@
 	--color-border-strong: var(--border-strong);
 	--color-ring: var(--accent);
 	--color-accent: var(--accent);
-	--color-code: var(--code-background);
+	--color-muted: var(--muted);
+	--color-code-tag: var(--code-tag);
+	--color-json-key: var(--json-key);
+	--color-json-value: var(--json-value);
+	--color-destructive: var(--destructive);
+	--color-success: var(--success);
+	--animate-fade-scale-in: fade-scale-in 150ms ease-out;
+	@keyframes fade-scale-in {
+		from {
+			opacity: 0;
+			transform: scale(0.75);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
 	--font-reddit-sans: var(--font-reddit-sans);
 	--font-sora: var(--font-sora);
 	--font-mono: var(--font-jetbrains-mono);
@@ -84,15 +112,6 @@ body {
 .cursor-border.cursor--hover {
 	width: 44px;
 	height: 44px;
-}
-
-pre code span {
-	font-family: var(--font-jetbrains-mono), monospace;
-}
-
-pre code {
-	font-size: 13px;
-	line-height: 1.6;
 }
 
 ::view-transition-old(root),

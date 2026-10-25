@@ -16,6 +16,9 @@ importers:
       "@next/mdx":
         specifier: 16.1.3
         version: 16.1.3(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@19.3.0)(react@19.2.4))
+      "@ridemountainpig/svgl-react":
+        specifier: 1.0.18
+        version: 1.0.18(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       "@types/mdx":
         specifier: 2.0.13
         version: 2.0.13
@@ -25,9 +28,6 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
-      dedent:
-        specifier: 1.7.1
-        version: 1.7.1
       lenis:
         specifier: 1.3.17
         version: 1.3.17(react@19.2.4)
@@ -52,15 +52,12 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
-      rehype-pretty-code:
-        specifier: 0.14.1
-        version: 0.14.1(shiki@3.21.0)
+      refractor:
+        specifier: 5.0.0
+        version: 5.0.0
       remark-gfm:
         specifier: 4.0.1
         version: 4.0.1
-      shiki:
-        specifier: 3.21.0
-        version: 3.21.0
       tailwind-merge:
         specifier: 3.4.0
         version: 3.4.0
@@ -71,6 +68,9 @@ importers:
       "@tailwindcss/postcss":
         specifier: "4"
         version: 4.3.3
+      "@types/hast":
+        specifier: 3.0.5
+        version: 3.0.5
       "@types/node":
         specifier: "20"
         version: 20.19.43
@@ -446,26 +446,11 @@ packages:
     cpu: [ x64 ]
     os: [ win32 ]
 
-  "@shikijs/core@3.21.0":
-    resolution: { integrity: sha512-AXSQu/2n1UIQekY8euBJlvFYZIw0PHY63jUzGbrOma4wPxzznJXTXkri+QcHeBNaFxiiOljKxxJkVSoB3PjbyA== }
-
-  "@shikijs/engine-javascript@3.21.0":
-    resolution: { integrity: sha512-ATwv86xlbmfD9n9gKRiwuPpWgPENAWCLwYCGz9ugTJlsO2kOzhOkvoyV/UD+tJ0uT7YRyD530x6ugNSffmvIiQ== }
-
-  "@shikijs/engine-oniguruma@3.21.0":
-    resolution: { integrity: sha512-OYknTCct6qiwpQDqDdf3iedRdzj6hFlOPv5hMvI+hkWfCKs5mlJ4TXziBG9nyabLwGulrUjHiCq3xCspSzErYQ== }
-
-  "@shikijs/langs@3.21.0":
-    resolution: { integrity: sha512-g6mn5m+Y6GBJ4wxmBYqalK9Sp0CFkUqfNzUy2pJglUginz6ZpWbaWjDB4fbQ/8SHzFjYbtU6Ddlp1pc+PPNDVA== }
-
-  "@shikijs/themes@3.21.0":
-    resolution: { integrity: sha512-BAE4cr9EDiZyYzwIHEk7JTBJ9CzlPuM4PchfcA5ao1dWXb25nv6hYsoDiBq2aZK9E3dlt3WB78uI96UESD+8Mw== }
-
-  "@shikijs/types@3.21.0":
-    resolution: { integrity: sha512-zGrWOxZ0/+0ovPY7PvBU2gIS9tmhSUUt30jAcNV0Bq0gb2S98gwfjIs1vxlmH5zM7/4YxLamT6ChlqqAJmPPjA== }
-
-  "@shikijs/vscode-textmate@10.1.0":
-    resolution: { integrity: sha512-cVBuhDQjBZaNMTwBquYfPydrUP+E3hE6oYGasx8h6ZrODIM7/r+gxLDXdd66oszbrggZHEntdE6j+5gYIVyMWQ== }
+  "@ridemountainpig/svgl-react@1.0.18":
+    resolution: { integrity: sha512-XdhPdkH4OfcEete2lyjHATeTcz/6DCUkh77hys6oB50xGLEq7tYoKxCCk3y5Ozqmw6Zc8j+PA7VfjB1MpPjGMw== }
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0
 
   "@swc/helpers@0.5.15":
     resolution: { integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g== }
@@ -681,6 +666,9 @@ packages:
 
   "@types/node@20.19.43":
     resolution: { integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA== }
+
+  "@types/prismjs@1.26.6":
+    resolution: { integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw== }
 
   "@types/react-dom@19.3.0":
     resolution: { integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q== }
@@ -954,14 +942,6 @@ packages:
   decode-named-character-reference@1.3.0:
     resolution: { integrity: sha512-GtpQYB283KrPp6nRw50q3U9/VfOutZOe103qlN7BPP6Ad27xYnOIWv4lPzo8HCAL+mMZofJ9KEy30fq6MfaK6Q== }
 
-  dedent@1.7.1:
-    resolution: { integrity: sha512-9JmrhGZpOlEgOLdQgSm0zxFaYoQon408V1v49aqTWuXENVlnCuY9JBZcXZiCsZQWDjTm5Qf/nIvAy77mXDAjEg== }
-    peerDependencies:
-      babel-plugin-macros: ^3.1.0
-    peerDependenciesMeta:
-      babel-plugin-macros:
-        optional: true
-
   delaunator@5.1.0:
     resolution: { integrity: sha512-AGrQ4QSgssa1NGmWmLPqN5NY2KajF5MqxetNEO+o0n3ZwZZeTmt7bBnvzHWrmkZFxGgr4HdyFgelzgi06otLuQ== }
 
@@ -982,10 +962,6 @@ packages:
   enhanced-resolve@5.26.0:
     resolution: { integrity: sha512-9vhedylFonb2YGogzUKX6+Ja72gOJbN1QHAqdrvqLwhdl/QWbKopzoUC9EbQNVsAns/bx/4uyqalrQAoy1IByw== }
     engines: { node: ">=10.13.0" }
-
-  entities@6.0.1:
-    resolution: { integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g== }
-    engines: { node: ">=0.12" }
 
   esast-util-from-estree@2.0.0:
     resolution: { integrity: sha512-4CyanoAudUSBAn5K13H4JhsMH6L9ZP7XbLVe/dKybkxMO7eDyLsT8UHl9TRNrU2Gr9nz+FovfSIjuXWJ81uVwQ== }
@@ -1041,35 +1017,20 @@ packages:
   hachure-fill@0.5.2:
     resolution: { integrity: sha512-3GKBOn+m2LX9iq+JC1064cSFprJY4jL1jCXTcpnfER5HYE2l/4EfWSGzkPa/ZDBmYI0ZOEj5VHV/eKnPGkHuOg== }
 
-  hast-util-from-html@2.0.3:
-    resolution: { integrity: sha512-CUSRHXyKjzHov8yKsQjGOElXy/3EKpyX56ELnkHH34vDVw1N1XSQ1ZcAvTyAPtGqLTuKP/uxM+aLkSPqF/EtMw== }
-
-  hast-util-from-parse5@8.0.3:
-    resolution: { integrity: sha512-3kxEVkEKt0zvcZ3hCRYI8rqrgwtlIOFMWkbclACvjlDw8Li9S2hk/d51OI0nr/gIpdMHNepwgOKqZ/sy0Clpyg== }
-
   hast-util-parse-selector@4.0.0:
     resolution: { integrity: sha512-wkQCkSYoOGCRKERFWcxMVMOcYE2K1AaNLU8DXS9arxnLOUEWbOXKXiJUNzEpqZ3JOKpnha3jkFrumEjVliDe7A== }
 
   hast-util-to-estree@3.1.3:
     resolution: { integrity: sha512-48+B/rJWAp0jamNbAAf9M7Uf//UVqAoMmgXhBdxTDJLGKY+LRnZ99qcG+Qjl5HfMpYNzS5v4EAwVEF34LeAj7w== }
 
-  hast-util-to-html@9.0.5:
-    resolution: { integrity: sha512-OguPdidb+fbHQSU4Q4ZiLKnzWo8Wwsf5bZfbvu7//a9oTYoqD/fWpe96NuHkoS9h0ccGOTe0C4NGXdtS0iObOw== }
-
   hast-util-to-jsx-runtime@2.3.6:
     resolution: { integrity: sha512-zl6s8LwNyo1P9uw+XJGvZtdFF1GdAkOg8ujOw+4Pyb76874fLps4ueHXDhXWdk6YHQ6OgUtinliG7RsYvCbbBg== }
-
-  hast-util-to-string@3.0.1:
-    resolution: { integrity: sha512-XelQVTDWvqcl3axRfI0xSeoVKzyIFPwsAGSLIsKdJKQMXDYJS4WYrBNF/8J7RdhIcFI2BOHgAifggsvsxp/3+A== }
 
   hast-util-whitespace@3.0.0:
     resolution: { integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw== }
 
   hastscript@9.0.1:
     resolution: { integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w== }
-
-  html-void-elements@3.0.0:
-    resolution: { integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg== }
 
   iconv-lite@0.6.3:
     resolution: { integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw== }
@@ -1460,23 +1421,11 @@ packages:
       sass:
         optional: true
 
-  oniguruma-parser@0.12.2:
-    resolution: { integrity: sha512-6HVa5oIrgMC6aA6WF6XyyqbhRPJrKR02L20+2+zpDtO5QAzGHAUGw5TKQvwi5vctNnRHkJYmjAhRVQF2EKdTQw== }
-
-  oniguruma-to-es@4.3.6:
-    resolution: { integrity: sha512-csuQ9x3Yr0cEIs/Zgx/OEt9iBw9vqIunAPQkx19R/fiMq2oGVTgcMqO/V3Ybqefr1TBvosI6jU539ksaBULJyA== }
-
   package-manager-detector@1.9.0:
     resolution: { integrity: sha512-zAMfbta9nPA8AKkA4WdmNAT8R8s6Dk0/xwPsqNnRidMFcLo1YkLuPDTgs2f64XdzS8vbLNnoJ+uUIkgbz7oRHA== }
 
   parse-entities@4.0.2:
     resolution: { integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw== }
-
-  parse-numeric-range@1.3.0:
-    resolution: { integrity: sha512-twN+njEipszzlMJd4ONUYgSfZPDxgHhT9Ahed5uTigpQn90FggW4SA/AIPq/6a149fTbE9qBEcSwE3FAEp6wQQ== }
-
-  parse5@7.3.0:
-    resolution: { integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw== }
 
   path-data-parser@0.1.0:
     resolution: { integrity: sha512-NOnmBpt5Y2RWbuv0LMzsayp3lVylAHLPUTut412ZA3l+C4uw4ZVkQbjShYCQ8TCpUMdPapr4YjUqLYD6v68j+w== }
@@ -1524,23 +1473,8 @@ packages:
   recma-stringify@1.0.0:
     resolution: { integrity: sha512-cjwII1MdIIVloKvC9ErQ+OgAtwHBmcZ0Bg4ciz78FtbT8In39aAYbaA7zvxQ61xVMSPE8WxhLwLbhif4Js2C+g== }
 
-  regex-recursion@6.0.2:
-    resolution: { integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg== }
-
-  regex-utilities@2.3.0:
-    resolution: { integrity: sha512-8VhliFJAWRaUiVvREIiW2NXXTmHs4vMNnSzuJVhscgmGav3g9VDxLrQndI3dZZVVdp0ZO/5v0xmX516/7M9cng== }
-
-  regex@6.1.0:
-    resolution: { integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg== }
-
-  rehype-parse@9.0.1:
-    resolution: { integrity: sha512-ksCzCD0Fgfh7trPDxr2rSylbwq9iYDkSn8TCDmEJ49ljEUBxDVCzCHv7QNzZOfODanX4+bWQ4WZqLCRWYLfhag== }
-
-  rehype-pretty-code@0.14.1:
-    resolution: { integrity: sha512-IpG4OL0iYlbx78muVldsK86hdfNoht0z63AP7sekQNW2QOTmjxB7RbTO+rhIYNGRljgHxgVZoPwUl6bIC9SbjA== }
-    engines: { node: ">=18" }
-    peerDependencies:
-      shiki: ^1.0.0 || ^2.0.0 || ^3.0.0
+  refractor@5.0.0:
+    resolution: { integrity: sha512-QXOrHQF5jOpjjLfiNk5GFnWhRXvxjUVnlFxkeDmewR5sXkr3iM46Zo+CnRR8B+MDVqkULW4EcLVcRBNOPXHosw== }
 
   rehype-recma@1.0.0:
     resolution: { integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw== }
@@ -1583,9 +1517,6 @@ packages:
   sharp@0.34.5:
     resolution: { integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg== }
     engines: { node: ^18.17.0 || ^20.3.0 || >=21.0.0 }
-
-  shiki@3.21.0:
-    resolution: { integrity: sha512-N65B/3bqL/TI2crrXr+4UivctrAGEjmsib5rPMMPpFp1xAx/w03v8WZ9RDDFYteXoEgY7qZ4HGgl5KBIu1153w== }
 
   source-map-js@1.2.2:
     resolution: { integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw== }
@@ -1683,9 +1614,6 @@ packages:
     resolution: { integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ== }
     hasBin: true
 
-  vfile-location@5.0.3:
-    resolution: { integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg== }
-
   vfile-message@4.0.3:
     resolution: { integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw== }
 
@@ -1711,9 +1639,6 @@ packages:
 
   vscode-uri@3.0.8:
     resolution: { integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw== }
-
-  web-namespaces@2.0.1:
-    resolution: { integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ== }
 
   zwitch@2.0.4:
     resolution: { integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A== }
@@ -1997,38 +1922,10 @@ snapshots:
   "@next/swc-win32-x64-msvc@16.2.2":
     optional: true
 
-  "@shikijs/core@3.21.0":
+  "@ridemountainpig/svgl-react@1.0.18(react-dom@19.2.4(react@19.2.4))(react@19.2.4)":
     dependencies:
-      "@shikijs/types": 3.21.0
-      "@shikijs/vscode-textmate": 10.1.0
-      "@types/hast": 3.0.5
-      hast-util-to-html: 9.0.5
-
-  "@shikijs/engine-javascript@3.21.0":
-    dependencies:
-      "@shikijs/types": 3.21.0
-      "@shikijs/vscode-textmate": 10.1.0
-      oniguruma-to-es: 4.3.6
-
-  "@shikijs/engine-oniguruma@3.21.0":
-    dependencies:
-      "@shikijs/types": 3.21.0
-      "@shikijs/vscode-textmate": 10.1.0
-
-  "@shikijs/langs@3.21.0":
-    dependencies:
-      "@shikijs/types": 3.21.0
-
-  "@shikijs/themes@3.21.0":
-    dependencies:
-      "@shikijs/types": 3.21.0
-
-  "@shikijs/types@3.21.0":
-    dependencies:
-      "@shikijs/vscode-textmate": 10.1.0
-      "@types/hast": 3.0.5
-
-  "@shikijs/vscode-textmate@10.1.0": {}
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   "@swc/helpers@0.5.15":
     dependencies:
@@ -2247,6 +2144,8 @@ snapshots:
   "@types/node@20.19.43":
     dependencies:
       undici-types: 6.21.0
+
+  "@types/prismjs@1.26.6": {}
 
   "@types/react-dom@19.3.0(@types/react@19.3.0)":
     dependencies:
@@ -2523,8 +2422,6 @@ snapshots:
     dependencies:
       character-entities: 2.0.2
 
-  dedent@1.7.1: {}
-
   delaunator@5.1.0:
     dependencies:
       robust-predicates: 3.0.3
@@ -2545,8 +2442,6 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
-
-  entities@6.0.1: {}
 
   esast-util-from-estree@2.0.0:
     dependencies:
@@ -2612,26 +2507,6 @@ snapshots:
 
   hachure-fill@0.5.2: {}
 
-  hast-util-from-html@2.0.3:
-    dependencies:
-      "@types/hast": 3.0.5
-      devlop: 1.1.0
-      hast-util-from-parse5: 8.0.3
-      parse5: 7.3.0
-      vfile: 6.0.3
-      vfile-message: 4.0.3
-
-  hast-util-from-parse5@8.0.3:
-    dependencies:
-      "@types/hast": 3.0.5
-      "@types/unist": 3.0.3
-      devlop: 1.1.0
-      hastscript: 9.0.1
-      property-information: 7.2.0
-      vfile: 6.0.3
-      vfile-location: 5.0.3
-      web-namespaces: 2.0.1
-
   hast-util-parse-selector@4.0.0:
     dependencies:
       "@types/hast": 3.0.5
@@ -2657,20 +2532,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  hast-util-to-html@9.0.5:
-    dependencies:
-      "@types/hast": 3.0.5
-      "@types/unist": 3.0.3
-      ccount: 2.0.1
-      comma-separated-tokens: 2.0.3
-      hast-util-whitespace: 3.0.0
-      html-void-elements: 3.0.0
-      mdast-util-to-hast: 13.2.1
-      property-information: 7.2.0
-      space-separated-tokens: 2.0.2
-      stringify-entities: 4.0.4
-      zwitch: 2.0.4
-
   hast-util-to-jsx-runtime@2.3.6:
     dependencies:
       "@types/estree": 1.0.9
@@ -2691,10 +2552,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  hast-util-to-string@3.0.1:
-    dependencies:
-      "@types/hast": 3.0.5
-
   hast-util-whitespace@3.0.0:
     dependencies:
       "@types/hast": 3.0.5
@@ -2706,8 +2563,6 @@ snapshots:
       hast-util-parse-selector: 4.0.0
       property-information: 7.2.0
       space-separated-tokens: 2.0.2
-
-  html-void-elements@3.0.0: {}
 
   iconv-lite@0.6.3:
     dependencies:
@@ -3334,14 +3189,6 @@ snapshots:
       - "@babel/core"
       - babel-plugin-macros
 
-  oniguruma-parser@0.12.2: {}
-
-  oniguruma-to-es@4.3.6:
-    dependencies:
-      oniguruma-parser: 0.12.2
-      regex: 6.1.0
-      regex-recursion: 6.0.2
-
   package-manager-detector@1.9.0: {}
 
   parse-entities@4.0.2:
@@ -3353,12 +3200,6 @@ snapshots:
       is-alphanumerical: 2.0.1
       is-decimal: 2.0.1
       is-hexadecimal: 2.0.1
-
-  parse-numeric-range@1.3.0: {}
-
-  parse5@7.3.0:
-    dependencies:
-      entities: 6.0.1
 
   path-data-parser@0.1.0: {}
 
@@ -3421,31 +3262,12 @@ snapshots:
       unified: 11.0.5
       vfile: 6.0.3
 
-  regex-recursion@6.0.2:
-    dependencies:
-      regex-utilities: 2.3.0
-
-  regex-utilities@2.3.0: {}
-
-  regex@6.1.0:
-    dependencies:
-      regex-utilities: 2.3.0
-
-  rehype-parse@9.0.1:
+  refractor@5.0.0:
     dependencies:
       "@types/hast": 3.0.5
-      hast-util-from-html: 2.0.3
-      unified: 11.0.5
-
-  rehype-pretty-code@0.14.1(shiki@3.21.0):
-    dependencies:
-      "@types/hast": 3.0.5
-      hast-util-to-string: 3.0.1
-      parse-numeric-range: 1.3.0
-      rehype-parse: 9.0.1
-      shiki: 3.21.0
-      unified: 11.0.5
-      unist-util-visit: 5.1.0
+      "@types/prismjs": 1.26.6
+      hastscript: 9.0.1
+      parse-entities: 4.0.2
 
   rehype-recma@1.0.0:
     dependencies:
@@ -3546,17 +3368,6 @@ snapshots:
       "@img/sharp-win32-x64": 0.34.5
     optional: true
 
-  shiki@3.21.0:
-    dependencies:
-      "@shikijs/core": 3.21.0
-      "@shikijs/engine-javascript": 3.21.0
-      "@shikijs/engine-oniguruma": 3.21.0
-      "@shikijs/langs": 3.21.0
-      "@shikijs/themes": 3.21.0
-      "@shikijs/types": 3.21.0
-      "@shikijs/vscode-textmate": 10.1.0
-      "@types/hast": 3.0.5
-
   source-map-js@1.2.2: {}
 
   source-map@0.7.6: {}
@@ -3642,11 +3453,6 @@ snapshots:
 
   uuid@11.1.1: {}
 
-  vfile-location@5.0.3:
-    dependencies:
-      "@types/unist": 3.0.3
-      vfile: 6.0.3
-
   vfile-message@4.0.3:
     dependencies:
       "@types/unist": 3.0.3
@@ -3673,7 +3479,5 @@ snapshots:
       vscode-languageserver-protocol: 3.17.5
 
   vscode-uri@3.0.8: {}
-
-  web-namespaces@2.0.1: {}
 
   zwitch@2.0.4: {}

@@ -118,15 +118,37 @@ const projectsList: Project[] = [
 		skills: ['React.js', 'TailwindCSS', 'TypeScript'],
 		year: '2024',
 	},
+	{
+		description: 'Automate stock market analysis and portfolio performance reporting in Python, including price trends, returns, volatility, correlation matrices, and financial reports.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/py-portfolio-analytics',
+		name: 'py-portfolio-analytics',
+		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'ReportLab'],
+		year: '2022',
+	},
+	{
+		description:
+			'A Python package for stock market analysis, providing company data, statistical metrics, interactive visualizations, and financial dashboards to support investment decisions with minimal code.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/py-financial-analysis',
+		name: 'py-financial-analysis',
+		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn'],
+		year: '2022',
+	},
 ];
 
 const blogList: Blog[] = [
 	{
-		description: 'A practical guide with FastAPI and Groq AI to build a voice assistant for forms.',
-		link: '/blog/voice-agent-for-forms',
-		name: 'Voice agent for forms',
-		skills: ['FastAPI', 'Python', 'WebSocket', 'Groq', 'LLM', 'SpeechToText', 'TextToSpeech', 'React', 'TailwindCSS', 'TypeScript'],
-		year: '2025',
+		description: 'A practical guide to RBAC, ABAC and ReBAC checks in React and Next.js with useguardrail, from first permission to server-side enforcement.',
+		link: '/blog/frontend-authorization-with-useguardrail',
+		name: 'Frontend authorization with useguardrail',
+		skills: ['TypeScript', 'React', 'Next.js', 'RBAC', 'ABAC', 'ReBAC'],
+		year: '2026',
+	},
+	{
+		description: 'A practical guide to shortcuts, scopes, priorities and user-customizable keymaps in React and Next.js with usehotkeys.',
+		link: '/blog/keyboard-shortcuts-with-usehotkeys',
+		name: 'Keyboard shortcuts with usehotkeys',
+		skills: ['TypeScript', 'React', 'Next.js', 'Hooks', 'Accessibility'],
+		year: '2026',
 	},
 ];
 

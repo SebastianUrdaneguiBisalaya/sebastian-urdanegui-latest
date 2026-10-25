@@ -1,0 +1,381 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+<DocsToc>
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='your-first-shortcut' title='Your first shortcut' />
+    <DocsTocItem id='writing-combos' title='Writing combos' />
+    <DocsTocItem id='options-you-will-use-every-day' title='Options you will use every day' />
+    <DocsTocItem id='sequences-double-tap-and-long-press' title='Sequences, double tap and long press' />
+    <DocsTocItem id='scopes-shortcuts-that-depend-on-context' title='Scopes: shortcuts that depend on context' />
+    <DocsTocItem id='priorities-and-conflicts' title='Priorities and conflicts' />
+    <DocsTocItem id='a-shortcuts-help-dialog' title='A shortcuts help dialog' />
+    <DocsTocItem id='user-customizable-shortcuts' title='User-customizable shortcuts' />
+    <DocsTocItem id='reacting-to-held-keys' title='Reacting to held keys' />
+    <DocsTocItem id='nextjs-app-router' title='Next.js (App Router)' />
+    <DocsTocItem id='testing' title='Testing' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: October 25, 2026
+
+# **Keyboard Shortcuts in React and Next.js with usehotkeys**
+
+Keyboard shortcuts look simple until an app has two modals, a text input and a command palette. Then `Escape` closes the wrong thing, `s` fires while the user types, and nobody can tell which shortcuts exist.
+
+**usehotkeys** handles those problems for you: **combos, scopes, priorities and conflict resolution**, in a framework-agnostic core with React bindings. It has zero runtime dependencies. The React package is about 1.4 KB gzipped on top of the core.
+
+This guide covers the React and Next.js usage, from a first shortcut to user-customizable keymaps. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usehotkeys) has the full reference, including the vanilla JS API.
+
+## Installation
+
+<InstallSnippet packages='@usehotkeys/react @usehotkeys/core' />
+
+It supports React 18 and 19.
+
+## Your first shortcut
+
+export const code1 = `import { useState } from 'react';
+import { useHotkeys } from '@usehotkeys/react';
+
+export function App() {
+  const [open, setOpen] = useState(false);
+
+  useHotkeys('mod+k', () => setOpen(true), { label: 'Open command palette' });
+  useHotkeys('escape', () => setOpen(false), { enabled: open });
+
+  return open ? <CommandPalette /> : <button onClick={() => setOpen(true)}>Search</button>;
+}`
+
+<CodeBlock filename='components/App.tsx' language='tsx' code={code1} />
+
+There is no provider and no setup. Three things happen for you:
+
+- `mod` means `⌘` on macOS and `Ctrl` everywhere else, so one string works for every user.
+- The shortcut is removed when the component unmounts.
+- The latest handler always runs, so an inline arrow function that reads state never goes stale.
+
+## Writing combos
+
+A combo is modifiers and one key joined with `+`. Case and order do not matter.
+
+- `'k'`: the K key, no modifiers.
+- `'mod+shift+p'`, `'ctrl+enter'`: modifiers plus a key.
+- `'esc'`, `'enter'`, `'space'`, `'up'`, `'down'`: named keys.
+- `'?'`, `'/'`: punctuation, written as the character.
+- `['j', 'arrowdown']`: an array, several combos for one handler.
+- `'g i'`, `'mod+k mod+s'`: a sequence, pressed one after another.
+
+Modifiers are **exact by default**: `'ctrl+k'` does not fire for `Ctrl+Shift+K`. Set `exact: false` to allow extra modifiers.
+
+## Options you will use every day
+
+export const code2 = `// Disable conditionally.
+useHotkeys('mod+enter', submit, { enabled: !isSubmitting });
+
+// Same action, several keys.
+useHotkeys(['j', 'arrowdown'], selectNext);
+
+// Fire once, then remove itself.
+useHotkeys('enter', dismissBanner, { once: true });
+
+// Work even while the user is typing.
+useHotkeys('escape', () => inputRef.current?.blur(), { ignoreInputs: false });
+
+// Only fire inside a rendered element.
+const ref = useRef<HTMLDivElement>(null);
+useHotkeys('delete', onDelete, { element: ref });`
+
+<CodeBlock language='tsx' code={code2} />
+
+By default, plain keys do not fire while the user types in an `<input>`, `<textarea>` or `contenteditable`, but combos with `ctrl` or `meta` do. So `j` is safe and `mod+s` still saves. Events during IME composition are always ignored.
+
+## Sequences, double tap and long press
+
+A sequence is a combo with spaces. The next step must arrive within one second by default (`sequenceTimeout`).
+
+export const code3 = `useHotkeys('g i', goToInbox);              // press g, then i
+useHotkeys('mod+k mod+s', openShortcuts);  // like VS Code
+useHotkeys('shift shift', openSearch);     // tap Shift twice, like an IDE
+useHotkeys('k', showTooltip, { hold: 600 }); // fires once k is held for 600 ms`
+
+<CodeBlock language='tsx' code={code3} />
+
+If you bind both `'g'` and `'g g'`, pressing `g` waits briefly to see whether a second `g` follows, like Vim. A lone binding fires instantly.
+
+## Scopes: shortcuts that depend on context
+
+A scope is a named group of shortcuts that only fires while the scope is active. `useHotkeyScope` activates one while a component is mounted. This is how you build a proper modal:
+
+export const code4 = `import { useHotkeys, useHotkeyScope } from '@usehotkeys/react';
+
+export function Modal({ onClose }: { onClose: () => void }) {
+  // While mounted, shortcuts behind the modal are paused.
+  useHotkeyScope('modal', { inherit: false });
+  useHotkeys('escape', onClose, { scope: 'modal' });
+
+  return <dialog open>...</dialog>;
+}`
+
+<CodeBlock filename='components/Modal.tsx' language='tsx' code={code4} />
+
+With `inherit: false`, only the `modal` scope and bindings declared with `scope: '*'` stay live. Use `'*'` for something like `?` that should work everywhere.
+
+## Priorities and conflicts
+
+When several mounted components bind the same keys, usehotkeys picks one winner instead of firing all of them in a random order:
+
+- The higher `priority` wins.
+- If equal, the scope closer to the top of the stack wins.
+- If equal, the most recently registered binding wins.
+
+Disabled bindings, inactive scopes and ignored inputs never compete.
+
+<MermaidDiagram
+    title='Conflict resolution'
+    code={`
+flowchart TD
+    A["Key pressed"] --> B["Collect the bindings for that combo"]
+    B --> C["Drop disabled bindings, inactive scopes<br/>and ignored inputs"]
+    C --> D{"Any left?"}
+    D -- No --> E["Nothing fires<br/>the browser default applies"]
+    D -- Yes --> F["Rank by priority, then scope depth,<br/>then most recent"]
+    F --> G["Winner fires"]
+    G --> H{"passthrough?"}
+    H -- Yes --> I["Next ranked binding fires too"]
+    H -- No --> J["Done"]
+    `}
+/>
+
+
+export const code5 = `useHotkeys('escape', closePopover, { priority: 20 });
+useHotkeys('escape', closeSidebar, { priority: 10 });
+// Esc closes the popover first. Once it unmounts, Esc closes the sidebar.
+
+// Let the parent keep reacting too:
+useHotkeys('escape', closeChild, { priority: 10, passthrough: true });`
+
+<CodeBlock language='tsx' code={code5} />
+
+Two bindings with the same combo, scope, event type and priority are a real conflict. Surface them in development:
+
+export const code6 = `<HotkeysProvider options={{ debug: true }}>
+  <App />
+</HotkeysProvider>`
+
+<CodeBlock language='tsx' code={code6} />
+
+With `debug`, conflicts are logged with `console.warn`. Pass `onConflict` to handle them yourself, or call `getConflicts()` in a test.
+
+## A shortcuts help dialog
+
+`useBindings` returns every registered shortcut and stays up to date as components mount, unmount or change scope.
+
+export const code7 = `import { formatHotkey } from '@usehotkeys/core';
+import { useBindings } from '@usehotkeys/react';
+
+export function ShortcutsHelp() {
+  const bindings = useBindings({ activeOnly: true, labeledOnly: true });
+
+  return (
+    <ul>
+      {bindings.map((b) => (
+        <li key={b.id}>
+          {b.label}: <kbd>{formatHotkey(b.combos[0]!)}</kbd>
+        </li>
+      ))}
+    </ul>
+  );
+}`
+
+<CodeBlock filename='components/ShortcutsHelp.tsx' language='tsx' code={code7} />
+
+Give shortcuts a `label` and a `group` when you bind them and the dialog builds itself. `formatHotkey` renders `mod+k` as `⌘K` or `Ctrl+K` depending on the platform.
+
+## User-customizable shortcuts
+
+A **keymap** separates what an action does from the keys that trigger it. You name the action once with default keys, and the user can change the keys later without any code change.
+
+<MermaidDiagram
+    title='Keymap and overrides'
+    code={`
+flowchart LR
+    A["Keymap<br/>openPalette = mod+k"] --> E["Engine"]
+    B["Saved overrides<br/>localStorage"] --> E
+    C["useHotkeyAction('openPalette')"] --> E
+    D["useRecordHotkey + setShortcut()"] --> E
+    D -.->|"getOverrides()"| B
+    E --> F["Handler runs when the<br/>current keys are pressed"]
+    `}
+/>
+
+
+export const code8 = `'use client';
+
+import { HotkeysProvider } from '@usehotkeys/react';
+import type { ReactNode } from 'react';
+
+const keymap = {
+  openPalette: { keys: 'mod+k', label: 'Open palette', group: 'Navigation' },
+  toggleSidebar: { keys: 'mod+b', label: 'Toggle sidebar', group: 'Navigation' },
+};
+
+function readOverrides() {
+  if (typeof window === 'undefined') return {};
+  try {
+    return JSON.parse(localStorage.getItem('shortcuts') ?? '{}');
+  } catch {
+    return {};
+  }
+}
+
+export function ShortcutsProvider({ children }: { children: ReactNode }) {
+  return <HotkeysProvider options={{ keymap, overrides: readOverrides() }}>{children}</HotkeysProvider>;
+}`
+
+<CodeBlock filename='components/ShortcutsProvider.tsx' language='tsx' code={code8} />
+
+Components bind to the action, not to the keys:
+
+export const code9 = `import { useHotkeyAction } from '@usehotkeys/react';
+
+function Layout() {
+  useHotkeyAction('openPalette', () => setOpen(true));
+  useHotkeyAction('toggleSidebar', () => setSidebar((v) => !v));
+  // ...
+}`
+
+<CodeBlock language='tsx' code={code9} />
+
+When the user changes a shortcut, existing bindings follow it immediately. Nothing is re-registered. Saving is up to you: the library never touches storage.
+
+To build the settings screen, combine `useShortcuts` (every action with its current keys) with `useRecordHotkey` (captures the next combo the user presses):
+
+export const code10 = `'use client';
+
+import { formatHotkey } from '@usehotkeys/core';
+import { useHotkeysInstance, useRecordHotkey, useShortcuts } from '@usehotkeys/react';
+
+export function ShortcutSettings() {
+  const hotkeys = useHotkeysInstance();
+  const shortcuts = useShortcuts();
+  const { start, isRecording, preview } = useRecordHotkey();
+
+  async function change(action: string) {
+    const combo = await start(); // null if the user cancels
+    if (!combo) return;
+    hotkeys.setShortcut(action, combo);
+    localStorage.setItem('shortcuts', JSON.stringify(hotkeys.getOverrides()));
+  }
+
+  return (
+    <ul>
+      {shortcuts.map((s) => (
+        <li key={s.action}>
+          {s.label ?? s.action}: <kbd>{s.keys.map((k) => formatHotkey(k)).join(', ') || 'none'}</kbd>
+          <button type='button' onClick={() => change(s.action)} disabled={isRecording}>
+            {isRecording ? preview || 'Press the keys...' : 'Change'}
+          </button>
+          {s.customized && (
+            <button type='button' onClick={() => hotkeys.setShortcut(s.action, null)}>
+              Reset
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}`
+
+<CodeBlock filename='components/ShortcutSettings.tsx' language='tsx' code={code10} />
+
+`setShortcut(action, null)` goes back to the default and `[]` removes the shortcut. Saved combos use `mod`, so they work across platforms. An unknown action throws `UnknownActionError`, and an invalid combo throws `HotkeyParseError`.
+
+## Reacting to held keys
+
+`useIsPressed` is `true` while the user holds a key or combo, and re-renders only when that answer changes.
+
+export const code11 = `import { useIsPressed } from '@usehotkeys/react';
+
+function Row({ item }: { item: Item }) {
+  const selecting = useIsPressed('shift'); // show checkboxes while Shift is held
+  return (
+    <li>
+      {selecting && <input type='checkbox' />} {item.name}
+    </li>
+  );
+}`
+
+<CodeBlock language='tsx' code={code11} />
+
+The pressed state resets on window blur, tab hiding and `Cmd` release, so it never gets stuck.
+
+## Next.js (App Router)
+
+The hooks are safe on the server. `useHotkeys`, `useHotkeyAction` and `useHotkeyScope` only touch the engine inside effects, which never run during server rendering. `useBindings` and `useShortcuts` render an empty list on the server and while hydrating, then fill in, so there is no hydration mismatch.
+
+The package ships with a `'use client'` directive, so you can import `HotkeysProvider` straight into a Server Component:
+
+export const code12 = `import { HotkeysProvider } from '@usehotkeys/react';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang='en'>
+      <body>
+        <HotkeysProvider>{children}</HotkeysProvider>
+      </body>
+    </html>
+  );
+}`
+
+<CodeBlock filename='app/layout.tsx' language='tsx' code={code12} />
+
+Your own components that call a hook need `'use client'` at the top, like with any React hook:
+
+export const code13 = `'use client';
+
+import { useHotkeys } from '@usehotkeys/react';
+import { useState } from 'react';
+
+export function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  useHotkeys('mod+k', () => setOpen(true));
+  return open ? <dialog open>...</dialog> : null;
+}`
+
+<CodeBlock filename='app/command-palette.tsx' language='tsx' code={code13} />
+
+Two details worth remembering:
+
+- **Functions cannot cross the server/client boundary.** If you need `onConflict`, or a function for `defaults.ignoreInputs`, build the provider in your own `'use client'` component, like `ShortcutsProvider` above, instead of passing those props from a Server Component.
+- **No leaks between requests.** Bindings only exist in browsers, and nothing is attached to `document` until the first binding is registered, so a server rendering many requests never accumulates shortcuts.
+
+The same rule applies to the Pages Router, Remix, Vite SSR and Astro islands: hooks go in components that render on the client.
+
+## Testing
+
+Use a provider with a fixed platform so `mod` is deterministic across machines:
+
+export const code14 = `import { HotkeysProvider } from '@usehotkeys/react';
+import { render } from '@testing-library/react';
+
+render(
+  <HotkeysProvider options={{ platform: 'other' }}>
+    <App />
+  </HotkeysProvider>,
+);
+// 'mod+k' now means Ctrl+K in every environment.`
+
+<CodeBlock language='tsx' code={code14} />
+
+For one-off checks, `useHotkeysInstance().trigger('mod+k')` runs a shortcut programmatically. It is also useful to make a button and its shortcut do the same thing.
+
+## Summary
+
+- Start with `useHotkeys`. There is nothing to configure.
+- Use scopes with `inherit: false` for modals, and priorities to resolve competing shortcuts.
+- Give shortcuts a `label` so help dialogs build themselves.
+- Move to a keymap when users should be able to change the keys.
+- In Next.js, hooks go in client components, and functions cannot be passed from a Server Component.

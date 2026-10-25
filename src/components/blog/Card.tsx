@@ -13,7 +13,7 @@ export interface Blog {
 export default function Card({ description, link, name, skills, year }: Blog) {
 	return (
 		<div className='w-full h-fit flex flex-col sm:flex-row items-start gap-1.5 sm:gap-6 group'>
-			<span className='font-mono text-xs text-tertiary shrink-0 sm:w-[64px] sm:pt-0.5'>{year}</span>
+			<span className='font-mono text-xs text-tertiary shrink-0 sm:w-16 sm:pt-0.5'>{year}</span>
 			<div className='flex flex-col items-start gap-1.5 min-w-0'>
 				<Link className='font-sora text-[15px] font-medium text-foreground hover:text-accent transition-colors duration-300 ease-out' href={link ?? '/'}>
 					{name}

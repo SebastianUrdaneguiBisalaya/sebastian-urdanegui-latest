@@ -61,7 +61,7 @@ export default function Footer() {
 					</div>
 				) : (
 					// Same box as SwitchTheme (3 × 28px options + gaps + padding + border) so the footer doesn't shift once the stored theme is known.
-					<div aria-hidden='true' className='h-[34px] w-[94px] rounded-full border border-border' />
+					<div aria-hidden='true' className='h-8.5 w-23.5 rounded-full border border-border' />
 				)}
 			</div>
 		</footer>
