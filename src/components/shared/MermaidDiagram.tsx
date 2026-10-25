@@ -1,6 +1,7 @@
 'use client';
 
 import mermaid from 'mermaid';
+import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 
 export interface MermaidDiagramProps {
@@ -9,16 +10,18 @@ export interface MermaidDiagramProps {
 
 export function MermaidDiagram({ code }: MermaidDiagramProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const { resolvedTheme } = useTheme();
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
+		if (!resolvedTheme) return;
 		let cancelled = false;
 		async function render() {
 			try {
 				mermaid.initialize({
 					securityLevel: 'strict',
 					startOnLoad: false,
-					theme: 'dark',
+					theme: resolvedTheme === 'light' ? 'default' : 'dark',
 				});
 				const id = `mermaid-${Math.random().toString(36).slice(2)}`;
 				const { svg } = await mermaid.render(id, code);
@@ -36,7 +39,7 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
 		return () => {
 			cancelled = true;
 		};
-	}, [code]);
+	}, [code, resolvedTheme]);
 
 	if (error) {
 		return <div className=''>Mermaid error: {error}</div>;

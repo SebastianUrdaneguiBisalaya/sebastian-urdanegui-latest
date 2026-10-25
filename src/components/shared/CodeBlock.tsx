@@ -1,6 +1,7 @@
 'use client';
 
 import dedent from 'dedent';
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { bundledLanguages, bundledThemes, createHighlighter, type Highlighter } from 'shiki';
 
@@ -18,17 +19,16 @@ export interface CodeBlockProps {
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 
-function getHighlighterSingleton(language: string, theme: keyof typeof bundledThemes) {
+function getHighlighterSingleton() {
 	if (!highlighterPromise) {
-		highlighterPromise = createHighlighter({
-			langs: [language],
-			themes: [bundledThemes[theme]],
-		});
+		highlighterPromise = createHighlighter({ langs: [], themes: [] });
 	}
 	return highlighterPromise;
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language = 'ts', theme = 'material-theme-darker' }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language = 'ts', theme }) => {
+	const { resolvedTheme } = useTheme();
+	const shikiTheme: keyof typeof bundledThemes = theme ?? (resolvedTheme === 'light' ? 'github-light' : 'material-theme-darker');
 	const [html, setHtml] = useState<string>('');
 	const [copied, setCopied] = useState<boolean>(false);
 
@@ -36,13 +36,16 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language =
 		let mounted = true;
 
 		async function highlight() {
-			const highlighter = await getHighlighterSingleton(language, theme);
+			const highlighter = await getHighlighterSingleton();
+			if (!highlighter.getLoadedThemes().includes(shikiTheme)) {
+				await highlighter.loadTheme(bundledThemes[shikiTheme]);
+			}
 			if (!highlighter.getLoadedLanguages().includes(language)) {
 				await highlighter.loadLanguage(language);
 			}
 			const result = highlighter.codeToHtml(dedent(code), {
 				lang: language,
-				theme,
+				theme: shikiTheme,
 				transformers: [
 					{
 						pre(node) {
@@ -59,7 +62,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language =
 		return () => {
 			mounted = false;
 		};
-	}, [code, language, theme]);
+	}, [code, language, shikiTheme]);
 
 	const handleCopy = async () => {
 		await navigator.clipboard.writeText(code);
@@ -71,13 +74,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language =
 
 	return (
 		<div className='overflow-hidden'>
-			<div className='flex items-center justify-between border border-white/20 p-3 rounded-t-md'>
-				<div className='flex flex-row items-center gap-2 text-white/60'>
+			<div className='flex items-center justify-between border border-border-strong p-3 rounded-t-md'>
+				<div className='flex flex-row items-center gap-2 text-foreground/60'>
 					<Icons language={language} />
 					<span className='truncate text-xs font-sora'>{filename ?? language}</span>
 				</div>
 				<button
-					className='relative w-5.5 h-5.5 flex flex-col items-center justify-center text-xs text-white/60 font-sora hover:bg-white/15 rounded-md transition-all duration-500 ease-out'
+					className='relative w-5.5 h-5.5 flex flex-col items-center justify-center text-xs text-foreground/60 font-sora hover:bg-foreground/15 rounded-md transition-all duration-500 ease-out'
 					onClick={handleCopy}
 				>
 					<div
@@ -106,7 +109,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language =
 				</button>
 			</div>
 			<div
-				className='leading-relaxed border-x border-b border-white/20 rounded-b-md py-4 pl-4 bg-[rgba(0,0,0,1)] overflow-x-auto'
+				className='leading-relaxed border-x border-b border-border-strong rounded-b-md py-4 pl-4 bg-code overflow-x-auto'
 				dangerouslySetInnerHTML={{ __html: html }}
 				data-lenis-prevent
 			/>
