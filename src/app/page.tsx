@@ -139,7 +139,7 @@ export default function Page() {
 							<>
 								<span
 									className={cn(
-										'font-mono text-xs text-tertiary shrink-0 sm:w-[136px] sm:pt-0.5',
+										'font-mono text-xs text-tertiary shrink-0 sm:w-34 sm:pt-0.5',
 										linked && 'transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transition-none'
 									)}
 								>
