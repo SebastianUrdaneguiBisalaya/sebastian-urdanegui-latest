@@ -150,6 +150,20 @@ const blogList: Blog[] = [
 		skills: ['TypeScript', 'React', 'Next.js', 'Hooks', 'Accessibility'],
 		year: '2026',
 	},
+	{
+		description: 'A walkthrough of pyFinancialAnalysis, a Python package that turns stock prices into growth, risk metrics, charts and a financial dashboard in a few lines.',
+		link: '/blog/stock-analysis-with-pyfinancialanalysis',
+		name: 'Stock analysis with pyFinancialAnalysis',
+		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn'],
+		year: '2022',
+	},
+	{
+		description: 'A walkthrough of pyportfolioanalytics, from closing prices and log returns to correlation matrices, a buy and sell simulation and an automatic PDF report.',
+		link: '/blog/portfolio-reports-with-pyportfolioanalytics',
+		name: 'Portfolio reports with pyportfolioanalytics',
+		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'ReportLab'],
+		year: '2022',
+	},
 ];
 
 export { blogList, navigationsPaths, projectsList };
