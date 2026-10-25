@@ -5,6 +5,7 @@ import { JetBrains_Mono, Reddit_Sans, Sora } from 'next/font/google';
 
 import Footer from '@/components/shared/Footer';
 import Lenis from '@/components/shared/Lenis';
+import Loader from '@/components/shared/Loader';
 import Navbar from '@/components/shared/Navbar';
 import Navigation from '@/components/shared/Navigation';
 import ThemeProvider from '@/components/shared/ThemeProvider';
@@ -74,6 +75,7 @@ export default function RootLayout({
 			</head>
 			<body className={`${sora.variable} ${redditSans.variable} ${jetbrainsMono.variable} antialiased`}>
 				<ThemeProvider>
+					<Loader />
 					<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
 						<Navbar />
 						<Navigation />

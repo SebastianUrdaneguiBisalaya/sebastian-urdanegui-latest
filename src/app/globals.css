@@ -76,6 +76,11 @@
 	box-sizing: border-box;
 }
 
+/* Reserve the scrollbar's space so the layout doesn't shift when the loader releases the scroll lock. */
+html {
+	scrollbar-gutter: stable;
+}
+
 body {
 	width: 100%;
 	background: var(--background);
@@ -126,6 +131,18 @@ body {
 
 ::view-transition-new(root) {
 	z-index: 1;
+}
+
+/* CSS-only failsafe for the loader overlay (see Loader.tsx): if JS never takes over, it still fades out just after the 8s JS limit. */
+@keyframes loader-failsafe {
+	to {
+		opacity: 0;
+		visibility: hidden;
+	}
+}
+
+.loader {
+	animation: loader-failsafe 0.3s ease-out 8.2s forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
