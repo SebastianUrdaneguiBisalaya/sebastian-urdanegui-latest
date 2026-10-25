@@ -19,77 +19,72 @@ const path = require('path');
 // the scripts work wherever the skill folder is copied to. An installed skill
 // has no demos/ above it, which is the correct outcome: URL mode only.
 function repoRoot(from = __dirname) {
-  let dir = from;
-  for (let i = 0; i < 6; i++) {
-    if (fs.existsSync(path.join(dir, 'demos', 'sites.json'))) return dir;
-    const up = path.dirname(dir);
-    if (up === dir) break;
-    dir = up;
-  }
-  return null;
+	let dir = from;
+	for (let i = 0; i < 6; i++) {
+		if (fs.existsSync(path.join(dir, 'demos', 'sites.json'))) return dir;
+		const up = path.dirname(dir);
+		if (up === dir) break;
+		dir = up;
+	}
+	return null;
 }
 
 const ROOT = repoRoot();
 
 function looksLikeUrl(arg) {
-  return /^https?:\/\//i.test(arg) || /^localhost([:/]|$)/i.test(arg);
+	return /^https?:\/\//i.test(arg) || /^localhost([:/]|$)/i.test(arg);
 }
 
 function resolve(arg) {
-  if (!arg) return null;
+	if (!arg) return null;
 
-  if (looksLikeUrl(arg)) {
-    const url = /^https?:\/\//i.test(arg) ? arg : `http://${arg}`;
-    return { name: url.replace(/^https?:\/\//, ''), shared: '', theme: '', url };
-  }
+	if (looksLikeUrl(arg)) {
+		const url = /^https?:\/\//i.test(arg) ? arg : `http://${arg}`;
+		return { name: url.replace(/^https?:\/\//, ''), shared: '', theme: '', url };
+	}
 
-  if (!ROOT) return null;
-  const sitesPath = path.join(ROOT, 'demos', 'sites.json');
-  if (!fs.existsSync(sitesPath)) return null;
+	if (!ROOT) return null;
+	const sitesPath = path.join(ROOT, 'demos', 'sites.json');
+	if (!fs.existsSync(sitesPath)) return null;
 
-  const site = JSON.parse(fs.readFileSync(sitesPath, 'utf8')).find(
-    (s) => s.id === arg,
-  );
-  if (!site) return null;
+	const site = JSON.parse(fs.readFileSync(sitesPath, 'utf8')).find(s => s.id === arg);
+	if (!site) return null;
 
-  const read = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '');
-  return {
-    dir: path.join(ROOT, 'demos', site.id),
-    id: site.id,
-    name: site.name,
-    scrollY: site.scrollY,
-    shared: read(path.join(ROOT, 'demos', 'shared.css')),
-    theme: read(path.join(ROOT, 'demos', site.id, 'theme.css')),
-    url: site.url,
-  };
+	const read = p => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '');
+	return {
+		dir: path.join(ROOT, 'demos', site.id),
+		id: site.id,
+		name: site.name,
+		scrollY: site.scrollY,
+		shared: read(path.join(ROOT, 'demos', 'shared.css')),
+		theme: read(path.join(ROOT, 'demos', site.id, 'theme.css')),
+		url: site.url,
+	};
 }
 
 // Exit with a usage message rather than a stack trace, since the most common
 // mistake is passing an id that does not exist rather than a malformed URL.
 function resolveOrExit(arg, usage) {
-  const target = resolve(arg);
-  if (target) return target;
-  console.error(usage);
-  if (arg) {
-    console.error(
-      `\n"${arg}" is neither a URL nor an id in demos/sites.json.` +
-        `\nPass a URL to inspect any page, for example http://localhost:3000/.`,
-    );
-  }
-  process.exit(1);
+	const target = resolve(arg);
+	if (target) return target;
+	console.error(usage);
+	if (arg) {
+		console.error(`\n"${arg}" is neither a URL nor an id in demos/sites.json.` + `\nPass a URL to inspect any page, for example http://localhost:3000/.`);
+	}
+	process.exit(1);
 }
 
 // Report the one line that matters. Pointing a tool at a dev server that is not
 // running is the most common mistake, and a Playwright stack trace buries it.
 function fail(err) {
-  const message = String(err && err.message ? err.message : err);
-  const first = message.split('\n')[0];
-  if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(message)) {
-    console.error(`Could not reach that URL — is the dev server running?\n${first}`);
-  } else {
-    console.error(first);
-  }
-  process.exit(1);
+	const message = String(err && err.message ? err.message : err);
+	const first = message.split('\n')[0];
+	if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(message)) {
+		console.error(`Could not reach that URL — is the dev server running?\n${first}`);
+	} else {
+		console.error(first);
+	}
+	process.exit(1);
 }
 
 module.exports = { fail, repoRoot, resolve, resolveOrExit };

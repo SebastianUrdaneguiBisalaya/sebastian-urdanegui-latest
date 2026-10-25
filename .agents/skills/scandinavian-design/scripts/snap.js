@@ -13,28 +13,28 @@ const { chromium } = require('playwright-core');
 const [, , url, cssFile, prefix, width = '1440', height = '900'] = process.argv;
 
 (async () => {
-  const browser = await chromium.launch({ channel: 'chrome' });
-  const page = await browser.newPage({
-    bypassCSP: true, // sites like HN block external styles via CSP
-    deviceScaleFactor: 2,
-    viewport: { height: Number(height), width: Number(width) },
-  });
-  await page.goto(url, { timeout: 45000, waitUntil: 'load' });
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: `${prefix}-before.png` });
+	const browser = await chromium.launch({ channel: 'chrome' });
+	const page = await browser.newPage({
+		bypassCSP: true, // sites like HN block external styles via CSP
+		deviceScaleFactor: 2,
+		viewport: { height: Number(height), width: Number(width) },
+	});
+	await page.goto(url, { timeout: 45000, waitUntil: 'load' });
+	await page.waitForTimeout(1500);
+	await page.screenshot({ path: `${prefix}-before.png` });
 
-  // Inter (the skill's default web typeface), then the override sheet.
-  await page.addStyleTag({
-    url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
-  });
-  await page.addStyleTag({ content: fs.readFileSync(cssFile, 'utf8') });
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(800);
-  await page.screenshot({ path: `${prefix}-after.png` });
+	// Inter (the skill's default web typeface), then the override sheet.
+	await page.addStyleTag({
+		url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
+	});
+	await page.addStyleTag({ content: fs.readFileSync(cssFile, 'utf8') });
+	await page.evaluate(() => document.fonts.ready);
+	await page.waitForTimeout(800);
+	await page.screenshot({ path: `${prefix}-after.png` });
 
-  await browser.close();
-  console.log('done:', `${prefix}-before.png`, `${prefix}-after.png`);
-})().catch((e) => {
-  console.error(e);
-  process.exit(1);
+	await browser.close();
+	console.log('done:', `${prefix}-before.png`, `${prefix}-after.png`);
+})().catch(e => {
+	console.error(e);
+	process.exit(1);
 });

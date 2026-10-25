@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import { Sora, Reddit_Sans, JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono, Reddit_Sans, Sora } from 'next/font/google';
 
 import Footer from '@/components/shared/Footer';
 import Lenis from '@/components/shared/Lenis';
@@ -25,9 +25,26 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
 	authors: [{ name: 'Sebastian Marat Urdanegui Bisalaya', url: 'https://sebastianurdanegui.com' }],
-	description:
-		'I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.',
-	keywords: ['sebastian marat urdanegui bisalaya', 'sebastian urdanegui', 'JavaScript', 'React', 'React Native', 'Node.js', 'TypeScript', 'desarrollo web', 'desarrollo móvil', 'fullstack developer', 'frontend developer', 'backend developer', 'python', 'data analyst', 'data scientist', 'data visualization', 'programación'],
+	description: 'I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.',
+	keywords: [
+		'sebastian marat urdanegui bisalaya',
+		'sebastian urdanegui',
+		'JavaScript',
+		'React',
+		'React Native',
+		'Node.js',
+		'TypeScript',
+		'desarrollo web',
+		'desarrollo móvil',
+		'fullstack developer',
+		'frontend developer',
+		'backend developer',
+		'python',
+		'data analyst',
+		'data scientist',
+		'data visualization',
+		'programación',
+	],
 	title: 'Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer',
 };
 
@@ -41,34 +58,20 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<head>
-				<meta content="PE" name="geo.region" />
-				<meta content="Perú" name="geo.placename" />
-				<meta content="general" name="rating" />
-				<meta content="global" name="distribution" />
-				<meta
-					content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer'
-					property='og:title'
-				/>
-				<meta
-					content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.'
-					property='og:description'
-				/>
-				<meta
-					content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer'
-					name='twitter:title'
-				/>
-				<meta
-					content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.'
-					name='twitter:description'
-				/>
+				<meta content='PE' name='geo.region' />
+				<meta content='Perú' name='geo.placename' />
+				<meta content='general' name='rating' />
+				<meta content='global' name='distribution' />
+				<meta content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer' property='og:title' />
+				<meta content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.' property='og:description' />
+				<meta content='Sebastian Marat Urdanegui Bisalaya | Full-Stack Developer' name='twitter:title' />
+				<meta content='I am Full-Stack Web/Mobile Developer & Data Analyst from Lima, Peru, building impactful web and mobile apps with React, Node.js & Python.' name='twitter:description' />
 				<meta content='https://sebastianurdanegui.com' property='og:url' />
-				<meta content="https://sebastianurdanegui.com" property="twitter:url" />
-				<meta content="website" name="og:type" />
-				<meta content="summary_large_image" name="twitter:card" />
+				<meta content='https://sebastianurdanegui.com' property='twitter:url' />
+				<meta content='website' name='og:type' />
+				<meta content='summary_large_image' name='twitter:card' />
 			</head>
-			<body
-				className={`${sora.variable} ${redditSans.variable} ${jetbrainsMono.variable} antialiased`}
-			>
+			<body className={`${sora.variable} ${redditSans.variable} ${jetbrainsMono.variable} antialiased`}>
 				<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
 					<Navbar />
 					<Navigation />

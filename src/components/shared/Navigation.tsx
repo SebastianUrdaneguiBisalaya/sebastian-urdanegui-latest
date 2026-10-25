@@ -34,12 +34,7 @@ export default function Navigation() {
 							key={item.slug}
 						>
 							{item.name}
-							{active && (
-								<span
-									className='absolute left-1/2 -translate-x-1/2 bottom-0.5 h-[3px] w-[3px] rounded-full'
-									style={{ background: 'var(--accent)' }}
-								/>
-							)}
+							{active && <span className='absolute left-1/2 -translate-x-1/2 bottom-0.5 h-[3px] w-[3px] rounded-full' style={{ background: 'var(--accent)' }} />}
 						</Link>
 					);
 				})}

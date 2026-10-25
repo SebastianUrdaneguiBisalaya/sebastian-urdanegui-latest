@@ -14,45 +14,42 @@ const { fail, repoRoot } = require('./target');
 
 const ROOT = repoRoot();
 if (!ROOT) {
-  console.error('This tool composes demo captures and needs demos/ above it.');
-  process.exit(1);
+	console.error('This tool composes demo captures and needs demos/ above it.');
+	process.exit(1);
 }
 
 const [, , id, outArg] = process.argv;
 if (!id) {
-  console.error('usage: node scripts/compose.js <siteId> [outPath]');
-  process.exit(1);
+	console.error('usage: node scripts/compose.js <siteId> [outPath]');
+	process.exit(1);
 }
 
 const dir = path.join(ROOT, 'demos', id);
 const before = path.join(dir, 'desktop-before.png');
 const after = path.join(dir, 'desktop-after.png');
 for (const f of [before, after]) {
-  if (!fs.existsSync(f)) {
-    console.error(`missing ${path.relative(ROOT, f)} — run snap first`);
-    process.exit(1);
-  }
+	if (!fs.existsSync(f)) {
+		console.error(`missing ${path.relative(ROOT, f)} — run snap first`);
+		process.exit(1);
+	}
 }
 
-const out = outArg
-  ? path.resolve(outArg)
-  : path.join(dir, 'before-after.png');
+const out = outArg ? path.resolve(outArg) : path.join(dir, 'before-after.png');
 
 // Each half renders at this width; the pair plus the gap is the final image.
 const HALF = 900;
 const GAP = 24;
 
-const asDataUri = (p) =>
-  `data:image/png;base64,${fs.readFileSync(p).toString('base64')}`;
+const asDataUri = p => `data:image/png;base64,${fs.readFileSync(p).toString('base64')}`;
 
 (async () => {
-  const browser = await chromium.launch({ channel: 'chrome', headless: true });
-  const page = await browser.newPage({
-    deviceScaleFactor: 1,
-    viewport: { height: 600, width: HALF * 2 + GAP },
-  });
+	const browser = await chromium.launch({ channel: 'chrome', headless: true });
+	const page = await browser.newPage({
+		deviceScaleFactor: 1,
+		viewport: { height: 600, width: HALF * 2 + GAP },
+	});
 
-  await page.setContent(`
+	await page.setContent(`
     <style>
       * { margin: 0; box-sizing: border-box; }
       body { background: #fff; font-family: ui-sans-serif, system-ui, sans-serif; }
@@ -69,12 +66,12 @@ const asDataUri = (p) =>
       <figure><figcaption>After</figcaption><img src="${asDataUri(after)}"></figure>
     </div>
   `);
-  await page.waitForTimeout(400);
+	await page.waitForTimeout(400);
 
-  const el = await page.$('.pair');
-  await el.screenshot({ path: out });
-  await browser.close();
+	const el = await page.$('.pair');
+	await el.screenshot({ path: out });
+	await browser.close();
 
-  const kb = Math.round(fs.statSync(out).size / 1024);
-  console.log(`${path.relative(process.cwd(), out)}  ${kb}KB`);
+	const kb = Math.round(fs.statSync(out).size / 1024);
+	console.log(`${path.relative(process.cwd(), out)}  ${kb}KB`);
 })().catch(fail);

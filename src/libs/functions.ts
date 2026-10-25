@@ -3,31 +3,29 @@
 import { useEffect, useState } from 'react';
 
 function useMediaQuery(query: string): boolean {
-    const [matches, setMatches] = useState<boolean>(
-        () => {
-            if (typeof window === 'undefined') return false;
-            return window.matchMedia(query).matches;
-        }
-    );
+	const [matches, setMatches] = useState<boolean>(() => {
+		if (typeof window === 'undefined') return false;
+		return window.matchMedia(query).matches;
+	});
 
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-        const mediaQuery = window.matchMedia(query);
-        const listener = () => setMatches(mediaQuery.matches);
-        mediaQuery.addEventListener('change', listener);
-        return () => mediaQuery.removeEventListener('change', listener);
-    }, [query]);
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const mediaQuery = window.matchMedia(query);
+		const listener = () => setMatches(mediaQuery.matches);
+		mediaQuery.addEventListener('change', listener);
+		return () => mediaQuery.removeEventListener('change', listener);
+	}, [query]);
 
-    return matches;
+	return matches;
 }
 
 function useMounted() {
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        // eslint-disable-next-line
-        setMounted(true);
-    }, []);
-    return mounted;
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		// eslint-disable-next-line
+		setMounted(true);
+	}, []);
+	return mounted;
 }
 
 export { useMediaQuery, useMounted };

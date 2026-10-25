@@ -49,16 +49,8 @@ export default function SmoothCursor() {
 			dot.current.x = lerp(dot.current.x, mouse.current.x, DOT_SMOOTHNESS);
 			dot.current.y = lerp(dot.current.y, mouse.current.y, DOT_SMOOTHNESS);
 
-			border.current.x = lerp(
-				border.current.x,
-				mouse.current.x,
-				BORDER_SMOOTHNESS
-			);
-			border.current.y = lerp(
-				border.current.y,
-				mouse.current.y,
-				BORDER_SMOOTHNESS
-			);
+			border.current.x = lerp(border.current.x, mouse.current.x, BORDER_SMOOTHNESS);
+			border.current.y = lerp(border.current.y, mouse.current.y, BORDER_SMOOTHNESS);
 
 			dotRef.current!.style.transform = `translate3d(${dot.current.x}px, ${dot.current.y}px, 0) translate(-50%, -50%)`;
 
@@ -69,9 +61,7 @@ export default function SmoothCursor() {
 
 		window.addEventListener('mousemove', onMouseMove);
 
-		const targets = document.querySelectorAll(
-			'a, button, input, textarea, select, img'
-		);
+		const targets = document.querySelectorAll('a, button, input, textarea, select, img');
 
 		targets.forEach(el => {
 			el.addEventListener('mouseenter', onEnter);

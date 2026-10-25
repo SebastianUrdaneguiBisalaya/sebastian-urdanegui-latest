@@ -25,14 +25,16 @@ const projectsList: Project[] = [
 		year: '2026',
 	},
 	{
-		description: 'Framework-independent authorization engine for the frontend: RBAC, ABAC, and ReBAC behind one evaluation API, plus a small reactive store. Zero runtime dependencies; runs in the browser and in Node.',
+		description:
+			'Framework-independent authorization engine for the frontend: RBAC, ABAC, and ReBAC behind one evaluation API, plus a small reactive store. Zero runtime dependencies; runs in the browser and in Node.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/useguardrail',
 		name: 'useguardrail',
 		skills: ['Monorepo', 'Typescript', 'Tsup', 'SDK', 'Vitest', 'Github Actions'],
 		year: '2026',
 	},
 	{
-		description: 'Upflowi orchestrates uploads — concurrency, chunking, multipart, retries, progress, pause/resume, cancellation, and resumable persistence — without shipping a UI, without locking you into one storage backend, and without ever seeing your cloud credentials.',
+		description:
+			'Upflowi orchestrates uploads — concurrency, chunking, multipart, retries, progress, pause/resume, cancellation, and resumable persistence — without shipping a UI, without locking you into one storage backend, and without ever seeing your cloud credentials.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/upflowi',
 		name: 'upflowi',
 		skills: ['Monorepo', 'Typescript', 'Tsup', 'SDK', 'Vitest', 'Github Actions'],
@@ -46,16 +48,14 @@ const projectsList: Project[] = [
 		year: '2026',
 	},
 	{
-		description:
-			'A minimalist CLI password manager secured with local master key encryption and seamless clipboard integration.',
+		description: 'A minimalist CLI password manager secured with local master key encryption and seamless clipboard integration.',
 		link: 'https://www.npmjs.com/package/@stackvoid/vaultgen',
 		name: 'vaultgen',
 		skills: ['Node.js', 'TypeScript'],
 		year: '2026',
 	},
 	{
-		description:
-			'Modern React and Next.js hooks, unopinionated and focused on developer experience.',
+		description: 'Modern React and Next.js hooks, unopinionated and focused on developer experience.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/vibehooks',
 		name: 'vibehooks',
 		skills: ['React.js', 'TypeScript', 'Hooks', 'Next.js', 'tsdown'],
@@ -70,79 +70,49 @@ const projectsList: Project[] = [
 		year: '2025',
 	},
 	{
-		description:
-			'An AI-powered platform that understands, translates, and formulates real-time responses during conversations.',
+		description: 'An AI-powered platform that understands, translates, and formulates real-time responses during conversations.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/ai-blabla-web-platform',
 		name: 'aiblabla',
-		skills: [
-			'React.js',
-			'TailwindCSS',
-			'TypeScript',
-			'FastAPI',
-			'Supabase',
-			'Google Auth',
-			'APIs',
-		],
+		skills: ['React.js', 'TailwindCSS', 'TypeScript', 'FastAPI', 'Supabase', 'Google Auth', 'APIs'],
 		year: '2025',
 	},
 	{
-		description:
-			'Back-end infrastructure that supports the kooko.ai front-end.',
+		description: 'Back-end infrastructure that supports the kooko.ai front-end.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-backend',
 		name: 'kooko.ai',
 		skills: ['Python', 'Supabase', 'Gemini AI'],
 		year: '2025',
 	},
 	{
-		description:
-			'Front-end. Forget about paperwork. Send a photo to our Telegram bot, and our AI model will extract the data, making it available on the web dashboard.',
+		description: 'Front-end. Forget about paperwork. Send a photo to our Telegram bot, and our AI model will extract the data, making it available on the web dashboard.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend',
 		name: 'kooko.ai',
 		skills: ['React.js', 'TailwindCSS', 'TypeScript', 'Supabase'],
 		year: '2025',
 	},
 	{
-		description:
-			'Front-end & Back-end. An AI-powered web platform for music recommendations integrated with Spotify.',
+		description: 'Front-end & Back-end. An AI-powered web platform for music recommendations integrated with Spotify.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/emotify.ai',
 		name: 'emotify.ai',
-		skills: [
-			'React.js',
-			'TailwindCSS',
-			'TypeScript',
-			'AI SDK',
-			'Spotify API',
-			'Next.js',
-		],
+		skills: ['React.js', 'TailwindCSS', 'TypeScript', 'AI SDK', 'Spotify API', 'Next.js'],
 		year: '2025',
 	},
 	{
-		description:
-			'Front-end & Back-end. A web platform to organize all your subscriptions in one place.',
+		description: 'Front-end & Back-end. A web platform to organize all your subscriptions in one place.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager',
 		name: 'suscripto.manager',
-		skills: [
-			'React.js',
-			'TailwindCSS',
-			'TypeScript',
-			'Route Handlers',
-			'Supabase',
-			'Google Auth',
-			'Next.js',
-		],
+		skills: ['React.js', 'TailwindCSS', 'TypeScript', 'Route Handlers', 'Supabase', 'Google Auth', 'Next.js'],
 		year: '2025',
 	},
 	{
-		description:
-			'Back-end infrastructure that supports the exploryq front-end.',
+		description: 'Back-end infrastructure that supports the exploryq front-end.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/exploryq-backend',
 		name: 'exploryq',
 		skills: ['Express.js', 'TypeScript', 'Supabase', 'Prisma', 'Render'],
 		year: '2024',
 	},
 	{
-		description:
-			'Front-end. A web platform that allows users to view different events occuring in their area.',
+		description: 'Front-end. A web platform that allows users to view different events occuring in their area.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/exploryq-platform',
 		name: 'exploryq',
 		skills: ['React.js', 'TailwindCSS', 'TypeScript'],
@@ -152,22 +122,10 @@ const projectsList: Project[] = [
 
 const blogList: Blog[] = [
 	{
-		description:
-			'A practical guide with FastAPI and Groq AI to build a voice assistant for forms.',
+		description: 'A practical guide with FastAPI and Groq AI to build a voice assistant for forms.',
 		link: '/blog/voice-agent-for-forms',
 		name: 'Voice agent for forms',
-		skills: [
-			'FastAPI',
-			'Python',
-			'WebSocket',
-			'Groq',
-			'LLM',
-			'SpeechToText',
-			'TextToSpeech',
-			'React',
-			'TailwindCSS',
-			'TypeScript',
-		],
+		skills: ['FastAPI', 'Python', 'WebSocket', 'Groq', 'LLM', 'SpeechToText', 'TextToSpeech', 'React', 'TailwindCSS', 'TypeScript'],
 		year: '2025',
 	},
 ];

@@ -40,24 +40,24 @@ Systematically improve resilience:
 ```css
 /* Single line with ellipsis */
 .truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* Multi-line with clamp */
 .line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 /* Allow wrapping */
 .wrap {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	hyphens: auto;
 }
 ```
 
@@ -65,14 +65,14 @@ Systematically improve resilience:
 ```css
 /* Prevent flex items from overflowing */
 .flex-item {
-  min-width: 0; /* Allow shrinking below content size */
-  overflow: hidden;
+	min-width: 0; /* Allow shrinking below content size */
+	overflow: hidden;
 }
 
 /* Prevent grid items from overflowing */
 .grid-item {
-  min-width: 0;
-  min-height: 0;
+	min-width: 0;
+	min-height: 0;
 }
 ```
 
@@ -121,19 +121,19 @@ border-inline-end: 1px solid; /* Not border-right */
 new Intl.DateTimeFormat('en-US').format(date); // 1/15/2024
 new Intl.DateTimeFormat('de-DE').format(date); // 15.1.2024
 
-new Intl.NumberFormat('en-US', { 
-  style: 'currency', 
-  currency: 'USD' 
+new Intl.NumberFormat('en-US', {
+	style: 'currency',
+	currency: 'USD',
 }).format(1234.56); // $1,234.56
 ```
 
 **Pluralization**:
 ```javascript
 // ❌ Bad: Assumes English pluralization
-`${count} item${count !== 1 ? 's' : ''}`
+`${count} item${count !== 1 ? 's' : ''}`;
 
 // ✅ Good: Use proper i18n library
-t('items', { count }) // Handles complex plural rules
+t('items', { count }); // Handles complex plural rules
 ```
 
 ### Error Handling
@@ -147,12 +147,14 @@ t('items', { count }) // Handles complex plural rules
 
 ```jsx
 // Error states with recovery
-{error && (
-  <ErrorMessage>
-    <p>Failed to load data. {error.message}</p>
-    <button onClick={retry}>Try again</button>
-  </ErrorMessage>
-)}
+{
+	error && (
+		<ErrorMessage>
+			<p>Failed to load data. {error.message}</p>
+			<button onClick={retry}>Try again</button>
+		</ErrorMessage>
+	);
+}
 ```
 
 **Form validation errors**:

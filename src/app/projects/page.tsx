@@ -13,25 +13,11 @@ const sectionVariants: Variants = {
 export default function Page() {
 	return (
 		<main className='pb-16'>
-			<motion.section
-				initial='hidden'
-				variants={sectionVariants}
-				viewport={{ amount: 0.1, once: true }}
-				whileInView='visible'
-			>
+			<motion.section initial='hidden' variants={sectionVariants} viewport={{ amount: 0.1, once: true }} whileInView='visible'>
 				<ul className='flex flex-col'>
 					{projectsList.map((project, idx) => (
-						<li
-							className='py-6 border-b border-white/[0.06] last:border-b-0'
-							key={idx}
-						>
-							<Card
-								description={project.description}
-								link={project.link}
-								name={project.name}
-								skills={project.skills}
-								year={project.year}
-							/>
+						<li className='py-6 border-b border-white/[0.06] last:border-b-0' key={idx}>
+							<Card description={project.description} link={project.link} name={project.name} skills={project.skills} year={project.year} />
 						</li>
 					))}
 				</ul>
