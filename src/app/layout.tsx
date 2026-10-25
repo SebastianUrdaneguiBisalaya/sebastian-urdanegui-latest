@@ -7,6 +7,7 @@ import Footer from '@/components/shared/Footer';
 import Lenis from '@/components/shared/Lenis';
 import Navbar from '@/components/shared/Navbar';
 import Navigation from '@/components/shared/Navigation';
+import ThemeProvider from '@/components/shared/ThemeProvider';
 
 const sora = Sora({
 	subsets: ['latin'],
@@ -56,7 +57,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en'>
+		<html lang='en' suppressHydrationWarning>
 			<head>
 				<meta content='PE' name='geo.region' />
 				<meta content='Perú' name='geo.placename' />
@@ -72,14 +73,16 @@ export default function RootLayout({
 				<meta content='summary_large_image' name='twitter:card' />
 			</head>
 			<body className={`${sora.variable} ${redditSans.variable} ${jetbrainsMono.variable} antialiased`}>
-				<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
-					<Navbar />
-					<Navigation />
-					<div className='flex-1 flex flex-col'>{children}</div>
-					<Footer />
-				</div>
-				<Lenis />
-				<SmoothCursor />
+				<ThemeProvider>
+					<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
+						<Navbar />
+						<Navigation />
+						<div className='flex-1 flex flex-col'>{children}</div>
+						<Footer />
+					</div>
+					<Lenis />
+					<SmoothCursor />
+				</ThemeProvider>
 			</body>
 		</html>
 	);

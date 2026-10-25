@@ -1,17 +1,42 @@
 @import "tailwindcss";
 
 :root {
+	color-scheme: light;
+	--background: #fafaf8;
+	--ink: #141413;
+	--ink-secondary: rgb(20 20 19 / 65%);
+	--ink-tertiary: rgb(20 20 19 / 50%);
+	--border: rgb(20 20 19 / 12%);
+	--border-subtle: rgb(20 20 19 / 8%);
+	--border-strong: rgb(20 20 19 / 20%);
+	--accent: #94650f;
+	--code-background: #f1f1ee;
+}
+
+.dark {
+	color-scheme: dark;
 	--background: #0a0a0a;
 	--ink: #f7f7f6;
 	--ink-secondary: rgb(247 247 246 / 60%);
 	--ink-tertiary: rgb(247 247 246 / 42%);
 	--border: rgb(247 247 246 / 10%);
+	--border-subtle: rgb(247 247 246 / 6%);
 	--border-strong: rgb(247 247 246 / 18%);
 	--accent: #d9a441;
+	--code-background: #000;
 }
 
 @theme inline {
 	--color-background: var(--background);
+	--color-foreground: var(--ink);
+	--color-muted-foreground: var(--ink-secondary);
+	--color-tertiary: var(--ink-tertiary);
+	--color-border: var(--border);
+	--color-border-subtle: var(--border-subtle);
+	--color-border-strong: var(--border-strong);
+	--color-ring: var(--accent);
+	--color-accent: var(--accent);
+	--color-code: var(--code-background);
 	--font-reddit-sans: var(--font-reddit-sans);
 	--font-sora: var(--font-sora);
 	--font-mono: var(--font-jetbrains-mono);
@@ -39,7 +64,7 @@ body {
 	position: absolute;
 	width: 8px;
 	height: 8px;
-	background: white;
+	background: var(--ink);
 	border-radius: 9999px;
 	will-change: transform;
 }
@@ -48,7 +73,7 @@ body {
 	position: absolute;
 	width: 28px;
 	height: 28px;
-	border: 1px solid white;
+	border: 1px solid var(--ink);
 	border-radius: 9999px;
 	transition:
 		width 0.25s ease,
