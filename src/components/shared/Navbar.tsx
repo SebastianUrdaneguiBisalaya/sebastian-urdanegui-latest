@@ -65,7 +65,13 @@ export default function Navbar() {
 				</motion.div>
 				<motion.nav aria-label='Social links' className='flex flex-row items-center gap-3.5 pt-0.5' variants={itemVariants}>
 					{socials.map(social => (
-						<Link aria-label={social.label} className='text-foreground/60 hover:text-foreground transition-colors duration-300 ease-out' href={social.href} key={social.label} target='_blank'>
+						<Link
+							aria-label={social.label}
+							className='text-foreground/60 hover:text-foreground transition-colors duration-300 ease-out'
+							href={social.href}
+							key={social.label}
+							target='_blank'
+						>
 							<svg height='16' viewBox={social.viewBox} width='16' xmlns='http://www.w3.org/2000/svg'>
 								<path d={social.path} fill='currentColor' />
 							</svg>

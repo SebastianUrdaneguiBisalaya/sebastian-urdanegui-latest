@@ -108,11 +108,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, filename, language =
 					</div>
 				</button>
 			</div>
-			<div
-				className='leading-relaxed border-x border-b border-border-strong rounded-b-md py-4 pl-4 bg-code overflow-x-auto'
-				dangerouslySetInnerHTML={{ __html: html }}
-				data-lenis-prevent
-			/>
+			<div className='leading-relaxed border-x border-b border-border-strong rounded-b-md py-4 pl-4 bg-code overflow-x-auto' dangerouslySetInnerHTML={{ __html: html }} data-lenis-prevent />
 		</div>
 	);
 };
