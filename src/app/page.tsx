@@ -1,6 +1,10 @@
 'use client';
 
+import { ArrowUpRight } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
+
+import { Icon } from '@/components/shared/Icon';
+import { cn } from '@/libs/cn';
 
 const sectionVariants: Variants = {
 	hidden: { opacity: 0, y: 12 },
@@ -12,6 +16,7 @@ const sectionVariants: Variants = {
 };
 
 interface Entry {
+	award?: string;
 	description: string[];
 	meta?: string;
 	period: string;
@@ -42,7 +47,7 @@ const entries: Entry[] = [
 			'Led technical direction for an AI-powered real-time communication platform that understands, translates, and formulates responses during conversations — speech processing, AI integrations, and the full frontend/backend architecture.',
 		],
 		period: '2025',
-		role: 'aiblabla — Technical Lead',
+		role: 'aiblabla — Co-Founder',
 		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/ai-blabla-web-platform',
 	},
 	{
@@ -65,7 +70,7 @@ const entries: Entry[] = [
 	},
 	{
 		description: ['An MVP connecting parents and healthcare workers in Huancavelica: check-ups, vaccination records, automated alerts, and audio translation into Quechua.'],
-		meta: '1st place',
+		award: '1st place',
 		period: '2025.03',
 		role: 'Hackathon Huancavelica Vida Segura',
 		roleHref: 'https://drive.google.com/file/d/1m6yJws18WElIgCyvGVjreQMW86qtawWD/view',
@@ -79,7 +84,7 @@ const entries: Entry[] = [
 	},
 	{
 		description: ['Analyzed national data on rest days from occupational accidents for a competition run by the Secretariat of Government and Digital Transformation of Peru.'],
-		meta: '4th place',
+		award: '4th place',
 		period: '2023.09',
 		role: 'Datathon Exprésate Perú con Datos',
 		roleHref: 'https://drive.google.com/file/d/1PgR3nWq_D70cUymndbIIoMdnuadQaPiG/view',
@@ -111,34 +116,74 @@ export default function Page() {
 						Today that&apos;s mostly TypeScript/JavaScript and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant SaaS
 						architecture and developer tooling: things that solve a real, specific problem for the people using them.
 					</p>
+					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
+						Want to work together or just say hi? Write to{' '}
+						<a
+							className='text-foreground underline underline-offset-4 decoration-border-strong hover:text-accent hover:decoration-accent transition-colors duration-300 ease-out'
+							href='mailto:sebasurdanegui@gmail.com'
+						>
+							sebasurdanegui@gmail.com
+						</a>
+						.
+					</p>
 				</div>
 			</motion.section>
 
 			<motion.section className='mt-14' variants={sectionVariants}>
 				<h2 className='font-sora text-sm font-medium text-foreground/50 pb-6 border-b border-border'>Experience</h2>
 				<ol className='flex flex-col'>
-					{entries.map((entry, idx) => (
-						<li className='flex flex-col sm:flex-row gap-1.5 sm:gap-6 py-6 border-b border-border-subtle last:border-b-0' key={idx}>
-							<span className='font-mono text-xs text-tertiary shrink-0 sm:w-[136px] sm:pt-0.5'>{entry.period}</span>
-							<div className='flex flex-col gap-1.5 min-w-0'>
-								<p className='font-sora text-[15px] font-medium text-foreground'>
-									{entry.roleHref ? (
-										<a className='hover:text-accent transition-colors duration-300 ease-out' href={entry.roleHref} rel='noopener noreferrer' target='_blank'>
-											{entry.role}
-										</a>
-									) : (
-										entry.role
+					{entries.map((entry, idx) => {
+						const linked = Boolean(entry.roleHref);
+						const rowClassName = 'flex flex-col sm:flex-row gap-1.5 sm:gap-6 w-full group';
+						const content = (
+							<>
+								<span
+									className={cn(
+										'font-mono text-xs text-tertiary shrink-0 sm:w-[136px] sm:pt-0.5',
+										linked && 'transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transition-none'
 									)}
-									{entry.meta && <span className='font-mono text-xs text-tertiary font-normal ml-2'>{entry.meta}</span>}
-								</p>
-								{entry.description.map((line, lineIdx) => (
-									<p className='font-reddit-sans text-sm leading-6 text-foreground/65' key={lineIdx}>
-										{line}
+								>
+									{entry.period}
+								</span>
+								<div className='flex flex-col gap-1.5 min-w-0'>
+									<p className='font-sora text-[15px] font-medium text-foreground'>
+										<span className={cn(linked && 'transition-colors duration-300 ease-out group-hover:text-accent group-focus-visible:text-accent')}>{entry.role}</span>
+										{linked && (
+											<Icon
+												aria-hidden='true'
+												className='inline ml-1 align-text-bottom text-accent opacity-0 -translate-x-1 translate-y-0.5 transition-[opacity,translate] duration-300 ease-out motion-reduce:transition-none group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:translate-y-0'
+												icon={ArrowUpRight}
+												size='sm'
+											/>
+										)}
+										{entry.meta && <span className='font-mono text-xs text-tertiary font-normal ml-2'>{entry.meta}</span>}
+										{entry.award && (
+											<span className='font-mono text-xs text-accent font-normal ml-2'>
+												<span aria-hidden='true' className='inline-block size-1.5 rounded-full bg-accent align-middle mr-1.5' />
+												{entry.award}
+											</span>
+										)}
 									</p>
-								))}
-							</div>
-						</li>
-					))}
+									{entry.description.map((line, lineIdx) => (
+										<p className='font-reddit-sans text-sm leading-6 text-foreground/65' key={lineIdx}>
+											{line}
+										</p>
+									))}
+								</div>
+							</>
+						);
+						return (
+							<li className='py-6 border-b border-border-subtle last:border-b-0' key={idx}>
+								{entry.roleHref ? (
+									<a className={rowClassName} href={entry.roleHref} rel='noopener noreferrer' target='_blank'>
+										{content}
+									</a>
+								) : (
+									<div className={rowClassName}>{content}</div>
+								)}
+							</li>
+						);
+					})}
 				</ol>
 			</motion.section>
 		</motion.main>
