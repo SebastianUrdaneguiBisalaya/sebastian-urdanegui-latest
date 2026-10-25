@@ -7,6 +7,7 @@ import Card, { type ProjectCategory, projectCategories } from '@/components/proj
 import { Tag } from '@/components/shared/Tag';
 import { projectsList } from '@/constants/constants';
 import { cn } from '@/libs/cn';
+import { useLoaderDone } from '@/libs/loader';
 
 const sectionVariants: Variants = {
 	hidden: { opacity: 0, y: 12 },
@@ -20,12 +21,13 @@ const filters: Filter[] = ['All', ...projectCategories];
 const countOf = (filter: Filter) => (filter === 'All' ? projectsList.length : projectsList.filter(project => project.category === filter).length);
 
 export default function Page() {
+	const loaderDone = useLoaderDone();
 	const [filter, setFilter] = useState<Filter>('All');
 	const visibleProjects = filter === 'All' ? projectsList : projectsList.filter(project => project.category === filter);
 
 	return (
 		<main className='pb-16'>
-			<motion.section initial='hidden' variants={sectionVariants} viewport={{ amount: 0.1, once: true }} whileInView='visible'>
+			<motion.section initial='hidden' variants={sectionVariants} viewport={{ amount: 0.1, once: true }} whileInView={loaderDone ? 'visible' : undefined}>
 				<div aria-label='Filter projects' className='flex flex-row flex-wrap items-center gap-2 pb-6 border-b border-border-subtle' role='group'>
 					{filters.map(item => {
 						const active = filter === item;

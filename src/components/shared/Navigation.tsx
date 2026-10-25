@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 
 import { navigationsPaths } from '@/constants/constants';
 import { cn } from '@/libs/cn';
+import { useLoaderDone } from '@/libs/loader';
 
 const variants: Variants = {
 	hidden: { opacity: 0, y: 10 },
@@ -14,9 +15,10 @@ const variants: Variants = {
 
 export default function Navigation() {
 	const pathname = usePathname();
+	const loaderDone = useLoaderDone();
 	return (
 		<motion.div
-			animate='visible'
+			animate={loaderDone ? 'visible' : 'hidden'}
 			className='fixed z-50 inset-x bottom-5 bg-background/80 border border-border backdrop-blur-md rounded-full w-fit self-center h-fit'
 			initial='hidden'
 			variants={variants}

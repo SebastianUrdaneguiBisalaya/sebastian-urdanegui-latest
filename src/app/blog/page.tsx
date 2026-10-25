@@ -4,6 +4,7 @@ import { motion, type Variants } from 'motion/react';
 
 import Card from '@/components/blog/Card';
 import { blogList } from '@/constants/constants';
+import { useLoaderDone } from '@/libs/loader';
 
 const sectionVariants: Variants = {
 	hidden: { opacity: 0, y: 12 },
@@ -11,9 +12,11 @@ const sectionVariants: Variants = {
 };
 
 export default function Page() {
+	const loaderDone = useLoaderDone();
+
 	return (
 		<main className='pb-16'>
-			<motion.section initial='hidden' variants={sectionVariants} viewport={{ amount: 0.1, once: true }} whileInView='visible'>
+			<motion.section initial='hidden' variants={sectionVariants} viewport={{ amount: 0.1, once: true }} whileInView={loaderDone ? 'visible' : undefined}>
 				<ul className='flex flex-col'>
 					{blogList.map((post, idx) => (
 						<li className='py-6 border-b border-border-subtle last:border-b-0' key={idx}>

@@ -4,6 +4,8 @@ import { motion, type Variants } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { useLoaderDone } from '@/libs/loader';
+
 const containerVariants: Variants = {
 	hidden: { opacity: 0 },
 	visible: {
@@ -51,8 +53,10 @@ const socials = [
 ];
 
 export default function Navbar() {
+	const loaderDone = useLoaderDone();
+
 	return (
-		<motion.header animate='visible' className='w-full pt-8 pb-6 flex flex-row items-start gap-4' initial='hidden' variants={containerVariants}>
+		<motion.header animate={loaderDone ? 'visible' : 'hidden'} className='w-full pt-8 pb-6 flex flex-row items-start gap-4' initial='hidden' variants={containerVariants}>
 			<motion.a className='shrink-0' href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/' target='_blank' variants={itemVariants}>
 				<Image alt='Sebastian Urdanegui' className='rounded-full border border-border-strong' height={56} src='/image-profile.webp' width={56} />
 			</motion.a>

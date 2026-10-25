@@ -5,6 +5,7 @@ import { motion, type Variants } from 'motion/react';
 
 import { Icon } from '@/components/shared/Icon';
 import { cn } from '@/libs/cn';
+import { useLoaderDone } from '@/libs/loader';
 
 const sectionVariants: Variants = {
 	hidden: { opacity: 0, y: 12 },
@@ -99,8 +100,10 @@ const entries: Entry[] = [
 ];
 
 export default function Page() {
+	const loaderDone = useLoaderDone();
+
 	return (
-		<motion.main animate='visible' className='pb-16' initial='hidden' variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+		<motion.main animate={loaderDone ? 'visible' : 'hidden'} className='pb-16' initial='hidden' variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
 			<motion.section variants={sectionVariants}>
 				<p className='font-sora text-xl sm:text-2xl leading-snug text-foreground tracking-tight w-full'>I build web and mobile products from idea to production.</p>
 				<div className='mt-6 flex flex-col gap-4 w-full'>
