@@ -17,7 +17,7 @@ export default function Navigation() {
 	return (
 		<motion.div
 			animate='visible'
-			className='fixed z-50 inset-x bottom-5 bg-[#0a0a0a]/80 border border-white/10 backdrop-blur-md rounded-full w-fit self-center h-fit'
+			className='fixed z-50 inset-x bottom-5 bg-background/80 border border-border backdrop-blur-md rounded-full w-fit self-center h-fit'
 			initial='hidden'
 			variants={variants}
 		>
@@ -27,8 +27,8 @@ export default function Navigation() {
 					return (
 						<Link
 							className={cn(
-								'relative font-sora font-medium text-sm leading-7 px-3.5 py-1 rounded-full cursor-pointer transition-colors duration-300 ease-out text-white/55 hover:text-white',
-								active && 'text-white bg-white/[0.06]'
+								'relative font-sora font-medium text-sm leading-7 px-3.5 py-1 rounded-full cursor-pointer transition-colors duration-300 ease-out text-foreground/55 hover:text-foreground',
+								active && 'text-foreground bg-foreground/[0.06]'
 							)}
 							href={item.slug}
 							key={item.slug}

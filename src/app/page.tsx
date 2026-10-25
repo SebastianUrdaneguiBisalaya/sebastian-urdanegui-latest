@@ -97,17 +97,17 @@ export default function Page() {
 	return (
 		<motion.main animate='visible' className='pb-16' initial='hidden' variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
 			<motion.section variants={sectionVariants}>
-				<p className='font-sora text-xl sm:text-2xl leading-snug text-white tracking-tight w-full'>I build web and mobile products from idea to production.</p>
+				<p className='font-sora text-xl sm:text-2xl leading-snug text-foreground tracking-tight w-full'>I build web and mobile products from idea to production.</p>
 				<div className='mt-6 flex flex-col gap-4 w-full'>
-					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
 						I care less about any one stack and more about how software is structured — how its pieces interact, and how technical decisions turn into something reliable and maintainable.
 						I work across the whole lifecycle: architecture, APIs, interfaces, integrations, and getting applications ready for real use.
 					</p>
-					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
 						I started in analytics and data science with Python, which is where the problem-solving came from. That path led into software engineering, where I found more interest in
 						shipping complete systems than in any single layer of them.
 					</p>
-					<p className='font-reddit-sans text-[15px] leading-7 text-white/70'>
+					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
 						Today that&apos;s mostly TypeScript/JavaScript and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant SaaS
 						architecture and developer tooling: things that solve a real, specific problem for the people using them.
 					</p>
@@ -115,24 +115,24 @@ export default function Page() {
 			</motion.section>
 
 			<motion.section className='mt-14' variants={sectionVariants}>
-				<h2 className='font-sora text-sm font-medium text-white/50 pb-6 border-b border-white/10'>Experience</h2>
+				<h2 className='font-sora text-sm font-medium text-foreground/50 pb-6 border-b border-border'>Experience</h2>
 				<ol className='flex flex-col'>
 					{entries.map((entry, idx) => (
-						<li className='flex flex-col sm:flex-row gap-1.5 sm:gap-6 py-6 border-b border-white/[0.06] last:border-b-0' key={idx}>
-							<span className='font-mono text-xs text-white/42 shrink-0 sm:w-[136px] sm:pt-0.5'>{entry.period}</span>
+						<li className='flex flex-col sm:flex-row gap-1.5 sm:gap-6 py-6 border-b border-border-subtle last:border-b-0' key={idx}>
+							<span className='font-mono text-xs text-tertiary shrink-0 sm:w-[136px] sm:pt-0.5'>{entry.period}</span>
 							<div className='flex flex-col gap-1.5 min-w-0'>
-								<p className='font-sora text-[15px] font-medium text-white'>
+								<p className='font-sora text-[15px] font-medium text-foreground'>
 									{entry.roleHref ? (
-										<a className='hover:text-[var(--accent)] transition-colors duration-300 ease-out' href={entry.roleHref} rel='noopener noreferrer' target='_blank'>
+										<a className='hover:text-accent transition-colors duration-300 ease-out' href={entry.roleHref} rel='noopener noreferrer' target='_blank'>
 											{entry.role}
 										</a>
 									) : (
 										entry.role
 									)}
-									{entry.meta && <span className='font-mono text-xs text-white/42 font-normal ml-2'>{entry.meta}</span>}
+									{entry.meta && <span className='font-mono text-xs text-tertiary font-normal ml-2'>{entry.meta}</span>}
 								</p>
 								{entry.description.map((line, lineIdx) => (
-									<p className='font-reddit-sans text-sm leading-6 text-white/65' key={lineIdx}>
+									<p className='font-reddit-sans text-sm leading-6 text-foreground/65' key={lineIdx}>
 										{line}
 									</p>
 								))}
