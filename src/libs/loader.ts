@@ -25,9 +25,11 @@ const subscribe = (listener: () => void) => {
 
 /** `false` until the loader is done; entrance animations wait for it so they play on a visible page. */
 export function useLoaderDone() {
-	return useSyncExternalStore(
-		subscribe,
-		() => ready,
-		() => false
-	);
+	// Loader disabled: entrance animations are skipped, the page shows immediately.
+	return true;
+	// return useSyncExternalStore(
+	// 	subscribe,
+	// 	() => ready,
+	// 	() => false
+	// );
 }
