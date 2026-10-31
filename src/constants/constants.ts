@@ -18,6 +18,14 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		category: 'Full-stack',
+		description: 'An open source alternative to Bitly. Custom domains, click analytics, QR codes and password-protected links, with no plans, usage caps or third party holding your data.',
+		link: 'https://useshortly.sebastianurdanegui.com/',
+		name: 'useshortly',
+		skills: ['Go', 'Swagger', 'SQLite', 'Typescript', 'React.js', 'Vite', 'Vitest', 'Electron', 'Astro', 'MCP', 'Monorepo'],
+		year: '2026'
+	},
+	{
 		category: 'Packages',
 		description: 'Keyboard shortcuts for the web that stay out of your way: combos, scopes, priorities and conflict resolution, in a framework-agnostic core with React bindings.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usehotkeys',
