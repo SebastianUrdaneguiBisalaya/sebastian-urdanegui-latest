@@ -28,46 +28,11 @@ interface Entry {
 const entries: Entry[] = [
 	{
 		description: [
-			'Built a multi-tenant SaaS platform for businesses to create subscription plans, manage customers, track consumption, and run subscription-based experiences.',
-			'Designed the core architecture end to end — tenant isolation, auth, relational data models, REST APIs, subscription workflows, and third-party integrations.',
-		],
-		meta: 'SaaS · B2B2C',
-		period: '2026.05 — 2026.08',
-		role: 'membi — Co-Founder',
-	},
-	{
-		description: [
 			'Build and maintain production web apps for the real estate sector with Next.js, React, TypeScript, and Node.js, mixing SSR and SSG for performance and SEO.',
 			'Design REST APIs, structure reusable components, and shipped an AI chatbot on n8n and LLM services for business-workflow automation.',
 		],
 		period: '2025.10 — 2026.08',
 		role: 'Full-Stack Developer, Formula',
-	},
-	{
-		description: [
-			'Led technical direction for an AI-powered real-time communication platform that understands, translates, and formulates responses during conversations — speech processing, AI integrations, and the full frontend/backend architecture.',
-		],
-		period: '2025',
-		role: 'aiblabla — Co-Founder',
-		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/ai-blabla-web-platform',
-	},
-	{
-		description: ['A centralized web app for organizing personal subscriptions.'],
-		period: '2025.08',
-		role: 'suscripto.manager',
-		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/suscripto.manager',
-	},
-	{
-		description: ['An AI music-recommendation platform combining generative AI with the Spotify API for personalized, context-aware picks.'],
-		period: '2025.08',
-		role: 'emotify.ai',
-		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/emotify.ai',
-	},
-	{
-		description: ['AI document-processing pipeline: send a photo over Telegram, extract structured data automatically, review it on a web dashboard.'],
-		period: '2025.06',
-		role: 'kooko.ai',
-		roleHref: 'https://github.com/SebastianUrdaneguiBisalaya/kooko-ai-frontend',
 	},
 	{
 		description: ['An MVP connecting parents and healthcare workers in Huancavelica: check-ups, vaccination records, automated alerts, and audio translation into Quechua.'],
