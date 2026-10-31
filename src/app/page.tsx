@@ -81,7 +81,7 @@ export default function Page() {
 						shipping complete systems than in any single layer of them.
 					</p>
 					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
-						Today that&apos;s mostly TypeScript/JavaScript and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant SaaS
+						Today that&apos;s mostly TypeScript/JavaScript, Go and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant SaaS
 						architecture and developer tooling: things that solve a real, specific problem for the people using them.
 					</p>
 					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
