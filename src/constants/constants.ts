@@ -22,8 +22,8 @@ const projectsList: Project[] = [
 		description: 'An open source alternative to Bitly. Custom domains, click analytics, QR codes and password-protected links, with no plans, usage caps or third party holding your data.',
 		link: 'https://useshortly.sebastianurdanegui.com/',
 		name: 'useshortly',
-		skills: ['Go', 'Swagger', 'SQLite', 'Typescript', 'React.js', 'Vite', 'Vitest', 'Electron', 'Astro', 'MCP', 'Monorepo'],
-		year: '2026'
+		skills: ['Go', 'Swagger', 'SQLite', 'Typescript', 'React.js', 'Vite', 'Vitest', 'Electron', 'Astro', 'MCP', 'Docker', 'Monorepo'],
+		year: '2026',
 	},
 	{
 		category: 'Packages',
