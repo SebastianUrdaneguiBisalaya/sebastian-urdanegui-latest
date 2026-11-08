@@ -22,7 +22,7 @@ const projectsList: Project[] = [
 		description: 'Get Organized, Never Compromise, Hustle Efficiently. A personal productivity app for a single user: it turns messy work into concrete, executable progress and helps decide what to do, when and how.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usegonche',
 		name: 'gonche',
-		skills: ['Typescript', 'Hono.js' 'React.js', 'Vite', 'Vitest', 'Electron', 'Next.js', 'PostgreSQL','Docker', 'Monorepo''],
+		skills: ['Typescript', 'Hono.js', 'React.js', 'Vite', 'Vitest', 'Electron', 'Next.js', 'PostgreSQL','Docker', 'Monorepo''],
 		year: '2026',
 	},
 	{
