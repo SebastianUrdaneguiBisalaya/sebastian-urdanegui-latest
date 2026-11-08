@@ -19,9 +19,17 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		category: 'Full-stack',
+		description: 'Get Organized, Never Compromise, Hustle Efficiently. A personal productivity app for a single user: it turns messy work into concrete, executable progress and helps decide what to do, when and how.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/usegonche',
+		name: 'gonche',
+		skills: ['Typescript', 'Hono.js' 'React.js', 'Vite', 'Vitest', 'Electron', 'Next.js', 'PostgreSQL','Docker', 'Monorepo''],
+		year: '2026',
+	},
+	{
+		category: 'Full-stack',
 		description: 'An open source alternative to Bitly. Custom domains, click analytics, QR codes and password-protected links, with no plans, usage caps or third party holding your data.',
 		link: 'https://useshortly.sebastianurdanegui.com/',
-		name: 'useshortly',
+		name: 'shortly',
 		skills: ['Go', 'Swagger', 'SQLite', 'Typescript', 'React.js', 'Vite', 'Vitest', 'Electron', 'Astro', 'MCP', 'Docker', 'Monorepo'],
 		year: '2026',
 	},
