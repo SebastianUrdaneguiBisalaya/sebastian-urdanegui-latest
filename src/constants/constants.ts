@@ -14,6 +14,10 @@ const navigationsPaths = [
 		name: 'Blog',
 		slug: '/blog',
 	},
+	{
+		name: 'Activity',
+		slug: '/activity',
+	},
 ];
 
 const projectsList: Project[] = [
