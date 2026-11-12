@@ -73,7 +73,7 @@ export default function RootLayout({
 			<body className={`${sora.variable} ${redditSans.variable} antialiased`}>
 				<ThemeProvider>
 					{/* <Loader /> */}
-					<div className='max-w-2xl w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
+					<div className='max-w-172 w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
 						<Navbar />
 						<Navigation />
 						<div className='flex-1 flex flex-col'>{children}</div>
