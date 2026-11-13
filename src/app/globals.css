@@ -94,6 +94,20 @@ body {
 	overflow-x: hidden;
 }
 
+/* Paper grain: a static, low-alpha speckle over the whole page. It sits behind content, never moves, and never takes pointer events. */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background-image: url('/textures/grain-light.png');
+}
+
+.dark body::before {
+	background-image: url('/textures/grain-dark.png');
+}
+
 .cursor-dot {
 	position: absolute;
 	width: 8px;
