@@ -4,6 +4,7 @@ import { motion, type Variants } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { CommandPaletteTrigger } from '@/components/shared/CommandPalette';
 import { useLoaderDone } from '@/libs/loader';
 
 const containerVariants: Variants = {
@@ -60,27 +61,30 @@ export default function Navbar() {
 			<motion.a className='shrink-0' href='https://www.linkedin.com/in/sebastianurdaneguibisalaya/' target='_blank' variants={itemVariants}>
 				<Image alt='Sebastian Urdanegui' className='rounded-full border border-border-strong' height={56} src='/image-profile.webp' width={56} />
 			</motion.a>
-			<div className='flex flex-col gap-2 min-w-0'>
+			<div className='flex flex-col gap-2 min-w-0 flex-1'>
 				<motion.div variants={itemVariants}>
 					<Link href='/'>
 						<h1 className='font-sora text-lg sm:text-xl font-medium leading-tight text-foreground'>Sebastian Urdanegui</h1>
 					</Link>
 					<h2 className='font-mono text-sm leading-tight mt-1 text-foreground/60'>Full-Stack Developer &amp; Data Analyst / Lima, Peru</h2>
 				</motion.div>
-				<motion.nav aria-label='Social links' className='flex flex-row items-center gap-3.5 pt-0.5' variants={itemVariants}>
-					{socials.map(social => (
-						<Link
-							aria-label={social.label}
-							className='text-foreground/60 hover:text-foreground transition-colors duration-300 ease-out'
-							href={social.href}
-							key={social.label}
-							target='_blank'
-						>
-							<svg height='16' viewBox={social.viewBox} width='16' xmlns='http://www.w3.org/2000/svg'>
-								<path d={social.path} fill='currentColor' />
-							</svg>
-						</Link>
-					))}
+				<motion.nav aria-label='Social links' className='flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-3 w-full pt-0.5' variants={itemVariants}>
+					<div className='flex flex-row items-center gap-3.5'>
+						{socials.map(social => (
+							<Link
+								aria-label={social.label}
+								className='text-foreground/60 hover:text-foreground transition-colors duration-300 ease-out'
+								href={social.href}
+								key={social.label}
+								target='_blank'
+							>
+								<svg height='16' viewBox={social.viewBox} width='16' xmlns='http://www.w3.org/2000/svg'>
+									<path d={social.path} fill='currentColor' />
+								</svg>
+							</Link>
+						))}
+					</div>
+					<CommandPaletteTrigger />
 				</motion.nav>
 			</div>
 		</motion.header>
