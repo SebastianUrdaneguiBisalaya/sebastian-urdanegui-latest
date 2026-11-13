@@ -27,7 +27,9 @@ export default function Card({ description, link, name, skills, year }: Omit<Pro
 			</span>
 			<div className='flex flex-col items-start gap-1.5 min-w-0'>
 				<div className='flex flex-row items-center gap-1'>
-					<h3 className='font-sora text-[15px] font-medium text-foreground group-hover:text-accent group-focus-visible:text-accent transition-colors duration-300 ease-out'>{name}</h3>
+					<h3 className='font-sora text-[15px] font-medium text-foreground underline underline-offset-4 decoration-1 decoration-transparent group-hover:decoration-foreground/40 group-focus-visible:decoration-foreground/40 transition-[text-decoration-color] duration-300 ease-out'>
+						{name}
+					</h3>
 					<Icon
 						aria-hidden='true'
 						className={cn(

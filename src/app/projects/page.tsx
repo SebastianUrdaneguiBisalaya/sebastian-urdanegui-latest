@@ -41,7 +41,7 @@ export default function Page() {
 							>
 								<Tag className={cn(!active && 'hover:text-foreground hover:border-border-strong')} color={active ? 'accent' : 'outline'} size='sm'>
 									<Tag.Text>{item}</Tag.Text>
-									<span className={cn('text-[10px]', active ? 'text-accent/70' : 'text-tertiary')}>{countOf(item)}</span>
+									<span className={cn('text-[10px]', active ? 'text-background/60' : 'text-tertiary')}>{countOf(item)}</span>
 								</Tag>
 							</button>
 						);

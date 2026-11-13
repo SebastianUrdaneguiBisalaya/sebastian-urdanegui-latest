@@ -13,7 +13,7 @@ const tagVariants = cva('inline-flex w-fit max-w-full shrink-0 items-center gap-
 	},
 	variants: {
 		color: {
-			accent: 'border-accent/40 bg-accent/10 text-accent',
+			accent: 'border-accent bg-accent text-background',
 			default: 'border-transparent bg-muted text-foreground',
 			outline: 'border-border bg-transparent text-foreground/60',
 		},

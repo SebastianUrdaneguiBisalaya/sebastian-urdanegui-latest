@@ -32,7 +32,7 @@ export default function CommitList({ commits }: { commits: Commit[] }) {
 									</Link>
 								</div>
 								<Link
-									className='font-sora text-sm font-medium text-foreground hover:text-accent transition-colors duration-300 ease-out wrap-break-word'
+									className='font-sora text-sm font-medium text-foreground underline underline-offset-4 decoration-1 decoration-transparent hover:decoration-foreground/40 transition-[text-decoration-color] duration-300 ease-out wrap-break-word'
 									href={commit.url}
 									rel='noopener noreferrer'
 									target='_blank'
