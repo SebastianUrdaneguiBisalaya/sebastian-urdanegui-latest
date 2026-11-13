@@ -3,6 +3,15 @@ import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 import { InstallSnippet } from '@/components/shared/Snippet';
 
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'Frontend authorization with useguardrail | Sebastian Urdanegui',
+  description: 'A practical guide to RBAC, ABAC and ReBAC checks in React and Next.js with useguardrail, from first permission to server-side enforcement.',
+  path: '/blog/frontend-authorization-with-useguardrail',
+  type: 'article',
+});
+
 <DocsToc>
     <DocsTocItem id='core-concepts' title='Core concepts' />
     <DocsTocItem id='installation' title='Installation' />

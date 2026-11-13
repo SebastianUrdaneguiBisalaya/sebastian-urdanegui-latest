@@ -3,6 +3,15 @@ import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 import { InstallSnippet } from '@/components/shared/Snippet';
 
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'Keyboard shortcuts with usehotkeys | Sebastian Urdanegui',
+  description: 'A practical guide to shortcuts, scopes, priorities and user-customizable keymaps in React and Next.js with usehotkeys.',
+  path: '/blog/keyboard-shortcuts-with-usehotkeys',
+  type: 'article',
+});
+
 <DocsToc>
     <DocsTocItem id='installation' title='Installation' />
     <DocsTocItem id='your-first-shortcut' title='Your first shortcut' />

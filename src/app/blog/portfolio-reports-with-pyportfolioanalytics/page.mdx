@@ -2,6 +2,15 @@ import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
 import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'Portfolio reports with pyportfolioanalytics | Sebastian Urdanegui',
+  description: 'A walkthrough of pyportfolioanalytics, from closing prices and log returns to correlation matrices, a buy and sell simulation and an automatic PDF report.',
+  path: '/blog/portfolio-reports-with-pyportfolioanalytics',
+  type: 'article',
+});
+
 <DocsToc>
     <DocsTocItem id='where-it-came-from' title='Where it came from' />
     <DocsTocItem id='installation' title='Installation' />

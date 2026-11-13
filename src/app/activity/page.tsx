@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
-
 import CommitList from '@/components/activity/CommitList';
 import ContributionGraph from '@/components/activity/ContributionGraph';
 import Reveal from '@/components/activity/Reveal';
 import { getContributionCalendar, getRecentCommits } from '@/libs/github';
+import { pageMetadata } from '@/libs/metadata';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
 	description: 'My GitHub contribution graph and latest commits.',
+	path: '/activity',
 	title: 'Activity | Sebastian Urdanegui',
-};
+});
 
 export default async function Page() {
 	const [calendar, commits] = await Promise.all([getContributionCalendar(), getRecentCommits(30)]);
