@@ -1,5 +1,6 @@
 Strip a design to its essence. Remove anything that doesn't earn its place: redundant elements, repeated information, decorative noise, cosmetic complexity.
 
+
 ---
 
 ## Assess Current State
@@ -40,16 +41,14 @@ Expect to say no to good ideas to make room for great execution.
 Systematically remove complexity across these dimensions:
 
 ### Information Architecture
-
-- **Reduce scope**: Remove secondary actions, optional features, redundant information
+- **Reduce scope**: Remove secondary actions, redundant information
 - **Progressive disclosure**: Hide complexity behind clear entry points (accordions, modals, step-through flows)
 - **Combine related actions**: Merge similar buttons, consolidate forms, group related content
 - **Clear hierarchy**: ONE primary action, few secondary actions, everything else tertiary or hidden
 - **Remove redundancy**: If it's said elsewhere, don't repeat it here
 
 ### Visual Simplification
-
-- **Reduce color palette**: Use 1-2 colors plus neutrals, not 5-7 colors
+- **Reduce color palette**: Keep 1-2 decorative or brand colors plus neutrals, not 5-7; keep semantic colors (success, warning, error) and pair each with a non-color cue
 - **Limit typography**: One font family, 3-4 sizes maximum, 2-3 weights
 - **Remove decorations**: Eliminate borders, shadows, backgrounds that don't serve hierarchy or function
 - **Flatten structure**: Reduce nesting, remove unnecessary containers; never nest cards inside cards
@@ -57,7 +56,6 @@ Systematically remove complexity across these dimensions:
 - **Consistent spacing**: Use one spacing scale, remove arbitrary gaps
 
 ### Layout Simplification
-
 - **Linear flow**: Replace complex grids with simple vertical flow where possible
 - **Remove sidebars**: Move secondary content inline or hide it
 - **Full-width**: Use available space generously instead of complex multi-column layouts
@@ -65,7 +63,6 @@ Systematically remove complexity across these dimensions:
 - **Generous white space**: Let content breathe, don't pack everything tight
 
 ### Interaction Simplification
-
 - **Reduce choices**: Fewer buttons, fewer options, clearer path forward (paradox of choice is real)
 - **Smart defaults**: Make common choices automatic, only ask when necessary
 - **Inline actions**: Replace modal flows with inline editing where possible
@@ -73,16 +70,14 @@ Systematically remove complexity across these dimensions:
 - **Clear next action**: ONE obvious next action, not five competing ones
 
 ### Content Simplification
-
-- **Shorter copy**: Cut every sentence in half, then do it again
+- **Shorter copy**: Cut filler, not meaning
 - **Active voice**: "Save changes" not "Changes will be saved"
 - **Remove jargon**: Plain language always wins
 - **Scannable structure**: Short paragraphs, bullet points, clear headings
-- **Essential information only**: Remove marketing fluff, legalese, hedging
+- **Essential information only**: Remove marketing fluff, hedging
 - **Remove redundant copy**: No headers restating intros, no repeated explanations, say it once
 
 ### Code Simplification
-
 - **Remove unused code**: Dead CSS, unused components, orphaned files
 - **Flatten component trees**: Reduce nesting depth
 - **Consolidate styles**: Merge similar styles, use utilities consistently

@@ -40,24 +40,24 @@ Systematically improve resilience:
 ```css
 /* Single line with ellipsis */
 .truncate {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Multi-line with clamp */
 .line-clamp {
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Allow wrapping */
 .wrap {
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 ```
 
@@ -65,14 +65,14 @@ Systematically improve resilience:
 ```css
 /* Prevent flex items from overflowing */
 .flex-item {
-	min-width: 0; /* Allow shrinking below content size */
-	overflow: hidden;
+  min-width: 0; /* Allow shrinking below content size */
+  overflow: hidden;
 }
 
 /* Prevent grid items from overflowing */
 .grid-item {
-	min-width: 0;
-	min-height: 0;
+  min-width: 0;
+  min-height: 0;
 }
 ```
 
@@ -109,6 +109,25 @@ border-inline-end: 1px solid; /* Not border-right */
 [dir="rtl"] .arrow { transform: scaleX(-1); }
 ```
 
+**Arabic-script specifics** (Arabic, Persian, Urdu, Pashto, Kurdish):
+- Preserve Zero-Width Non-Joiner (U+200C). Persian and Kurdish use ZWNJ between compound-word parts to break cursive joining while keeping the word together. A filter or sanitizer that strips it changes meaning. Never normalize it away.
+- Handle Yeh and Kaf variants. Persian uses ی (U+06CC) and ک (U+06A9), while Arabic uses ي (U+064A) and ك (U+0643). Preserve the original form in storage. For search and validation, treat the corresponding letters as equivalent so that Arabic-keyboard input matches Persian text. Rejecting one variant locks out users whose keyboard sends the other.
+- Support locale-aware digits. Persian (`fa-IR`) and Arabic locales use Eastern Arabic-Indic numerals (۰-۹ and ٠-٩). Use `Intl.NumberFormat` with the correct locale rather than hardcoding Western digits.
+
+```javascript
+// ✅ Locale-aware digit formatting
+new Intl.NumberFormat('fa-IR').format(1234); // ۱٬۲۳۴
+new Intl.NumberFormat('ar-SA').format(1234); // ١٬٢٣٤
+```
+
+- Respect calendar systems. Persian users expect the Solar Hijri (Jalali) calendar; many Arabic-speaking users expect the Hijri (Islamic) calendar. Use `Intl.DateTimeFormat` with the appropriate locale or calendar parameter.
+
+```javascript
+// ✅ Locale-appropriate calendar
+new Intl.DateTimeFormat('fa-IR').format(new Date());
+new Intl.DateTimeFormat('ar-SA-u-ca-islamic').format(new Date());
+```
+
 **Character set support**:
 - Use UTF-8 encoding everywhere
 - Test with Chinese/Japanese/Korean (CJK) characters
@@ -121,19 +140,19 @@ border-inline-end: 1px solid; /* Not border-right */
 new Intl.DateTimeFormat('en-US').format(date); // 1/15/2024
 new Intl.DateTimeFormat('de-DE').format(date); // 15.1.2024
 
-new Intl.NumberFormat('en-US', {
-	style: 'currency',
-	currency: 'USD',
+new Intl.NumberFormat('en-US', { 
+  style: 'currency', 
+  currency: 'USD' 
 }).format(1234.56); // $1,234.56
 ```
 
 **Pluralization**:
 ```javascript
 // ❌ Bad: Assumes English pluralization
-`${count} item${count !== 1 ? 's' : ''}`;
+`${count} item${count !== 1 ? 's' : ''}`
 
 // ✅ Good: Use proper i18n library
-t('items', { count }); // Handles complex plural rules
+t('items', { count }) // Handles complex plural rules
 ```
 
 ### Error Handling
@@ -147,14 +166,12 @@ t('items', { count }); // Handles complex plural rules
 
 ```jsx
 // Error states with recovery
-{
-	error && (
-		<ErrorMessage>
-			<p>Failed to load data. {error.message}</p>
-			<button onClick={retry}>Try again</button>
-		</ErrorMessage>
-	);
-}
+{error && (
+  <ErrorMessage>
+    <p>Failed to load data. {error.message}</p>
+    <button onClick={retry}>Try again</button>
+  </ErrorMessage>
+)}
 ```
 
 **Form validation errors**:
