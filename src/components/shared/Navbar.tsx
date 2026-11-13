@@ -67,6 +67,10 @@ export default function Navbar() {
 						<h1 className='font-sora text-lg sm:text-xl font-medium leading-tight text-foreground'>Sebastian Urdanegui</h1>
 					</Link>
 					<h2 className='font-mono text-sm leading-tight mt-1 text-foreground/60'>Full-Stack Developer &amp; Data Analyst / Lima, Peru</h2>
+					<p className='mt-2 flex items-center gap-2 font-mono text-xs text-foreground/70'>
+						<span aria-hidden='true' className='size-1.5 rounded-full bg-success' />
+						Available for freelance work
+					</p>
 				</motion.div>
 				<motion.nav aria-label='Social links' className='flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-3 w-full pt-0.5' variants={itemVariants}>
 					<div className='flex flex-row items-center gap-3.5'>
