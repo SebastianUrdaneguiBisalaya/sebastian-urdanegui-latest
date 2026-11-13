@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import PostFooter from '@/components/blog/PostFooter';
 import { pageMetadata } from '@/libs/metadata';
 
 export const metadata: Metadata = {
@@ -13,5 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-	return <div className='mt-[1.25em] mb-[1.25em]'>{children}</div>;
+	return (
+		<div className='mt-[1.25em] mb-[1.25em]'>
+			{children}
+			<PostFooter />
+		</div>
+	);
 }
