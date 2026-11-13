@@ -4,6 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
 
 import { Icon } from '@/components/shared/Icon';
+import { stackGroups } from '@/constants/constants';
 import { cn } from '@/libs/cn';
 import { useLoaderDone } from '@/libs/loader';
 
@@ -82,8 +83,8 @@ export default function Page() {
 						shipping complete systems than in any single layer of them.
 					</p>
 					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
-						Today that&apos;s mostly TypeScript/JavaScript, Go and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant SaaS
-						architecture and developer tooling: things that solve a real, specific problem for the people using them.
+						Today that&apos;s mostly TypeScript/JavaScript, Go and Python — APIs, databases, auth, integrations, automation, real-time features, and AI. I keep coming back to multi-tenant
+						SaaS architecture and developer tooling: things that solve a real, specific problem for the people using them.
 					</p>
 					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
 						Want to work together or just say hi? Write to{' '}
@@ -116,7 +117,14 @@ export default function Page() {
 								</span>
 								<div className='flex flex-col gap-1.5 min-w-0'>
 									<p className='font-sora text-[15px] font-medium text-foreground'>
-										<span className={cn(linked && 'underline underline-offset-4 decoration-1 decoration-transparent transition-[text-decoration-color] duration-300 ease-out group-hover:decoration-foreground/40 group-focus-visible:decoration-foreground/40')}>{entry.role}</span>
+										<span
+											className={cn(
+												linked &&
+													'underline underline-offset-4 decoration-1 decoration-transparent transition-[text-decoration-color] duration-300 ease-out group-hover:decoration-foreground/40 group-focus-visible:decoration-foreground/40'
+											)}
+										>
+											{entry.role}
+										</span>
 										{linked && (
 											<Icon
 												aria-hidden='true'
@@ -154,6 +162,25 @@ export default function Page() {
 						);
 					})}
 				</ol>
+			</motion.section>
+
+			<motion.section className='mt-14' variants={sectionVariants}>
+				<h2 className='font-sora text-sm font-medium text-foreground/50 pb-6 border-b border-border'>Stack</h2>
+				<dl className='flex flex-col'>
+					{stackGroups.map(group => (
+						<div className='flex flex-col sm:flex-row gap-1.5 sm:gap-6 py-6 border-b border-border-subtle last:border-b-0' key={group.label}>
+							<dt className='font-mono text-xs text-tertiary shrink-0 sm:w-34 sm:pt-0.5'>{group.label}</dt>
+							<dd className='flex flex-col gap-2 min-w-0'>
+								<span className='flex flex-wrap gap-x-4 gap-y-1.5 font-sora text-[15px] font-medium text-foreground'>
+									{group.items.map(item => (
+										<span key={item}>{item}</span>
+									))}
+								</span>
+								<span className='font-reddit-sans text-sm leading-6 text-foreground/65'>{group.note}</span>
+							</dd>
+						</div>
+					))}
+				</dl>
 			</motion.section>
 		</motion.main>
 	);

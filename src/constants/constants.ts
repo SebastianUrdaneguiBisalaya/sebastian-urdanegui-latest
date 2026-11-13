@@ -23,10 +23,11 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		category: 'Full-stack',
-		description: 'Get Organized, Never Compromise, Hustle Efficiently. A personal productivity app for a single user: it turns messy work into concrete, executable progress and helps decide what to do, when and how.',
+		description:
+			'Get Organized, Never Compromise, Hustle Efficiently. A personal productivity app for a single user: it turns messy work into concrete, executable progress and helps decide what to do, when and how.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usegonche',
 		name: 'gonche',
-		skills: ['Typescript', 'Hono.js', 'React.js', 'Vite', 'Vitest', 'Electron', 'Next.js', 'PostgreSQL','Docker', 'Monorepo'],
+		skills: ['Typescript', 'Hono.js', 'React.js', 'Vite', 'Vitest', 'Electron', 'Next.js', 'PostgreSQL', 'Docker', 'Monorepo'],
 		year: '2026',
 	},
 	{
@@ -202,4 +203,33 @@ const blogList: Blog[] = [
 	},
 ];
 
-export { blogList, navigationsPaths, projectsList };
+/** Stack by area, with where each one is used in practice. Grouped so the reader sees how the tools fit together. */
+const stackGroups: { label: string; note: string; items: string[] }[] = [
+	{
+		items: ['Next.js', 'React', 'TypeScript', 'TailwindCSS', 'Vite', 'React Native', 'Electron'],
+		label: 'Frontend',
+		note: 'Production apps with SSR and SSG for performance and SEO, plus mobile and desktop builds.',
+	},
+	{
+		items: ['Node.js', 'Nest.js', 'Express.js', 'Hono.js', 'FastAPI', 'Go', 'Python'],
+		label: 'Backend',
+		note: 'REST APIs, auth, integrations, real-time features, and multi-tenant SaaS architecture.',
+	},
+	{
+		items: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'n8n', 'LLM APIs'],
+		label: 'Data & automation',
+		note: 'Pipelines and internal tools that cut the time spent on manual data extraction.',
+	},
+	{
+		items: ['PostgreSQL', 'Supabase', 'Prisma', 'TypeORM', 'SQLite', 'Docker'],
+		label: 'Data & infrastructure',
+		note: 'Schema design, authentication, and containerized deployments.',
+	},
+	{
+		items: ['Vitest', 'Monorepo', 'tsup', 'Swagger', 'GitHub Actions'],
+		label: 'Testing & tooling',
+		note: 'Monorepos, SDKs, and CI pipelines that keep the code tested before it ships.',
+	},
+];
+
+export { blogList, navigationsPaths, projectsList, stackGroups };
