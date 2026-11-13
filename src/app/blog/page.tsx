@@ -1,8 +1,10 @@
 'use client';
 
+import { Rss } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
 
 import Card from '@/components/blog/Card';
+import { Icon } from '@/components/shared/Icon';
 import { blogList } from '@/constants/constants';
 import { useLoaderDone } from '@/libs/loader';
 
@@ -24,6 +26,12 @@ export default function Page() {
 						</li>
 					))}
 				</ul>
+				<p className='mt-12'>
+					<a className='inline-flex items-center gap-2 font-mono text-xs text-tertiary hover:text-foreground/70 transition-colors duration-300 ease-out' href='/blog/rss.xml'>
+						<Icon aria-hidden='true' icon={Rss} size='sm' />
+						Subscribe via RSS
+					</a>
+				</p>
 			</motion.section>
 		</main>
 	);
