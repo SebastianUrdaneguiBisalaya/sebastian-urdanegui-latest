@@ -28,11 +28,12 @@ interface Entry {
 const entries: Entry[] = [
 	{
 		description: [
-			'Build and maintain production web apps for the real estate sector with Next.js, React, TypeScript, and Node.js, mixing SSR and SSG for performance and SEO.',
-			'Design REST APIs, structure reusable components, and shipped an AI chatbot on n8n and LLM services for business-workflow automation.',
+			'Built and maintained production web apps for the real estate sector with Next.js, React, TypeScript, and Node.js, mixing SSR and SSG for performance and SEO.',
+			'Designed REST APIs, structured reusable components, and shipped an AI chatbot built on n8n and LLM services to automate business workflows.',
+			'Built internal systems to automate company processes, cutting the time spent on manual work such as data extraction.',
 		],
 		period: '2025.10 — 2026.08',
-		role: 'Full-Stack Developer, Formula',
+		role: 'Full-Stack Developer, Fórmula Agencia de Marketing',
 	},
 	{
 		description: ['An MVP connecting parents and healthcare workers in Huancavelica: check-ups, vaccination records, automated alerts, and audio translation into Quechua.'],
@@ -87,7 +88,7 @@ export default function Page() {
 					<p className='font-reddit-sans text-[15px] leading-7 text-foreground/70'>
 						Want to work together or just say hi? Write to{' '}
 						<a
-							className='text-foreground underline underline-offset-4 decoration-border-strong hover:text-accent hover:decoration-accent transition-colors duration-300 ease-out'
+							className='text-foreground underline underline-offset-4 decoration-border-strong hover:decoration-foreground transition-colors duration-300 ease-out'
 							href='mailto:sebasurdanegui@gmail.com'
 						>
 							sebasurdanegui@gmail.com
@@ -115,7 +116,7 @@ export default function Page() {
 								</span>
 								<div className='flex flex-col gap-1.5 min-w-0'>
 									<p className='font-sora text-[15px] font-medium text-foreground'>
-										<span className={cn(linked && 'transition-colors duration-300 ease-out group-hover:text-accent group-focus-visible:text-accent')}>{entry.role}</span>
+										<span className={cn(linked && 'underline underline-offset-4 decoration-1 decoration-transparent transition-[text-decoration-color] duration-300 ease-out group-hover:decoration-foreground/40 group-focus-visible:decoration-foreground/40')}>{entry.role}</span>
 										{linked && (
 											<Icon
 												aria-hidden='true'
