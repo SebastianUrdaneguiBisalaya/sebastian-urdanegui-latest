@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Reddit_Sans, Sora } from 'next/font/google';
+import { ViewTransition } from 'react';
 
 import Footer from '@/components/shared/Footer';
 import Lenis from '@/components/shared/Lenis';
@@ -76,7 +77,9 @@ export default function RootLayout({
 					<div className='max-w-172 w-full min-h-screen h-full flex flex-col px-5 sm:px-0 pb-20'>
 						<Navbar />
 						<Navigation />
-						<div className='flex-1 flex flex-col'>{children}</div>
+						<ViewTransition name='page'>
+							<div className='flex-1 flex flex-col'>{children}</div>
+						</ViewTransition>
 						<Footer />
 					</div>
 					<Lenis />

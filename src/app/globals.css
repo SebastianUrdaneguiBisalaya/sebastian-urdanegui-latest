@@ -134,6 +134,41 @@ body {
 	z-index: 1;
 }
 
+/* Page navigation: React <ViewTransition name='page'> in layout.tsx; browsers without the API navigate normally. */
+@keyframes page-out {
+	to {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+}
+
+@keyframes page-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+}
+
+::view-transition-group(page) {
+	animation-duration: 0.3s;
+}
+
+::view-transition-old(page) {
+	animation: page-out 0.18s ease-in both;
+}
+
+::view-transition-new(page) {
+	animation: page-in 0.3s ease-out 0.08s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(page),
+	::view-transition-old(page),
+	::view-transition-new(page) {
+		animation: none;
+	}
+}
+
 /* CSS-only failsafe for the loader overlay (see Loader.tsx): if JS never takes over, it still fades out just after the 8s JS limit. */
 @keyframes loader-failsafe {
 	to {
