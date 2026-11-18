@@ -23,6 +23,14 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		category: 'Full-stack',
+		description: 'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
+		link: 'https://tempi.sebastianurdanegui.com',
+		name: 'tempi',
+		skills: ['Typescript', 'React.js', 'Next.js', 'Electron', 'SQLite', 'Bun', 'GitHub Actions', 'Google Calendar API', 'Monorepo'],
+		year: '2026'
+	},
+	{
+		category: 'Full-stack',
 		description:
 			'Get Organized, Never Compromise, Hustle Efficiently. A personal productivity app for a single user: it turns messy work into concrete, executable progress and helps decide what to do, when and how.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usegonche',
