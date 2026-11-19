@@ -1,0 +1,381 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'UI sounds with usesounds | Sebastian Urdanegui',
+  description: 'A practical guide to synthesized interface sounds in React and Next.js with usesounds, from a single data-sound attribute to custom voices, samples and SSR.',
+  path: '/blog/ui-sounds-with-usesounds',
+  type: 'article',
+});
+
+<DocsToc>
+    <DocsTocItem id='core-concepts' title='Core concepts' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='step-1-wrap-your-app' title='Step 1: Wrap your app' />
+    <DocsTocItem id='step-2-add-sounds-without-code' title='Step 2: Add sounds without code' />
+    <DocsTocItem id='step-3-play-sounds-from-your-logic' title='Step 3: Play sounds from your logic' />
+    <DocsTocItem id='the-built-in-presets' title='The built-in presets' />
+    <DocsTocItem id='what-happens-when-you-press-play' title='What happens when you press play' />
+    <DocsTocItem id='design-your-own-sounds' title='Design your own sounds' />
+    <DocsTocItem id='when-you-need-a-real-audio-file' title='When you need a real audio file' />
+    <DocsTocItem id='respect-the-user' title='Respect the user' />
+    <DocsTocItem id='nextjs-app-router' title='Next.js (App Router)' />
+    <DocsTocItem id='nested-providers' title='Nested providers' />
+    <DocsTocItem id='without-react' title='Without React' />
+    <DocsTocItem id='errors-and-content-security-policy' title='Errors and Content Security Policy' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: November 19, 2026
+
+# **UI Sounds with usesounds in React and Next.js**
+
+Good interfaces talk back. A soft tick when you save, a pop when a menu opens, a short rising chime when something was copied. Done well, sound makes an app feel physical. Done badly, it means shipping a folder of `.mp3` files, wiring `new Audio()` into every handler, and discovering that nothing plays until the user clicks something.
+
+**usesounds** takes a different route. Its built-in sounds are not files: they are small descriptions of oscillators and noise, synthesized live with the Web Audio API when they play. There is nothing to download or host, the core has zero runtime dependencies, and you can add a sound to any element with a single `data-sound` attribute. `@usesounds/react` adds a provider and two hooks on top.
+
+This guide goes from the first tick to a production-ready Next.js setup. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usesounds) has the full API reference.
+
+> **Sounds are feedback, not information.** Some users mute their device, some can't hear, and some have reduced motion on. Never make a sound the only signal that something happened.
+
+## Core concepts
+
+- **Engine**: the object that owns the audio pipeline. It creates the `AudioContext`, keeps the registry of sounds, applies master volume and mute, and plays. Everything else is a thin layer over it.
+- **Preset**: a built-in synthesized sound: `tick`, `pop`, `tap`, `toggle`, `success` or `error`.
+- **Voice**: one layer of a synthesized sound, a waveform with a frequency and a short volume envelope.
+- **Sample**: a short audio file you register by URL or `ArrayBuffer`. It is decoded once, cached, and played without delay.
+- **Declarative mode**: playing sounds from `data-sound` attributes instead of code. One delegated listener handles the whole document.
+- **Unlock**: browsers block audio until the user interacts with the page. Unlocking means resuming the `AudioContext` during that first gesture, and usesounds does it for you.
+- **Provider**: `<SoundProvider>`, the React component that owns one engine and shares it with its subtree.
+
+## Installation
+
+<InstallSnippet packages='@usesounds/react @usesounds/core' />
+
+`@usesounds/core` is a peer dependency, so install both. It requires React 18 or later and ships ESM and CommonJS builds with types.
+
+## Step 1: Wrap your app
+
+The provider creates one engine for its subtree, keeps it in sync with its props and releases everything on unmount. Mount it once, near the root:
+
+export const code1 = `import { SoundProvider } from '@usesounds/react';
+
+export function Root({ children }: { children: React.ReactNode }) {
+  return <SoundProvider volume={0.4}>{children}</SoundProvider>;
+}`
+
+<CodeBlock filename='src/Root.tsx' language='tsx' code={code1} />
+
+A master volume between `0.3` and `0.5` usually feels right for interface feedback. Every sound you play is multiplied by it.
+
+## Step 2: Add sounds without code
+
+With the provider mounted, any element with a `data-sound` attribute plays when it is pressed. No handlers, no imports:
+
+export const code2 = `<>
+  <button data-sound='tick'>Save</button>
+  <button data-sound='pop' data-sound-volume='0.5'>Open</button>
+  <button data-sound='tick' data-sound-pitch='1.25'>Next</button>
+  <a href='/settings' data-sound='tap'>Settings</a>
+  <div aria-checked={on} data-sound='toggle' role='switch' tabIndex={0}>
+    Dark mode
+  </div>
+</>`
+
+<CodeBlock language='tsx' code={code2} />
+
+The details are what make it feel right:
+
+- **Pointer:** it plays on `pointerdown` with the primary button, on press rather than release, so the feedback is instant.
+- **Keyboard:** `Enter` on a focused `[data-sound]` element, and `Space` on buttons, switches, checkboxes and radios. Key repeats are ignored, so keyboard users get the same feedback as mouse users.
+- **Disabled elements stay silent:** `disabled`, anything inside `<fieldset disabled>`, and `aria-disabled='true'`.
+- **Per-element overrides:** `data-sound-volume` and `data-sound-pitch`.
+
+There is only **one** delegated listener on the document, however many elements you annotate. Because the attributes are plain HTML, they also work inside Server Components.
+
+## Step 3: Play sounds from your logic
+
+Some sounds depend on an outcome, not on a click. A save can succeed or fail. For those, use the hook:
+
+export const code3 = `import { useSound } from '@usesounds/react';
+
+export function SaveButton({ onSave }: { onSave: () => Promise<void> }) {
+  const playSuccess = useSound('success');
+  const playError = useSound('error');
+
+  return (
+    <button
+      onClick={() => onSave().then(() => playSuccess(), () => playError())}
+      type='button'
+    >
+      Save
+    </button>
+  );
+}`
+
+<CodeBlock filename='src/SaveButton.tsx' language='tsx' code={code3} />
+
+- `useSound(name, options?)` returns a `play` function. `options` is `{ volume?, pitch? }`, the defaults for every play.
+- `play(overrides?)` replaces those options field by field for a single call.
+- `play` is **stable**: its identity only changes when the name or the option values change, so it is safe in dependency arrays.
+- `play` **never throws**, so it can't break the handler it lives in. Failures go to the provider's `onError`.
+
+A small trick with `pitch`: raising it a little on each step turns a plain tick into a sense of progress.
+
+export const code4 = `function Stepper() {
+  const play = useSound('tick', { volume: 0.6 });
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (step > 0) play({ pitch: 1 + step * 0.1 }); // 2 = one octave up
+  }, [step, play]);
+
+  return <button onClick={() => setStep((s) => s + 1)}>Next</button>;
+}`
+
+<CodeBlock language='tsx' code={code4} />
+
+## The built-in presets
+
+Six presets cover most interfaces:
+
+- `tick`: a very short, crisp, high tick. Subtle enough for every click: buttons, menu items, list selection.
+- `pop`: a soft, bubbly pop that glides upward. Opening popovers and menus, adding items.
+- `tap`: a muted, low tap. Secondary actions, tabs, chips.
+- `toggle`: a two-step click-clack, the second blip higher. Switches, checkboxes, segmented controls.
+- `success`: a short, bright rising arpeggio. Saved, sent, copied, uploaded.
+- `error`: a low, gentle descending "uh-oh". Failed actions and validation errors.
+
+The names are exported as `presetNames`, and the `name` parameter is typed as `SoundName`, so editors autocomplete the presets while custom names still type-check.
+
+## What happens when you press play
+
+Every API ends in the same place, the engine's `play()`. It is deliberately quiet: if there is nothing sensible to do, it does nothing.
+
+<MermaidDiagram
+    title='Play flow'
+    code={`
+flowchart TD
+    A["play(name)"] --> B{"Server, disabled, volume 0<br/>or reduced motion?"}
+    B -- Yes --> C["Silent no-op"]
+    B -- No --> D{"Sound registered?"}
+    D -- No --> E["onError: unknown-sound"]
+    D -- Yes --> F{"Audio unlocked?"}
+    F -- "Still resuming too long" --> G["Dropped, never played late"]
+    F -- Yes --> H{"Synth or sample?"}
+    H -- Synth --> I["Build voices and play"]
+    H -- "Sample not decoded yet" --> J["Skipped"]
+    H -- "Sample ready" --> K["Play cached AudioBuffer"]
+    `}
+/>
+
+Two rules are worth remembering. **Nothing plays before the first interaction**: that is the browser's autoplay policy, not a bug, and the first click or key press unlocks audio for you. And **a sound is never played late**: if audio or a sample is not ready, the request is dropped instead of firing a burst of stale sounds a second later.
+
+## Design your own sounds
+
+A synthesized sound is a list of voices. Times are in seconds and frequencies in Hz. Pass your sounds to the provider and they work with both `data-sound` and `useSound`:
+
+export const code5 = `import { SoundProvider, type SoundDefinition, useSound } from '@usesounds/react';
+
+// Define it outside the component so it isn't re-registered on every render.
+const sounds = {
+  chirp: {
+    voices: [
+      { waveform: 'sine', frequency: 900, frequencyEnd: 1600, duration: 0.06, gain: 0.5 },
+      { waveform: 'noise', frequency: 5000, q: 2, delay: 0.01, duration: 0.01, gain: 0.15 },
+    ],
+  },
+} satisfies Record<string, SoundDefinition>;
+
+export function App() {
+  return (
+    <SoundProvider sounds={sounds}>
+      <button data-sound='chirp' type='button'>Chirp</button>
+      <ChirpButton />
+    </SoundProvider>
+  );
+}
+
+function ChirpButton() {
+  const play = useSound('chirp');
+  return <button onClick={() => play()}>Chirp from code</button>;
+}`
+
+<CodeBlock filename='src/App.tsx' language='tsx' code={code5} />
+
+Each voice takes:
+
+- `waveform` (required): `sine`, `square`, `sawtooth`, `triangle` or `noise`.
+- `duration` (required): total length in seconds, attack included.
+- `frequency`: the tone's pitch, or the band-pass center for noise. Omit it for unfiltered noise.
+- `frequencyEnd`: the frequency reached at the end, with an exponential glide. This is what makes a pop "rise".
+- `attack` (default `0.002`): the fade-in time. It keeps sounds free of clicks.
+- `delay` (default `0`), `gain` (default `1`) and `q` (default `1`, noise only).
+
+Using a preset name, such as `tick`, overrides the built-in sound. The `sounds` prop is synced when it changes and each definition is compared by reference, so keep the object stable.
+
+## When you need a real audio file
+
+Synthesis covers short feedback. For a recorded chime or a brand sound, register a sample:
+
+export const code6 = `import { SoundProvider, type SoundDefinition, useSoundEngine } from '@usesounds/react';
+import { useEffect } from 'react';
+
+const sounds = {
+  chime: { type: 'sample', src: '/sounds/chime.mp3' },
+} satisfies Record<string, SoundDefinition>;
+
+function PreloadSounds() {
+  const engine = useSoundEngine();
+  useEffect(() => {
+    void engine.preload(['chime']); // never rejects, failures go to onError
+  }, [engine]);
+  return null;
+}
+
+export function App({ children }: { children: React.ReactNode }) {
+  return (
+    <SoundProvider sounds={sounds}>
+      <PreloadSounds />
+      {children}
+    </SoundProvider>
+  );
+}`
+
+<CodeBlock language='tsx' code={code6} />
+
+`src` is a URL fetched with `fetch`, or an `ArrayBuffer` with the encoded file. Samples start loading on the first gesture, and a play requested before the sample is decoded is skipped. If a sample must be ready for the very first interaction, preload it as above.
+
+`useSoundEngine()` gives you the full engine for anything the hook does not cover: dynamic names, `register()`, `names()` or `preload()`.
+
+## Respect the user
+
+Sound is the most intrusive kind of feedback, so the provider gives you three switches:
+
+export const code7 = `<SoundProvider
+  enabled={settings.uiSounds} // global on/off, can change at runtime (default true)
+  respectReducedMotion // mute under prefers-reduced-motion: reduce (default true)
+  volume={0.4} // master volume 0–1 (default 1)
+>
+  {children}
+</SoundProvider>`
+
+<CodeBlock language='tsx' code={code7} />
+
+- **Give users a switch.** Bind `enabled` to an app setting so people can turn interface sounds off.
+- **Reduced motion is respected by default.** usesounds treats `prefers-reduced-motion: reduce` as "fewer non-essential effects" and stays silent. The media query is checked on every play, so changes apply immediately. Set `respectReducedMotion={false}` only when the user explicitly opted in to sounds.
+- **Keep it subtle.** If people notice the sounds, they are probably too loud.
+
+## Next.js (App Router)
+
+Nothing touches `window`, `document` or `AudioContext` during import or render, so on the server every API is a silent no-op. The build ships with the `'use client'` directive, so the provider and hooks work in the App Router.
+
+The one thing to watch is the Server Component boundary: functions such as `onError`, `ArrayBuffer` samples and client state such as a user setting can't be passed from a Server Component. The usual pattern is a small client wrapper:
+
+export const code8 = `'use client';
+
+import { SoundProvider } from '@usesounds/react';
+import type { ReactNode } from 'react';
+
+export function Providers({ children }: { children: ReactNode }) {
+  return (
+    <SoundProvider onError={(error) => console.warn(error.message)} volume={0.4}>
+      {children}
+    </SoundProvider>
+  );
+}`
+
+<CodeBlock filename='app/providers.tsx' language='tsx' code={code8} />
+
+export const code9 = `import type { ReactNode } from 'react';
+import { Providers } from './providers';
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang='en'>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}`
+
+<CodeBlock filename='app/layout.tsx' language='tsx' code={code9} />
+
+Because `data-sound` attributes are plain HTML, a Server Component can render `<button data-sound='tick'>` and the provider's listener picks it up on the client. Only components that call `useSound` or `useSoundEngine` need `'use client'`.
+
+## Nested providers
+
+Providers can be nested. Each one owns its own engine and **hooks use the closest provider**, which is handy for giving a section its own sounds or volume:
+
+export const code10 = `<SoundProvider volume={0.4}>
+  <App />
+  <SoundProvider declarative={false} sounds={editorSounds} volume={0.2}>
+    <Editor /> {/* useSound() here uses the editor's sounds and volume */}
+  </SoundProvider>
+</SoundProvider>`
+
+<CodeBlock language='tsx' code={code10} />
+
+`data-sound` works differently. Every provider listens on the whole document, and the deepest provider with declarative mode on plays every `data-sound` element on the page, including elements outside its subtree. To keep things predictable, leave declarative mode on only in the outermost provider and pass `declarative={false}` to the nested ones, as above.
+
+## Without React
+
+`@usesounds/core` is framework-agnostic, so the same engine works in vanilla JavaScript, Svelte, Vue, Web Components or an Electron renderer:
+
+export const code11 = `import { createSoundEngine } from '@usesounds/core';
+
+const engine = createSoundEngine({ volume: 0.4 });
+
+const unbind = engine.bindDeclarative(); // plays every [data-sound] element in the document
+engine.play('pop', { pitch: 1.5 }); // or play imperatively
+
+// Bind to a user setting
+engine.setEnabled(false);
+engine.setVolume(0.2);
+
+// Clean up
+unbind();
+engine.dispose();`
+
+<CodeBlock filename='src/sounds.ts' language='ts' code={code11} />
+
+Listeners are installed only when you call `bindDeclarative()` or `bindUnlock()`, never as an import side effect, and both return an `unbind` function. If you only play from code but still want automatic unlocking, use `bindUnlock()`. Without any binding, call `engine.unlock()` yourself from a gesture handler.
+
+## Errors and Content Security Policy
+
+usesounds separates mistakes in your code from failures at runtime:
+
+- `MissingSoundProviderError`: `useSound` or `useSoundEngine` used outside a provider. Thrown at render.
+- `InvalidSoundError`: an invalid name or definition in `sounds`. Thrown at render, so you see it immediately.
+- `SoundPlaybackError`: a sound couldn't play or a sample couldn't load. **Never thrown**, only passed to `onError`.
+
+export const code12 = `import { SoundProvider, type SoundPlaybackError } from '@usesounds/react';
+
+function reportSoundError(error: SoundPlaybackError) {
+  // error.reason: 'unknown-sound' | 'audio-unavailable' | 'sample-load-failed'
+  //             | 'sample-decode-failed' | 'playback-failed'
+  console.warn(\`[sounds] \${error.sound}: \${error.reason}\`, error.cause);
+}
+
+export function Root({ children }: { children: React.ReactNode }) {
+  return <SoundProvider onError={reportSoundError}>{children}</SoundProvider>;
+}`
+
+<CodeBlock language='tsx' code={code12} />
+
+Every error carries a machine-readable `code` and works with `instanceof`. The library never writes to the console on its own.
+
+On CSP: synthesized sounds need **no changes** at all. Samples loaded by URL are fetched, so their origin must be allowed by `connect-src` (not `media-src`), and cross-origin URLs also need CORS headers. Samples from an `ArrayBuffer` need nothing.
+
+## Summary
+
+- Mount one `SoundProvider` near the root with a modest master volume.
+- Use `data-sound` for clicks and key presses, and `useSound` for outcomes such as success or error.
+- Start with the six presets, then design your own voices or register samples when you need them.
+- Give users a switch, respect reduced motion, and never rely on sound alone.
+- In Next.js, wrap the provider in a small client component. Imports and server rendering are always safe.
