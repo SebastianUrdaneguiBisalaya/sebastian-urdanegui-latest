@@ -198,6 +198,13 @@ const projectsList: Project[] = [
 
 const blogList: Blog[] = [
 	{
+		description: 'A practical guide to synthesized interface sounds in React and Next.js with usesounds, from a single data-sound attribute to custom voices, samples and SSR.',
+		link: '/blog/ui-sounds-with-usesounds',
+		name: 'UI sounds with usesounds',
+		skills: ['TypeScript', 'React', 'Next.js', 'Web Audio API', 'Accessibility'],
+		year: '2026',
+	},
+	{
 		description: 'A practical guide to RBAC, ABAC and ReBAC checks in React and Next.js with useguardrail, from first permission to server-side enforcement.',
 		link: '/blog/frontend-authorization-with-useguardrail',
 		name: 'Frontend authorization with useguardrail',
