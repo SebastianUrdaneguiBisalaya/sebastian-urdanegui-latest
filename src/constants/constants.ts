@@ -198,6 +198,13 @@ const projectsList: Project[] = [
 
 const blogList: Blog[] = [
 	{
+		description: 'A practical guide to month, week and day calendars in React and Next.js with usecalendar, from the first render to drag-to-edit, theming and real benchmark numbers.',
+		link: '/blog/calendar-ui-with-usecalendar',
+		name: 'Calendar UIs with usecalendar',
+		skills: ['TypeScript', 'React', 'Next.js', 'Temporal', 'Performance'],
+		year: '2026',
+	},
+	{
 		description: 'A practical guide to synthesized interface sounds in React and Next.js with usesounds, from a single data-sound attribute to custom voices, samples and SSR.',
 		link: '/blog/ui-sounds-with-usesounds',
 		name: 'UI sounds with usesounds',
