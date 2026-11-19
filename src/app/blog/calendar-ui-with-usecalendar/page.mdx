@@ -1,0 +1,383 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+import { pageMetadata } from '@/libs/metadata';
+
+import { BeforeAfterChart, CoreScalingChart, FrameShareChart, ReactScalingChart, TestEnvironment } from './charts';
+
+export const metadata = pageMetadata({
+  title: 'Calendar UIs with usecalendar | Sebastian Urdanegui',
+  description: 'A practical guide to month, week and day calendars in React and Next.js with usecalendar, from the first render to drag-to-edit, theming and real benchmark numbers.',
+  path: '/blog/calendar-ui-with-usecalendar',
+  type: 'article',
+});
+
+<DocsToc>
+    <DocsTocItem id='core-concepts' title='Core concepts' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='step-1-add-the-styles' title='Step 1: Add the styles' />
+    <DocsTocItem id='step-2-render-the-calendar' title='Step 2: Render the calendar' />
+    <DocsTocItem id='step-3-accept-the-users-edits' title="Step 3: Accept the user's edits" />
+    <DocsTocItem id='events-and-time' title='Events and time' />
+    <DocsTocItem id='fetching-events-for-the-visible-range' title='Fetching events for the visible range' />
+    <DocsTocItem id='creating-events' title='Creating events' />
+    <DocsTocItem id='make-events-look-like-yours' title='Make events look like yours' />
+    <DocsTocItem id='the-mini-calendar' title='The mini calendar' />
+    <DocsTocItem id='theming-and-dark-mode' title='Theming and dark mode' />
+    <DocsTocItem id='localization' title='Localization' />
+    <DocsTocItem id='keyboard-and-accessibility' title='Keyboard and accessibility' />
+    <DocsTocItem id='how-fast-is-it' title='How fast is it?' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: November 19, 2026
+
+# **Calendar UIs with usecalendar in React and Next.js**
+
+Sooner or later, many apps need a calendar: bookings, shifts, classes, meetings. The usual options are a heavy all-in-one scheduler that wants to own your data, or weeks spent on overlap math, drag handling and keyboard focus that nobody sees until they break.
+
+**usecalendar** is a month, week and day calendar for React in the style of the calendars people already know: an all-day lane, a current-time line, drag to create, move and resize, full keyboard navigation and a compact day strip. It is a **UI component, agnostic to business logic**. It draws the events you pass and tells you what the user *wants* through callbacks. It never decides what an event is, how to save it, or what a click does.
+
+The library has two packages. `@usecalendar/core` holds the framework-agnostic math (visible ranges, layouts, drag and keyboard models). `@usecalendar/react` adds the components and hooks, and installs the core for you.
+
+This guide goes from the first render to a production-ready Next.js setup, and ends with real benchmark numbers. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usecalendar) has the full API reference.
+
+## Core concepts
+
+- **Event**: `CalendarEvent<TData>`, with an `id`, a `title`, `startAt` and `endAt` instants, and your own `data` payload.
+- **View**: `month`, `week` or `day`. Week and day share the same time grid with an all-day lane.
+- **Intent**: what the user asked for: a click on a slot, a drag over empty space, a moved or resized event. The calendar reports it with proposed times. Your app decides what happens.
+- **Controlled or uncontrolled**: every stateful prop comes in both forms: `view` / `defaultView`, `date` / `defaultDate`, `value` / `defaultValue`.
+- **Tokens**: `--uc-*` CSS variables for colors and radius. They fall back to the shadcn/ui tokens, so in a shadcn app the calendar already matches your theme.
+
+## Installation
+
+<InstallSnippet packages='@usecalendar/react temporal-polyfill' />
+
+It requires **React 19**. Dates use the global [`Temporal`](https://tc39.es/proposal-temporal/docs/) API, and the library never bundles a polyfill. On runtimes without native `Temporal` (some browsers, and Node 24 when you server-render), load one once, before the calendar renders:
+
+export const code1 = `import 'temporal-polyfill/global';`
+
+<CodeBlock language='ts' code={code1} />
+
+Both packages ship ES modules and CommonJS with types. The only runtime dependencies are `clsx` and `tailwind-merge`.
+
+## Step 1: Add the styles
+
+Pick **one** of the two stylesheets. In a Tailwind CSS v4 app, import the theme next to Tailwind:
+
+export const code2 = `@import 'tailwindcss';
+@import '@usecalendar/react/theme.css';`
+
+<CodeBlock filename='app/globals.css' language='css' code={code2} />
+
+`theme.css` defines the `--uc-*` tokens for light and dark, maps them to Tailwind utilities such as `bg-uc-background` and `rounded-uc`, and registers the compiled components with `@source`, so Tailwind generates their classes. You don't need an `@source` line yourself.
+
+Without Tailwind, import `@usecalendar/react/styles.css` instead. It contains only the utilities the components use plus the tokens, and leaves out Tailwind's global reset, so it never restyles the rest of your page.
+
+## Step 2: Render the calendar
+
+The calendar fills its parent's height, so give the parent one. In Next.js, render it from a client component and load the events in a Server Component:
+
+export const code3 = `'use client';
+
+import 'temporal-polyfill/global';
+import { Calendar, type CalendarEvent } from '@usecalendar/react';
+import { useState } from 'react';
+
+type Meeting = { room: string };
+
+export function Schedule({ initial }: { initial: CalendarEvent<Meeting>[] }) {
+  const [events, setEvents] = useState(initial);
+
+  return (
+    <div className='h-[calc(100dvh-4rem)]'>
+      <Calendar
+        defaultView='week'
+        events={events}
+        onEventClick={(event) => alert(\`\${event.title} in \${event.data?.room}\`)}
+      />
+    </div>
+  );
+}`
+
+<CodeBlock filename='app/schedule/schedule.tsx' language='tsx' code={code3} />
+
+export const code4 = `import { Schedule } from './schedule';
+
+export default async function Page() {
+  const events = await loadEvents(); // your database, your API...
+  return <Schedule initial={events} />;
+}`
+
+<CodeBlock filename='app/schedule/page.tsx' language='tsx' code={code4} />
+
+Putting the polyfill import at the top of the client component makes it run on the server during SSR and in the browser. The calendar renders on the server and reads "today" and sizes only after hydration, so the first client render matches the server HTML.
+
+That's a working calendar: toolbar, three views, the all-day lane, the current-time line and keyboard navigation.
+
+## Step 3: Accept the user's edits
+
+Dragging an event, dragging its bottom edge, or pressing Alt+arrows calls `onEventChange` with the proposed times. **The calendar doesn't change the event.** It keeps drawing the old times until you update `events`:
+
+export const code5 = `<Calendar
+  events={events}
+  onEventChange={async (event, range) => {
+    // Optimistic update, then persist
+    setEvents((all) => all.map((e) => (e.id === event.id ? { ...e, ...range } : e)));
+    await api.events.update(event.id, range);
+  }}
+  isEventEditable={(event) => event.data?.ownerId === me.id}
+/>`
+
+<CodeBlock language='tsx' code={code5} />
+
+This is the core idea of the library. You can validate, ask "this event or the whole series?", reject the change or save it, and the calendar never has to know.
+
+<MermaidDiagram
+    title='Editing by intent' variant='sequence'
+    code={`
+sequenceDiagram
+    participant U as User
+    participant C as Calendar
+    participant A as Your app
+    U->>C: Drags "Design review" to 15:00
+    C->>C: Shows a snapped preview
+    U->>C: Releases the pointer
+    C->>A: onEventChange(event, { startAt, endAt })
+    A->>A: Validate, save, or reject
+    A->>C: New events prop
+    C-->>U: Event drawn at its new time
+    `}
+/>
+
+## Events and time
+
+export const code6 = `type CalendarEvent<TData = unknown> = {
+  id: string; // unique among the events you pass
+  title: string;
+  startAt: string; // inclusive, ISO 8601 instant with an offset
+  endAt: string; // exclusive, same format
+  allDay?: boolean; // all-day lane / month bar instead of timed placement
+  color?: string; // any CSS color: '#6366f1', 'oklch(...)', 'var(--brand)'
+  status?: 'confirmed' | 'tentative'; // tentative events are drawn with stripes
+  timeZone?: string; // zone an all-day event was created in
+  data?: TData; // your own payload, handed back in callbacks
+};`
+
+<CodeBlock language='ts' code={code6} />
+
+A few rules make the rest predictable:
+
+- **Instants, not text.** `startAt` and `endAt` can use any offset (`Z`, `-05:00`...). They're always compared as points in time, never as strings.
+- **Days are `Temporal.PlainDate`.** Props such as `date` and `onDayClick` use plain calendar dates, with no time zone.
+- **`timeZone`** decides which day is today and where events are placed. It defaults to the viewer's system zone (UTC during server rendering, until hydration).
+- **Recurring events aren't expanded.** Pass each occurrence in the visible range as its own event, with a unique `id` such as `${seriesId}:${startAt}`, and keep the series in `data`.
+
+## Fetching events for the visible range
+
+`onRangeChange` fires after render with the UTC range the current view draws, once per change. That's the hook for loading only what's on screen:
+
+export const code7 = `const [range, setRange] = useState<DateRange | null>(null);
+const { data = [] } = useQuery({
+  queryKey: ['events', range],
+  queryFn: () => fetchEvents(range!),
+  enabled: range !== null,
+});
+
+<Calendar events={data} onRangeChange={setRange} />;`
+
+<CodeBlock language='tsx' code={code7} />
+
+For the month view, the range covers whole weeks, so the days from the neighboring months are included too.
+
+## Creating events
+
+A click on an empty slot proposes a range of `defaultEventDuration` minutes (60 by default), and dragging over empty slots proposes the swept range. Pass that range back as `draftRange` to preview the new event on the grid while your form is open:
+
+export const code8 = `const [draft, setDraft] = useState<TimeRange | null>(null);
+
+<>
+  <Calendar
+    events={events}
+    draftRange={draft}
+    onSlotClick={setDraft}
+    onRangeSelect={setDraft}
+    hotkeyHandlers={{ newEvent: () => openCreateForm() }} // the 'c' shortcut
+  />
+  {draft && <EventForm range={draft} onClose={() => setDraft(null)} />}
+</>`
+
+<CodeBlock language='tsx' code={code8} />
+
+The grid is tuned with `slotMinutes` (row length, default 30), `snapMinutes` (drag step, default 15) and `hourHeight` (a number in rem or any CSS length). Rows, events and the current-time line scale with it.
+
+## Make events look like yours
+
+Render props let you change what an event looks like without touching how it behaves. What you return goes **inside** the element that already handles the click, drag and focus, so you can't break those behaviors. Spread the props into the defaults to keep their look:
+
+export const code9 = `import { Calendar, EventBlock, EventChip } from '@usecalendar/react';
+
+<Calendar
+  events={events}
+  renderEvent={(block) => <EventBlock {...block} classNames={{ title: 'font-semibold' }} />}
+  renderMonthEvent={(chip, placement) =>
+    placement === 'more' ? <EventChip {...chip} /> : <EventChip {...chip} classNames={{ time: 'hidden' }} />
+  }
+  renderEventWrapper={({ children, event }) => (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onSelect={() => duplicate(event)}>Duplicate</ContextMenuItem>
+        <ContextMenuItem onSelect={() => remove(event)}>Delete</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )}
+/>`
+
+<CodeBlock language='tsx' code={code9} />
+
+`renderEventWrapper` wraps every clickable event (timed, all-day and month), which makes it the right place for context menus or tooltips. For a fully custom layout, `<Calendar>` is assembled from exported parts: `useCalendar`, `CalendarProvider`, `CalendarToolbar`, `MonthView` and `TimeGridView`.
+
+## The mini calendar
+
+`MiniCalendar` is a horizontal strip of days with previous and next arrows. It ships from its own entry point, so importing it doesn't pull in the grid views. Create the state once with `useCalendar` and pass it to both components to keep them in sync:
+
+export const code10 = `import { Calendar, useCalendar } from '@usecalendar/react';
+import { MiniCalendar } from '@usecalendar/react/mini';
+
+export function Planner({ events }: { events: CalendarEvent[] }) {
+  const calendar = useCalendar({ defaultView: 'day' });
+
+  return (
+    <>
+      <MiniCalendar calendar={calendar} days='auto' />
+      <Calendar calendar={calendar} events={events} />
+    </>
+  );
+}`
+
+<CodeBlock filename='app/planner.tsx' language='tsx' code={code10} />
+
+Picking a day in the strip moves the calendar, and navigating the calendar moves the strip. With `days='auto'` it fits as many days as the width allows. For your own markup, `useMiniCalendar` is the headless hook it's built on.
+
+## Theming and dark mode
+
+Colors and radius come from `--uc-*` variables, and each one falls back to the matching shadcn/ui token. Override them globally or on a single calendar:
+
+export const code11 = `.brand-calendar {
+  --uc-primary: oklch(0.55 0.2 280);
+  --uc-radius: 0.375rem;
+}`
+
+<CodeBlock language='css' code={code11} />
+
+Dark mode lives in the tokens too. It turns on with a `.dark` class or `data-theme='dark'` on any ancestor (the next-themes and shadcn conventions), or from the OS preference. For anything else, `className` and the `classNames` slots are merged with `tailwind-merge`, so your classes always win, without `!important`:
+
+export const code12 = `<Calendar
+  className='rounded-uc border border-uc-border'
+  classNames={{ toolbar: { title: 'text-lg' }, month: { cell: 'min-h-28' } }}
+/>`
+
+<CodeBlock language='tsx' code={code12} />
+
+## Localization
+
+Every weekday, month, date and time is formatted through `Intl` with any BCP 47 locale. Labels aren't translated automatically, so pass the ones you need:
+
+export const code13 = `<Calendar
+  locale='es-PE'
+  timeFormat='24h'
+  labels={{
+    today: 'Hoy',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    views: { day: 'Día', week: 'Semana', month: 'Mes' },
+    moreEvents: (count) => \`+\${count} más\`,
+  }}
+/>`
+
+<CodeBlock language='tsx' code={code13} />
+
+For full control, `formatters` replaces any of the date and time formats.
+
+## Keyboard and accessibility
+
+The month view and the time grid are ARIA grids with a single tab stop and roving focus. Arrows, Home, End and PageUp/PageDown follow the WAI-ARIA patterns screen-reader users rely on, so those keys are fixed. Everything else is configurable through `hotkeys`:
+
+export const code14 = `<Calendar
+  hotkeys={{ next: ['l', 'arrowright'], deleteEvent: null, moveEventUp: 'shift+arrowup' }}
+  hotkeyHandlers={{ newEvent: () => openCreateForm(), deleteEvent: () => removeSelected() }}
+/>`
+
+<CodeBlock language='tsx' code={code14} />
+
+- The defaults are `t` for today, `j`/`k` or the arrows to page, `d`/`w`/`m` for the views, `c` to create and Alt+arrows to move events.
+- Actions that touch your data (`newEvent`, `deleteEvent`, `goToDate`, `close`) only fire when you pass a handler.
+- With several calendars on the page, they share one listener, and only the one the user last focused handles a key. Keys typed in inputs are ignored.
+- A focused event announces its move and resize shortcuts, built from the keys actually bound, so remapped keys are reflected.
+
+## How fast is it?
+
+A calendar is a stress test for React: hundreds of absolutely positioned blocks, overlap math on every render, and a drag that must keep up with the pointer. usecalendar ships a benchmark report (`pnpm run bench:report`) that saves every run as JSON and CSV. The charts below are drawn straight from those files.
+
+Every scaling scenario runs with **10, 50, 100, 250, 500, 1000, 2000 and 3000** events from seeded fixtures: timed events between 07:00 and 20:00, from 15 minutes to 3 hours long, so many overlap, plus 15% all-day events lasting 1 to 5 days.
+
+<TestEnvironment />
+
+Core cases are wall-clock times. React cases are commit times from React's `<Profiler>` in jsdom, with React's development build: the JavaScript side of a frame (rendering and layout math). jsdom doesn't lay out or paint, so read those numbers as a trend, not as what a user sees. Every chart shows the **median**, which ignores one-off pauses such as garbage collection.
+
+### The layout math
+
+<CoreScalingChart />
+
+This is the work each view does on every render: placing overlapping events side by side and fitting the all-day lane. It grows linearly. With **1,000 events**, the week layout takes **7.1 ms** and the month layout **8.7 ms**, about half of a 60 Hz frame. Both cross the frame line only at around 2,000 events in a single view, far beyond what a real week holds.
+
+The interaction math is close to free and doesn't depend on the event count: one drag step (move, resize and sweep) takes **0.03 ms**, and 100 arrow-key focus moves take **0.22 ms**.
+
+### Rendering in React
+
+<ReactScalingChart />
+
+Moving one event, as after a drag, re-renders the week view in **4.3 ms with 100 events** and stays within a frame up to about **500 events (16.7 ms)**, even with React's development build. Mounting a view costs more, as expected, but happens once per navigation, not on every pointer move.
+
+<FrameShareChart events={500} />
+
+At 500 events, the layout math uses about a quarter of a frame, and moving one event uses almost exactly one. That's why the React side is the one to watch when a change touches rendering.
+
+### Before and after an optimization
+
+The report exists to catch regressions and to prove improvements. The first saved run was a baseline. The next one followed a change ([#41](https://github.com/SebastianUrdaneguiBisalaya/usecalendar/issues/41)) that rules out events outside a day with a cheap epoch-millisecond check before any `Temporal` work, memoizes the layouts in both views, and re-renders during a drag only when the snapped preview actually moves.
+
+<BeforeAfterChart
+    scenarios={[
+        { id: 'move-one-event', label: 'Move one event' },
+        { id: 'month-layout', label: 'Month layout' },
+    ]}
+    title='Before vs. after #41 (ms)'
+/>
+
+The interaction users feel the most got **about 10× faster for small calendars** (16.4 ms to 1.7 ms with 10 events) and still **2.2× faster at 1,000 events** (73 ms to 32 ms). The month layout, in the second tab, gained the most in the core: **37.3 ms to 8.7 ms** at 1,000 events, 4.3× faster.
+
+### Run it yourself
+
+export const code15 = `pnpm run bench:report`
+
+<CodeBlock language='bash' code={code15} />
+
+It takes about 30 seconds and writes `latest.json`, `latest.csv` and a dated copy named after the commit to `benchmarks/results/`. A few things to keep in mind when reading or publishing these numbers:
+
+- **They depend on the machine.** Compare runs from the same machine, and publish the CPU and Node.js version next to any chart.
+- **Temporal:** Node 24 has no native `Temporal`, so these runs use `temporal-polyfill`, which is slower than a native implementation.
+- **Commit first and close heavy apps.** The JSON records uncommitted changes (`meta.dirty`), and other load on the machine skews the numbers.
+- Real frame rates are checked by hand in Storybook (**Calendar/Performance**, with a frame meter), since jsdom doesn't paint.
+
+## Summary
+
+- Import one stylesheet, give the calendar a height, and pass `events`. Load `temporal-polyfill` where `Temporal` isn't native.
+- Treat every edit as an intent: `onEventChange`, `onSlotClick` and `onRangeSelect` propose times, and your app decides.
+- Use `onRangeChange` to fetch only the visible range, and `draftRange` to preview new events.
+- Customize with render props, `--uc-*` tokens and `classNames`, without breaking drag, focus or accessibility.
+- The layout math stays well inside a frame for realistic calendars, and the benchmark report keeps it that way.

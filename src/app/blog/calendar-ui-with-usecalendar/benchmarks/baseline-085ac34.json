@@ -1,0 +1,719 @@
+{
+  "meta": {
+    "branch": "chore/42-bench-report",
+    "commit": "085ac34",
+    "cpu": {
+      "cores": 8,
+      "model": "Apple M2"
+    },
+    "date": "2026-11-19T06:44:30.226Z",
+    "dirty": false,
+    "durationSeconds": 30.8,
+    "memoryGb": 16,
+    "node": "v24.12.0",
+    "os": {
+      "arch": "arm64",
+      "platform": "darwin",
+      "release": "27.0.0"
+    },
+    "react": {
+      "build": "development",
+      "environment": "jsdom",
+      "version": "19.3.1"
+    },
+    "temporal": "temporal-polyfill"
+  },
+  "scenarios": [
+    {
+      "description": "7 × layoutDay over the timed events + layoutWeek/fitWeek for the all-day lane: what TimeGridView computes per render.",
+      "group": "core",
+      "id": "week-layout",
+      "results": [
+        {
+          "events": 10,
+          "max": 2.627,
+          "mean": 0.362,
+          "median": 0.285,
+          "min": 0.228,
+          "opsPerSecond": 2762.581,
+          "p75": 0.394,
+          "p99": 1.837,
+          "samples": 200,
+          "frameShare": 0.017
+        },
+        {
+          "events": 50,
+          "max": 3.765,
+          "mean": 1.075,
+          "median": 0.951,
+          "min": 0.868,
+          "opsPerSecond": 930.304,
+          "p75": 1.015,
+          "p99": 2.745,
+          "samples": 200,
+          "frameShare": 0.057
+        },
+        {
+          "events": 100,
+          "max": 24.387,
+          "mean": 2.221,
+          "median": 1.803,
+          "min": 1.703,
+          "opsPerSecond": 450.328,
+          "p75": 2.108,
+          "p99": 5.878,
+          "samples": 200,
+          "frameShare": 0.108
+        },
+        {
+          "events": 250,
+          "max": 7.488,
+          "mean": 4.962,
+          "median": 4.471,
+          "min": 4.28,
+          "opsPerSecond": 201.519,
+          "p75": 4.728,
+          "p99": 7.347,
+          "samples": 101,
+          "frameShare": 0.268
+        },
+        {
+          "events": 500,
+          "max": 15.606,
+          "mean": 9.939,
+          "median": 9.021,
+          "min": 8.633,
+          "opsPerSecond": 100.616,
+          "p75": 11.19,
+          "p99": 15.606,
+          "samples": 51,
+          "frameShare": 0.541
+        },
+        {
+          "events": 1000,
+          "max": 29.314,
+          "mean": 20.056,
+          "median": 20.002,
+          "min": 17.608,
+          "opsPerSecond": 49.86,
+          "p75": 20.196,
+          "p99": 29.314,
+          "samples": 25,
+          "frameShare": 1.2
+        },
+        {
+          "events": 2000,
+          "max": 103.021,
+          "mean": 46.51,
+          "median": 41.452,
+          "min": 38.239,
+          "opsPerSecond": 21.501,
+          "p75": 42.325,
+          "p99": 103.021,
+          "samples": 11,
+          "frameShare": 2.487
+        },
+        {
+          "events": 3000,
+          "max": 63.749,
+          "mean": 61.71,
+          "median": 61.33,
+          "min": 59.677,
+          "opsPerSecond": 16.205,
+          "p75": 63.433,
+          "p99": 63.749,
+          "samples": 9,
+          "frameShare": 3.68
+        }
+      ],
+      "title": "Week view layout"
+    },
+    {
+      "description": "monthWeeks + layoutWeek/fitWeek for every week row: what MonthView computes per render. Events spread over 5 weeks.",
+      "group": "core",
+      "id": "month-layout",
+      "results": [
+        {
+          "events": 10,
+          "max": 6.342,
+          "mean": 0.487,
+          "median": 0.384,
+          "min": 0.366,
+          "opsPerSecond": 2051.534,
+          "p75": 0.402,
+          "p99": 5.622,
+          "samples": 200,
+          "frameShare": 0.023
+        },
+        {
+          "events": 50,
+          "max": 7.291,
+          "mean": 1.935,
+          "median": 1.623,
+          "min": 1.58,
+          "opsPerSecond": 516.671,
+          "p75": 1.653,
+          "p99": 7.205,
+          "samples": 200,
+          "frameShare": 0.097
+        },
+        {
+          "events": 100,
+          "max": 19.508,
+          "mean": 3.985,
+          "median": 3.243,
+          "min": 3.13,
+          "opsPerSecond": 250.96,
+          "p75": 3.317,
+          "p99": 9.203,
+          "samples": 126,
+          "frameShare": 0.195
+        },
+        {
+          "events": 250,
+          "max": 143.725,
+          "mean": 13.54,
+          "median": 8.356,
+          "min": 7.862,
+          "opsPerSecond": 73.853,
+          "p75": 13.598,
+          "p99": 143.725,
+          "samples": 37,
+          "frameShare": 0.501
+        },
+        {
+          "events": 500,
+          "max": 21.248,
+          "mean": 18.714,
+          "median": 20.599,
+          "min": 15.588,
+          "opsPerSecond": 53.437,
+          "p75": 20.984,
+          "p99": 21.248,
+          "samples": 27,
+          "frameShare": 1.236
+        },
+        {
+          "events": 1000,
+          "max": 42.354,
+          "mean": 37.926,
+          "median": 37.333,
+          "min": 36.823,
+          "opsPerSecond": 26.367,
+          "p75": 37.565,
+          "p99": 42.354,
+          "samples": 14,
+          "frameShare": 2.24
+        },
+        {
+          "events": 2000,
+          "max": 80.351,
+          "mean": 75.903,
+          "median": 75.467,
+          "min": 74.22,
+          "opsPerSecond": 13.175,
+          "p75": 76.151,
+          "p99": 80.351,
+          "samples": 7,
+          "frameShare": 4.528
+        },
+        {
+          "events": 3000,
+          "max": 334.158,
+          "mean": 158.538,
+          "median": 113.979,
+          "min": 112.921,
+          "opsPerSecond": 6.308,
+          "p75": 118.318,
+          "p99": 334.158,
+          "samples": 5,
+          "frameShare": 6.839
+        }
+      ],
+      "title": "Month view layout"
+    },
+    {
+      "description": "moveRange + resizeRange + sweepRange: the range math of one pointer move while dragging.",
+      "group": "core",
+      "id": "drag-step",
+      "results": [
+        {
+          "events": null,
+          "max": 0.097,
+          "mean": 0.034,
+          "median": 0.031,
+          "min": 0.029,
+          "opsPerSecond": 29095.154,
+          "p75": 0.034,
+          "p99": 0.093,
+          "samples": 200,
+          "frameShare": 0.002
+        }
+      ],
+      "title": "Drag step"
+    },
+    {
+      "description": "100 arrow-key moves with nextFocus across a week of 7 × 20 events.",
+      "group": "core",
+      "id": "focus-100-moves",
+      "results": [
+        {
+          "events": null,
+          "max": 3.716,
+          "mean": 0.285,
+          "median": 0.219,
+          "min": 0.215,
+          "opsPerSecond": 3504.474,
+          "p75": 0.231,
+          "p99": 0.918,
+          "samples": 200,
+          "frameShare": 0.013
+        }
+      ],
+      "title": "Keyboard focus (100 moves)"
+    },
+    {
+      "description": "Commit time of mounting <Calendar defaultView=\"week\"> (React <Profiler>, development build, jsdom).",
+      "group": "react",
+      "id": "mount-week",
+      "results": [
+        {
+          "events": 10,
+          "max": 26.781,
+          "mean": 20.772,
+          "median": 21.442,
+          "min": 15.754,
+          "opsPerSecond": 48.141,
+          "p75": 23.203,
+          "p99": 26.781,
+          "samples": 23,
+          "frameShare": 1.287
+        },
+        {
+          "events": 50,
+          "max": 31.313,
+          "mean": 22.168,
+          "median": 19.937,
+          "min": 19.148,
+          "opsPerSecond": 45.11,
+          "p75": 24.241,
+          "p99": 31.313,
+          "samples": 22,
+          "frameShare": 1.196
+        },
+        {
+          "events": 100,
+          "max": 37.771,
+          "mean": 28.666,
+          "median": 27.901,
+          "min": 23.817,
+          "opsPerSecond": 34.885,
+          "p75": 33.155,
+          "p99": 37.771,
+          "samples": 17,
+          "frameShare": 1.674
+        },
+        {
+          "events": 250,
+          "max": 85.201,
+          "mean": 51.395,
+          "median": 53.834,
+          "min": 38.021,
+          "opsPerSecond": 19.457,
+          "p75": 57.616,
+          "p99": 85.201,
+          "samples": 10,
+          "frameShare": 3.23
+        },
+        {
+          "events": 500,
+          "max": 69.06,
+          "mean": 65.802,
+          "median": 64.773,
+          "min": 64.179,
+          "opsPerSecond": 15.197,
+          "p75": 68.319,
+          "p99": 69.06,
+          "samples": 8,
+          "frameShare": 3.886
+        },
+        {
+          "events": 1000,
+          "max": 162.328,
+          "mean": 129.974,
+          "median": 135.137,
+          "min": 110.995,
+          "opsPerSecond": 7.694,
+          "p75": 162.328,
+          "p99": 162.328,
+          "samples": 4,
+          "frameShare": 8.108
+        },
+        {
+          "events": 2000,
+          "max": 297.115,
+          "mean": 238.799,
+          "median": 211.484,
+          "min": 207.797,
+          "opsPerSecond": 4.188,
+          "p75": 297.115,
+          "p99": 297.115,
+          "samples": 3,
+          "frameShare": 12.689
+        },
+        {
+          "events": 3000,
+          "max": 382.486,
+          "mean": 334.119,
+          "median": 311.202,
+          "min": 308.669,
+          "opsPerSecond": 2.993,
+          "p75": 382.486,
+          "p99": 382.486,
+          "samples": 3,
+          "frameShare": 18.672
+        }
+      ],
+      "title": "Mount the week view"
+    },
+    {
+      "description": "Commit time of re-rendering the week view after one event's times change, as after a drag.",
+      "group": "react",
+      "id": "move-one-event",
+      "results": [
+        {
+          "events": 10,
+          "max": 23.354,
+          "mean": 14.949,
+          "median": 16.424,
+          "min": 11.09,
+          "opsPerSecond": 66.893,
+          "p75": 16.723,
+          "p99": 23.354,
+          "samples": 31,
+          "frameShare": 0.985
+        },
+        {
+          "events": 50,
+          "max": 21.605,
+          "mean": 15.884,
+          "median": 15.341,
+          "min": 13.166,
+          "opsPerSecond": 62.957,
+          "p75": 16.219,
+          "p99": 21.605,
+          "samples": 28,
+          "frameShare": 0.92
+        },
+        {
+          "events": 100,
+          "max": 30.384,
+          "mean": 20.989,
+          "median": 18.603,
+          "min": 15.822,
+          "opsPerSecond": 47.645,
+          "p75": 25.414,
+          "p99": 30.384,
+          "samples": 22,
+          "frameShare": 1.116
+        },
+        {
+          "events": 250,
+          "max": 28.127,
+          "mean": 25.47,
+          "median": 24.664,
+          "min": 24.002,
+          "opsPerSecond": 39.261,
+          "p75": 27.343,
+          "p99": 28.127,
+          "samples": 18,
+          "frameShare": 1.48
+        },
+        {
+          "events": 500,
+          "max": 59.763,
+          "mean": 42.49,
+          "median": 41.627,
+          "min": 37.852,
+          "opsPerSecond": 23.535,
+          "p75": 42.157,
+          "p99": 59.763,
+          "samples": 11,
+          "frameShare": 2.498
+        },
+        {
+          "events": 1000,
+          "max": 115.831,
+          "mean": 81.583,
+          "median": 72.969,
+          "min": 69.696,
+          "opsPerSecond": 12.257,
+          "p75": 91.384,
+          "p99": 115.831,
+          "samples": 6,
+          "frameShare": 4.378
+        },
+        {
+          "events": 2000,
+          "max": 201.202,
+          "mean": 153.361,
+          "median": 131.445,
+          "min": 127.435,
+          "opsPerSecond": 6.521,
+          "p75": 201.202,
+          "p99": 201.202,
+          "samples": 3,
+          "frameShare": 7.887
+        },
+        {
+          "events": 3000,
+          "max": 265.573,
+          "mean": 218.218,
+          "median": 197.129,
+          "min": 191.953,
+          "opsPerSecond": 4.583,
+          "p75": 265.573,
+          "p99": 265.573,
+          "samples": 3,
+          "frameShare": 11.828
+        }
+      ],
+      "title": "Move one event (week view)"
+    },
+    {
+      "description": "Commit time of the toolbar's Next button in the week view (events spread over five weeks).",
+      "group": "react",
+      "id": "next-week",
+      "results": [
+        {
+          "events": 10,
+          "max": 23.761,
+          "mean": 15.418,
+          "median": 14.331,
+          "min": 13.08,
+          "opsPerSecond": 64.857,
+          "p75": 17.837,
+          "p99": 23.761,
+          "samples": 30,
+          "frameShare": 0.86
+        },
+        {
+          "events": 50,
+          "max": 28.991,
+          "mean": 19.124,
+          "median": 18.937,
+          "min": 14.18,
+          "opsPerSecond": 52.29,
+          "p75": 21.48,
+          "p99": 28.991,
+          "samples": 23,
+          "frameShare": 1.136
+        },
+        {
+          "events": 100,
+          "max": 27.991,
+          "mean": 18.352,
+          "median": 19.109,
+          "min": 14.381,
+          "opsPerSecond": 54.491,
+          "p75": 21.347,
+          "p99": 27.991,
+          "samples": 25,
+          "frameShare": 1.147
+        },
+        {
+          "events": 250,
+          "max": 43.556,
+          "mean": 21.526,
+          "median": 20.29,
+          "min": 16.798,
+          "opsPerSecond": 46.455,
+          "p75": 21.929,
+          "p99": 43.556,
+          "samples": 22,
+          "frameShare": 1.217
+        },
+        {
+          "events": 500,
+          "max": 34.544,
+          "mean": 28.797,
+          "median": 28.609,
+          "min": 20.863,
+          "opsPerSecond": 34.726,
+          "p75": 31.494,
+          "p99": 34.544,
+          "samples": 17,
+          "frameShare": 1.717
+        },
+        {
+          "events": 1000,
+          "max": 54.709,
+          "mean": 37.179,
+          "median": 35.068,
+          "min": 30.179,
+          "opsPerSecond": 26.897,
+          "p75": 35.587,
+          "p99": 54.709,
+          "samples": 13,
+          "frameShare": 2.104
+        },
+        {
+          "events": 2000,
+          "max": 109.909,
+          "mean": 68.744,
+          "median": 54.41,
+          "min": 49.245,
+          "opsPerSecond": 14.547,
+          "p75": 85.722,
+          "p99": 109.909,
+          "samples": 7,
+          "frameShare": 3.265
+        },
+        {
+          "events": 3000,
+          "max": 185.685,
+          "mean": 145.962,
+          "median": 157.536,
+          "min": 117.453,
+          "opsPerSecond": 6.851,
+          "p75": 185.685,
+          "p99": 185.685,
+          "samples": 4,
+          "frameShare": 9.452
+        }
+      ],
+      "title": "Go to the next week"
+    },
+    {
+      "description": "Commit time of mounting <Calendar defaultView=\"month\"> with events spread over five weeks.",
+      "group": "react",
+      "id": "mount-month",
+      "results": [
+        {
+          "events": 10,
+          "max": 8.173,
+          "mean": 3.142,
+          "median": 2.636,
+          "min": 2.507,
+          "opsPerSecond": 318.263,
+          "p75": 3.892,
+          "p99": 8.134,
+          "samples": 139,
+          "frameShare": 0.158
+        },
+        {
+          "events": 50,
+          "max": 14.556,
+          "mean": 7.084,
+          "median": 5.993,
+          "min": 5.585,
+          "opsPerSecond": 141.168,
+          "p75": 8.131,
+          "p99": 14.556,
+          "samples": 64,
+          "frameShare": 0.36
+        },
+        {
+          "events": 100,
+          "max": 19.403,
+          "mean": 12.288,
+          "median": 10.661,
+          "min": 9.806,
+          "opsPerSecond": 81.381,
+          "p75": 14.615,
+          "p99": 19.403,
+          "samples": 37,
+          "frameShare": 0.64
+        },
+        {
+          "events": 250,
+          "max": 66.732,
+          "mean": 28.331,
+          "median": 26.079,
+          "min": 21.423,
+          "opsPerSecond": 35.297,
+          "p75": 27.902,
+          "p99": 66.732,
+          "samples": 17,
+          "frameShare": 1.565
+        },
+        {
+          "events": 500,
+          "max": 60.882,
+          "mean": 49.534,
+          "median": 43.883,
+          "min": 43.195,
+          "opsPerSecond": 20.188,
+          "p75": 60.429,
+          "p99": 60.882,
+          "samples": 10,
+          "frameShare": 2.633
+        },
+        {
+          "events": 1000,
+          "max": 83.264,
+          "mean": 80.984,
+          "median": 81.396,
+          "min": 79.133,
+          "opsPerSecond": 12.348,
+          "p75": 81.706,
+          "p99": 83.264,
+          "samples": 6,
+          "frameShare": 4.884
+        },
+        {
+          "events": 2000,
+          "max": 245.017,
+          "mean": 187.561,
+          "median": 159.674,
+          "min": 157.991,
+          "opsPerSecond": 5.332,
+          "p75": 245.017,
+          "p99": 245.017,
+          "samples": 3,
+          "frameShare": 9.58
+        },
+        {
+          "events": 3000,
+          "max": 306.207,
+          "mean": 263.322,
+          "median": 243.005,
+          "min": 240.753,
+          "opsPerSecond": 3.798,
+          "p75": 306.207,
+          "p99": 306.207,
+          "samples": 3,
+          "frameShare": 14.58
+        }
+      ],
+      "title": "Mount the month view"
+    }
+  ],
+  "schema": 1,
+  "settings": {
+    "core": {
+      "budgetMs": 500,
+      "maxSamples": 200,
+      "minSamples": 5,
+      "warmup": 2
+    },
+    "frameMs": 16.667,
+    "react": {
+      "budgetMs": 500,
+      "maxSamples": 200,
+      "minSamples": 3,
+      "warmup": 1
+    },
+    "sizes": [
+      10,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2000,
+      3000
+    ],
+    "unit": "ms"
+  }
+}
