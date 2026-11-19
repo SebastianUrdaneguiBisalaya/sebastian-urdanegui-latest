@@ -22,6 +22,22 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		category: 'Packages',
+		description: 'A prop-driven, Google Calendar-style calendar component for React, built with Tailwind CSS v4. Business-logic agnostic, fully customizable, and designed for seamless integration.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/usecalendar',
+		name: 'usecalendar',
+		skills: ['Typescript', 'React.js', 'TailwindCSS', 'GitHub Actions', 'Monorepo'],
+		year: '2026'
+	},
+	{
+		category: 'Packages',
+		description: 'Tiny, synthesized UI sounds for React and the web. Ticks, pops, taps, toggles and success/error cues, generated live with the Web Audio API.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/usesounds',
+		name: 'usesounds',
+		skills: ['Typescript', 'React.js', 'Tsup', 'Bun', 'GitHub Actions', 'Monorepo'],
+		year: '2026'
+	},
+	{
 		category: 'Full-stack',
 		description: 'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
 		link: 'https://tempi.sebastianurdanegui.com',
