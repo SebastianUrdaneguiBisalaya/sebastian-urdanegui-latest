@@ -2,7 +2,7 @@
 
 import { Tabs } from 'radix-ui';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts';
-
+import { ChartFigure } from '@/components/shared/ChartFigure';
 import { type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { cn } from '@/libs/cn';
 
@@ -33,20 +33,6 @@ function bySize(run: Run, ids: readonly ScenarioId[]) {
 		}
 		return row;
 	});
-}
-
-/** Same frame as the post's Mermaid diagrams: bordered card, small title bar, optional caption. */
-function Frame({ title, caption, children }: { title: string; caption?: string; children: React.ReactNode }) {
-	return (
-		<figure className='my-8 overflow-hidden rounded-md border border-border bg-background'>
-			<div className='flex items-center justify-between gap-2 border-b border-border px-3 py-1.5'>
-				<span className='truncate font-sora text-xs text-muted-foreground'>{title}</span>
-				<span className='shrink-0 font-mono text-[10px] text-tertiary'>median · lower is better</span>
-			</div>
-			<div className='px-2 pt-5 pb-3 sm:px-4'>{children}</div>
-			{caption && <figcaption className='border-t border-border-subtle px-3 py-2 font-reddit-sans text-xs leading-5 text-tertiary'>{caption}</figcaption>}
-		</figure>
-	);
 }
 
 const frameLine = (
@@ -85,7 +71,7 @@ function ScalingChart({ title, caption, series }: { title: string; caption?: str
 	);
 
 	return (
-		<Frame caption={caption} title={title}>
+		<ChartFigure meta='median · lower is better' description={caption} title={title}>
 			<ChartContainer className='aspect-auto h-64 w-full sm:h-72' config={config}>
 				<LineChart accessibilityLayer data={data} margin={{ left: 0, right: 8, top: 8 }}>
 					{axes}
@@ -97,7 +83,7 @@ function ScalingChart({ title, caption, series }: { title: string; caption?: str
 					{legend}
 				</LineChart>
 			</ChartContainer>
-		</Frame>
+		</ChartFigure>
 	);
 }
 
@@ -153,7 +139,7 @@ export function BeforeAfterChart({ title, scenarios }: { title: string; scenario
 	if (!first) return null;
 
 	return (
-		<Frame caption='Same machine, same fixtures, two commits apart. The speedup is measured at 1,000 events.' title={title}>
+		<ChartFigure meta='median · lower is better' description='Same machine, same fixtures, two commits apart. The speedup is measured at 1,000 events.' title={title}>
 			<Tabs.Root defaultValue={first.id}>
 				<Tabs.List aria-label='Scenario' className='mb-4 ml-2 inline-flex rounded-md border border-border p-0.5 sm:ml-0'>
 					{scenarios.map(({ id, label }) => (
@@ -195,7 +181,7 @@ export function BeforeAfterChart({ title, scenarios }: { title: string; scenario
 					);
 				})}
 			</Tabs.Root>
-		</Frame>
+		</ChartFigure>
 	);
 }
 
@@ -220,8 +206,9 @@ export function FrameShareChart({ events }: { events: number }) {
 	});
 
 	return (
-		<Frame
-			caption='drag-step and the focus moves don’t depend on the event count. Anything past 100% would drop at least one frame during an interaction.'
+		<ChartFigure
+			meta='median · lower is better'
+			description='drag-step and the focus moves don’t depend on the event count. Anything past 100% would drop at least one frame during an interaction.'
 			title={`Share of one frame at ${events} events (%)`}
 		>
 			<ChartContainer className='aspect-auto h-72 w-full' config={frameShareConfig}>
@@ -234,7 +221,7 @@ export function FrameShareChart({ events }: { events: number }) {
 					<Bar dataKey='share' fill='var(--color-share)' radius={[0, 2, 2, 0]} />
 				</BarChart>
 			</ChartContainer>
-		</Frame>
+		</ChartFigure>
 	);
 }
 
@@ -254,9 +241,8 @@ export function TestEnvironment({ className }: { className?: string }) {
 	];
 
 	return (
-		<figure className={cn('my-8 overflow-hidden rounded-md border border-border bg-background', className)}>
-			<div className='border-b border-border px-3 py-1.5 font-sora text-xs text-muted-foreground'>Test environment</div>
-			<dl className='grid grid-cols-1 gap-x-6 gap-y-2 p-4 sm:grid-cols-[max-content_1fr]'>
+		<ChartFigure className={className} description='Read from the run’s own meta and settings, so the numbers in this post all come from the same machine.' title='Test environment'>
+			<dl className='grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-[max-content_1fr]'>
 				{rows.map(([label, value]) => (
 					<div className='contents' key={label}>
 						<dt className='font-mono text-[11px] text-tertiary sm:pt-px'>{label}</dt>
@@ -264,6 +250,6 @@ export function TestEnvironment({ className }: { className?: string }) {
 					</div>
 				))}
 			</dl>
-		</figure>
+		</ChartFigure>
 	);
 }
