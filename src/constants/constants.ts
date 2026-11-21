@@ -31,6 +31,14 @@ const projectsList: Project[] = [
 	},
 	{
 		category: 'Packages',
+		description: 'Typed, storage-free SDKs for third-party integrations, with authentication shared across all of them.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/usemeshly',
+		name: 'usemeshly',
+		skills: ['TypeScript', 'Zod', 'Sdk', 'Third Party Integrations', 'GitHub Actions', 'Monorepo'],
+		year: '2026',
+	},
+	{
+		category: 'Packages',
 		description: 'A prop-driven, Google Calendar-style calendar component for React, built with Tailwind CSS v4. Business-logic agnostic, fully customizable, and designed for seamless integration.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usecalendar',
 		name: 'usecalendar',
