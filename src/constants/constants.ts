@@ -31,6 +31,14 @@ const projectsList: Project[] = [
 	},
 	{
 		category: 'Packages',
+		description: 'A personal hub of agent skills, designed for my own workflow and installable into several coding agents (Claude Code, Codex, Cursor, Gemini).',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/skillstack',
+		name: 'skillstack',
+		skills: ['Agents', 'Skills'],
+		year: '2026'
+	},
+	{
+		category: 'Packages',
 		description: 'Typed, storage-free SDKs for third-party integrations, with authentication shared across all of them.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usemeshly',
 		name: 'usemeshly',
