@@ -22,6 +22,14 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		category: 'Full-stack',
+		description: 'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
+		link: 'https://tempi.sebastianurdanegui.com',
+		name: 'tempi',
+		skills: ['Typescript', 'React.js', 'Next.js', 'Electron', 'SQLite', 'Bun', 'GitHub Actions', 'Google Calendar API', 'Monorepo'],
+		year: '2026'
+	},
+	{
 		category: 'Packages',
 		description: 'A prop-driven, Google Calendar-style calendar component for React, built with Tailwind CSS v4. Business-logic agnostic, fully customizable, and designed for seamless integration.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usecalendar',
@@ -35,14 +43,6 @@ const projectsList: Project[] = [
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usesounds',
 		name: 'usesounds',
 		skills: ['Typescript', 'React.js', 'Tsup', 'Bun', 'GitHub Actions', 'Monorepo'],
-		year: '2026'
-	},
-	{
-		category: 'Full-stack',
-		description: 'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
-		link: 'https://tempi.sebastianurdanegui.com',
-		name: 'tempi',
-		skills: ['Typescript', 'React.js', 'Next.js', 'Electron', 'SQLite', 'Bun', 'GitHub Actions', 'Google Calendar API', 'Monorepo'],
 		year: '2026'
 	},
 	{
