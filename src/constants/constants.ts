@@ -31,6 +31,14 @@ const projectsList: Project[] = [
 	},
 	{
 		category: 'Packages',
+		description: 'Animated weather backgrounds for the web. Drifting clouds, falling rain and snow, a glowing sun, a realistic moon and twinkling stars. Pass a condition through props and get a full-screen animated sky behind your UI.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/useweather',
+		name: 'useweather',
+		skills: ['Typescript', 'React.js', 'Weather Forecast', 'UI', 'GitHub Actions', 'Monorepo'],
+		year: '2026',
+	},
+	{
+		category: 'Packages',
 		description: 'A personal hub of agent skills, designed for my own workflow and installable into several coding agents (Claude Code, Codex, Cursor, Gemini).',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/skillstack',
 		name: 'skillstack',
