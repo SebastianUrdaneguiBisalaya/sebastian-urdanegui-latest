@@ -1,0 +1,267 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'Weather backgrounds with useweather | Sebastian Urdanegui',
+  description: 'A practical guide to animated weather backgrounds in React and Next.js with useweather, from a single condition prop to live forecasts, reduced motion and performance.',
+  path: '/blog/weather-backgrounds-with-useweather',
+  type: 'article',
+});
+
+<DocsToc>
+    <DocsTocItem id='core-concepts' title='Core concepts' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='step-1-give-it-a-positioned-parent' title='Step 1: Give it a positioned parent' />
+    <DocsTocItem id='step-2-pick-a-condition' title='Step 2: Pick a condition' />
+    <DocsTocItem id='step-3-put-your-content-on-top' title='Step 3: Put your content on top' />
+    <DocsTocItem id='conditions-and-times-of-day' title='Conditions and times of day' />
+    <DocsTocItem id='connecting-real-weather-data' title='Connecting real weather data' />
+    <DocsTocItem id='nextjs-and-server-rendering' title='Next.js and server rendering' />
+    <DocsTocItem id='pausing-and-diagnostics' title='Pausing and diagnostics' />
+    <DocsTocItem id='without-react' title='Without React' />
+    <DocsTocItem id='how-it-renders' title='How it renders' />
+    <DocsTocItem id='respect-the-user' title='Respect the user' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: November 22, 2026
+
+# **Weather Backgrounds with useweather in React and Next.js**
+
+Native weather apps don't show you a forecast, they show you the sky: clouds drifting across, rain slanting with the wind, a moon with craters on a clear night. It's the detail that makes a card with "18°" feel like a place. On the web, getting there usually means a video loop per condition, a heavy WebGL scene, or a pile of CSS keyframes that eats the battery.
+
+**useweather** draws that sky for you. Pass a `condition` and a `timeOfDay`, and you get a full-size animated background behind your UI: clouds, fog, drizzle, rain, hail, sleet, snow, lightning, a glowing sun, a realistic moon and twinkling stars. It never fetches weather data. It only draws what you tell it to, so it works with any weather API, or with none.
+
+The library has two packages. `@useweather/core` is the framework-agnostic engine that renders a scene into any DOM element. `@useweather/react` wraps it in a single `<WeatherBackground />` component and installs the core for you.
+
+This guide goes from the first sky to live forecast data in Next.js. The [repository](https://github.com/SebastianUrdaneguiBisalaya/useweather) has the full API reference.
+
+## Core concepts
+
+- **Scene**: one animated background mounted in an element. It owns its animation loop, canvases and observers, and releases all of them when it's destroyed.
+- **Condition**: what the sky is doing, from `clear` to `thunderstorm`. Each condition is a set of layered effects.
+- **Time of day**: `day`, `night`, `dawn` or `dusk`. It picks the sky palette and whether the sun or the moon is out.
+- **Intensity**: one number from 0 to 1 for how strong the weather is: rain density, cloud cover, sun glare, lightning frequency.
+- **Wind**: from −1 (left) to 1 (right). It moves clouds and fog, slants rain and drifts snow.
+- **Static frame**: a single still picture with no animation loop, used for reduced motion or when you turn animation off.
+
+## Installation
+
+<InstallSnippet packages='@useweather/react' />
+
+It requires React 18 or later. `@useweather/core` comes with it, has no runtime dependencies, and both packages ship ES modules, CommonJS and types.
+
+## Step 1: Give it a positioned parent
+
+`WeatherBackground` fills its **nearest positioned ancestor**, the same way an absolutely positioned element does. Give the parent `position: relative` (or `absolute`, `fixed`) and a size, and clip it with `overflow: hidden` if it has rounded corners:
+
+export const code1 = `<div className='relative h-90 overflow-hidden rounded-3xl'>
+  <WeatherBackground />
+</div>`
+
+<CodeBlock language='tsx' code={code1} />
+
+With no props, you get a clear day. Without children, the background is purely decorative: `aria-hidden` and `pointer-events: none`, so you can also place it as a sibling behind your existing content.
+
+## Step 2: Pick a condition
+
+Every prop is optional, and they all describe the weather, not the animation:
+
+export const code2 = `<WeatherBackground
+  condition='rain'
+  timeOfDay='night'
+  intensity={0.7}
+  wind={0.3}
+/>`
+
+<CodeBlock language='tsx' code={code2} />
+
+Numbers are clamped to their range, and invalid values fall back to the default, so a bad value from an API never crashes the page or leaves an empty box. Changing a prop updates the scene in place: the component never remounts, and switching from rain to snow doesn't flash.
+
+## Step 3: Put your content on top
+
+Children render above the sky and stay interactive. A weather card is just your markup inside the component:
+
+export const code3 = `'use client';
+
+import { type Condition, WeatherBackground } from '@useweather/react';
+
+type Props = { city: string; temperature: number; condition: Condition; isNight: boolean };
+
+export function WeatherCard({ city, temperature, condition, isNight }: Props) {
+  return (
+    <div className='relative h-90 overflow-hidden rounded-3xl'>
+      <WeatherBackground condition={condition} timeOfDay={isNight ? 'night' : 'day'} intensity={0.6}>
+        <div className='p-6 text-white'>
+          <h2 className='text-lg'>{city}</h2>
+          <p className='text-6xl font-light'>{temperature}°</p>
+        </div>
+      </WeatherBackground>
+    </div>
+  );
+}`
+
+<CodeBlock filename='components/weather-card.tsx' language='tsx' code={code3} />
+
+The sky gradients keep white text at a contrast of at least 3:1, which works for large text like a temperature. For small text, add a subtle dark overlay behind it.
+
+## Conditions and times of day
+
+There are 14 conditions: `clear`, `partly-cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy-rain`, `thunderstorm`, `snow`, `heavy-snow`, `sleet`, `hail` and `wind`. They combine with the four times of day, so a thunderstorm at dusk, fog at dawn or snow at night each get their own sky.
+
+Both lists are exported from the core, in display order, which is handy for a picker or a Storybook control:
+
+export const code4 = `import { CONDITIONS, TIMES_OF_DAY } from '@useweather/core';
+
+CONDITIONS; // ['clear', 'partly-cloudy', 'cloudy', ...]
+TIMES_OF_DAY; // ['day', 'night', 'dawn', 'dusk']`
+
+<CodeBlock language='ts' code={code4} />
+
+`intensity` changes what a condition looks like more than you'd expect. A `rain` at 0.2 is a few scattered drops, at 0.9 it's a downpour, and `clear` at 1 adds a strong glare to the sun.
+
+## Connecting real weather data
+
+Because the component only takes props, connecting it to a forecast is a mapping from your API's codes to a `Condition`. Most free APIs, Open-Meteo included, use the WMO weather codes:
+
+export const code5 = `import type { Condition } from '@useweather/react';
+
+/** WMO weather code (Open-Meteo's weather_code) to a useweather condition. */
+export function conditionFromWmo(code: number): Condition {
+  if (code === 0) return 'clear';
+  if (code <= 2) return 'partly-cloudy';
+  if (code === 3) return 'overcast';
+  if (code === 45 || code === 48) return 'fog';
+  if (code >= 51 && code <= 57) return 'drizzle';
+  if (code === 66 || code === 67) return 'sleet';
+  if (code === 65 || code === 82) return 'heavy-rain';
+  if ((code >= 61 && code <= 63) || (code >= 80 && code <= 81)) return 'rain';
+  if (code === 75 || code === 86) return 'heavy-snow';
+  if ((code >= 71 && code <= 77) || code === 85) return 'snow';
+  if (code === 96 || code === 99) return 'hail';
+  if (code >= 95) return 'thunderstorm';
+  return 'cloudy';
+}`
+
+<CodeBlock filename='lib/weather.ts' language='ts' code={code5} />
+
+Then fetch the current weather on the server and pass the result down. This example uses `@usemeshly/open-meteo`, a typed Open-Meteo client from [usemeshly](/blog/third-party-integrations-with-usemeshly), but any fetch works the same way:
+
+export const code6 = `import { createOpenMeteoClient } from '@usemeshly/open-meteo';
+import { WeatherCard } from '@/components/weather-card';
+import { conditionFromWmo } from '@/lib/weather';
+
+const meteo = createOpenMeteoClient({ plan: 'free' });
+
+export default async function Page() {
+  const { current } = await meteo.forecast({
+    latitude: -12.05,
+    longitude: -77.04,
+    current: ['temperature_2m', 'weather_code', 'is_day', 'wind_speed_10m'],
+    timezone: 'auto',
+  });
+
+  return (
+    <WeatherCard
+      city='Lima'
+      temperature={Math.round(current.temperature_2m ?? 0)}
+      condition={conditionFromWmo(current.weather_code ?? 0)}
+      isNight={current.is_day === 0}
+    />
+  );
+}`
+
+<CodeBlock filename='app/page.tsx' language='tsx' code={code6} />
+
+`wind` is a direction as well as a strength, so derive it from the wind speed (and its direction, if your API has it) scaled to the −1 to 1 range. Remember to credit your weather provider: Open-Meteo's data is CC BY 4.0.
+
+## Next.js and server rendering
+
+- The React package ships with a `'use client'` directive, so you can import `WeatherBackground` straight from a Server Component in the App Router.
+- Rendering on the server never touches `window` or `document`. The sky gradient is inlined in the server HTML, so the **first paint is already the right sky**, before any JavaScript runs. Clouds, rain and the rest start after hydration.
+- The scene is created once on mount, updated in place when props change, and fully released on unmount. It's safe under React Strict Mode's double mount.
+
+## Pausing and diagnostics
+
+A background shouldn't keep working when nobody is looking at it. Use `paused` to freeze the current frame, for example behind a modal, or `animated={false}` to draw one static frame and never start the loop:
+
+export const code7 = `<WeatherBackground condition='snow' paused={isDialogOpen} />`
+
+<CodeBlock language='tsx' code={code7} />
+
+For imperative control or an FPS overlay, `sceneRef` gives you the underlying scene:
+
+export const code8 = `import { useRef } from 'react';
+import { WeatherBackground, type WeatherScene } from '@useweather/react';
+
+const scene = useRef<WeatherScene | null>(null);
+
+<WeatherBackground condition='rain' sceneRef={scene} />;
+
+scene.current?.pause();
+scene.current?.resume();
+scene.current?.getStats(); // { frames, workMs, maxWorkMs, quality, state }`
+
+<CodeBlock language='tsx' code={code8} />
+
+`getStats()` is cheap, but meant for polling a few times per second, not every frame. `maxWorkMs` (the longest frame since the last call) resets on each call, which makes it a good number to watch for jank.
+
+## Without React
+
+`@useweather/core` renders into any element, so it works with Vue, Svelte, Astro islands or plain HTML:
+
+export const code9 = `import { createWeatherScene } from '@useweather/core';
+
+const container = document.querySelector<HTMLElement>('#sky')!;
+container.style.position = 'relative'; // the scene fills its container
+
+const scene = createWeatherScene(container, { condition: 'thunderstorm', timeOfDay: 'night', intensity: 0.8 });
+
+scene.update({ condition: 'rain', wind: 0.5 }); // merged in place, no remount
+scene.destroy(); // stops the loop and removes everything; safe to call twice`
+
+<CodeBlock language='ts' code={code9} />
+
+`createWeatherScene` is browser-only, so call it from client code after mount, never at module load during server rendering. Misuse is the only thing that throws, with a typed error you can check with `isUseWeatherError` (`ENVIRONMENT` outside a browser, `INVALID_CONTAINER` when the target isn't an element). For a server-rendered first paint, the pure helpers `getSkyPalette(condition, timeOfDay)` and `getSkyStyle(palette)` give you the same gradient as an inline style.
+
+## How it renders
+
+The goal is a sky that looks alive and costs almost nothing. Each layer uses the cheapest technique that looks right:
+
+<MermaidDiagram
+    title='Layers of a scene'
+    code={`
+flowchart TD
+    A["Sky<br/>CSS gradient from CSS variables"] --> B["Sun, moon and stars<br/>pre-rendered once, then only transform and opacity"]
+    B --> C["Clouds and fog<br/>half-resolution sprites moved with transform"]
+    C --> D["Rain, hail, sleet and snow<br/>canvas particles in pooled typed arrays"]
+    D --> E["Lightning<br/>a soft opacity flash"]
+    E --> F["Your content"]
+    `}
+/>
+
+- **One loop per scene.** A single `requestAnimationFrame` loop drives every layer with delta time, capped at 60 fps (or at `maxFps`).
+- **Flat memory.** Particles live in pooled typed arrays and are drawn in at most six batched paths per frame. The frame loop allocates nothing, so there are no garbage collection pauses mid-animation.
+- **It stops when it can.** The loop stops while the scene is static, paused, in a hidden tab or scrolled offscreen.
+- **It adapts.** With the default `quality='auto'`, the scene starts at high quality and steps down when frames stay over budget. Force `'low'` for very weak devices, and lower `maxPixelRatio` to draw fewer pixels on high-density screens.
+
+One thing to avoid: don't put `backdrop-filter: blur()` over the background. It forces the browser to blur again on every frame.
+
+## Respect the user
+
+- The background is always `aria-hidden` and never captures pointer events, so it's invisible to screen readers and never blocks a click.
+- With `reducedMotion='system'` (the default), users who prefer reduced motion get a static frame. `'always'` forces a static frame, and `'never'` ignores the setting, which you should only use when motion is the point of the page.
+- Lightning is a soft flash capped well below full brightness, and it never flashes on static frames.
+- The weather is decoration. Always show the condition and temperature as text too.
+
+## Summary
+
+- Install `@useweather/react`, give the parent a position and a size, and render `<WeatherBackground />`.
+- Describe the weather with `condition`, `timeOfDay`, `intensity` and `wind`. Bad values are clamped, never thrown.
+- Map your API's codes to a `Condition`. The component never fetches anything.
+- The sky is in the server HTML, the animation starts after hydration, and the scene is released on unmount.
+- Pause it when it's not the focus, keep `quality='auto'`, and let reduced motion give users a still sky.

@@ -1,0 +1,161 @@
+import { DocsToc, DocsTocItem } from '@/components/shared/DocsToc';
+import { CodeBlock } from '@/components/shared/CodeBlock';
+import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
+import { InstallSnippet } from '@/components/shared/Snippet';
+
+import { pageMetadata } from '@/libs/metadata';
+
+export const metadata = pageMetadata({
+  title: 'Third-party integrations with usemeshly | Sebastian Urdanegui',
+  description: 'What usemeshly is and how it works: typed, storage-free SDKs for third-party APIs, with one shared authentication package and one error type across every integration.',
+  path: '/blog/third-party-integrations-with-usemeshly',
+  type: 'article',
+});
+
+<DocsToc>
+    <DocsTocItem id='why-another-sdk' title='Why another SDK?' />
+    <DocsTocItem id='core-concepts' title='Core concepts' />
+    <DocsTocItem id='how-the-packages-fit-together' title='How the packages fit together' />
+    <DocsTocItem id='installation' title='Installation' />
+    <DocsTocItem id='every-integration-works-the-same-way' title='Every integration works the same way' />
+    <DocsTocItem id='authentication-without-storage' title='Authentication without storage' />
+    <DocsTocItem id='one-error-type-for-everything' title='One error type for everything' />
+    <DocsTocItem id='server-side-by-design' title='Server-side by design' />
+    <DocsTocItem id='available-integrations' title='Available integrations' />
+    <DocsTocItem id='summary' title='Summary' />
+</DocsToc>
+
+###### Last updated: November 22, 2026
+
+# **Third-party Integrations with usemeshly**
+
+Every app ends up talking to someone else's API: a calendar, a weather service, a holidays feed, a payment provider. Each one comes with its own SDK, or none, and each one has its own idea of authentication, pagination, errors and what a response looks like. After the third integration, half of the code is glue that nobody wants to touch.
+
+**usemeshly** is a set of small, typed SDKs for third-party APIs that all follow the same rules. Authentication lives in one shared package, every response is validated, every failure is the same error type, and nothing is ever stored on your behalf. Learn one integration and you already know how the next one works.
+
+This post explains what usemeshly is and how its pieces fit together, not how to use each integration: every package has its own README with the full API in the [repository](https://github.com/SebastianUrdaneguiBisalaya/usemeshly).
+
+## Why another SDK?
+
+Official SDKs are written by different teams for different goals. Some ship a whole HTTP stack, some cache tokens on disk, some return `any`, and some throw strings. usemeshly takes a narrower and stricter position:
+
+- **Storage-free.** No package writes tokens, caches responses or keeps state between calls. Credentials come from you on every call, and new tokens go wherever your own `save` puts them.
+- **Typed from the request.** Where an API lets you choose what to return, the response type follows what you asked for. A field you didn't request is a compile error, not an `undefined` at runtime.
+- **Validated at the boundary.** Every response goes through a [zod](https://zod.dev) schema before it reaches your code, so a provider changing its payload fails loudly in one place.
+- **Small and focused.** Each integration is its own package. You install only what you use, and they share one dependency for auth and errors.
+
+## Core concepts
+
+- **Integration**: a package for one provider, such as `@usemeshly/google-calendar`. It exports a client factory and the provider's types.
+- **Client**: what `create<Provider>Client(...)` returns. Methods are grouped like the provider's API (`events.list`, `holidays.next`) and take a per-call `signal`.
+- **Plan**: for APIs with free and paid tiers, the plan you pick when you create the client. It decides which credentials are required and which methods exist, in the types.
+- **Token manager**: from `@usemeshly/auth/oauth`. It hands out valid access tokens, refreshing and saving them through your own `load` and `save`.
+- **`MeshlyError`**: the single error type every package throws, with a typed `code`.
+
+## How the packages fit together
+
+<MermaidDiagram
+    title='The usemeshly packages'
+    code={`
+flowchart TD
+    A["Your backend, CLI<br/>or desktop main process"] --> B["@usemeshly/google-calendar"]
+    A --> C["@usemeshly/open-meteo"]
+    A --> D["@usemeshly/nager-date"]
+    A --> E["Any other HTTP API<br/>you call yourself"]
+    B --> F["@usemeshly/auth<br/>OAuth 2.0 + PKCE, Basic, Bearer,<br/>API keys, MeshlyError"]
+    C --> F
+    D --> F
+    E --> F
+    A -.->|"load / save"| G["Your storage<br/>database, file, keychain"]
+    `}
+/>
+
+`@usemeshly/auth` is the base. It has three entry points: `@usemeshly/auth/oauth` for the OAuth 2.0 authorization code flow with PKCE and the token manager, `@usemeshly/auth/basic` for Basic, Bearer and API key headers, and the root import for `MeshlyError` and `isMeshlyError`. Every integration depends on it as a peer, so there's one copy of the auth code and one error type in your app, however many integrations you add. You can also use it on its own for APIs that don't have a usemeshly package yet.
+
+## Installation
+
+Install the auth package once, and then one package per integration:
+
+<InstallSnippet packages='@usemeshly/auth @usemeshly/open-meteo' />
+
+Every package works with `import` and `require`, ships types, and requires Node.js 20.3 or later (or any runtime with `fetch`, Web Crypto and `AbortSignal.any`).
+
+## Every integration works the same way
+
+Whatever the provider is, the shape doesn't change: create a client with its credentials or plan, call a typed method, and handle a `MeshlyError` if it fails.
+
+export const code1 = `import { isMeshlyError } from '@usemeshly/auth';
+import { createNagerDateClient } from '@usemeshly/nager-date';
+
+const nager = createNagerDateClient({ plan: 'community' });
+
+try {
+  const holidays = await nager.holidays.list('PE', 2026); // typed and validated
+} catch (error) {
+  if (isMeshlyError(error, 'network_error', 'timeout')) {
+    // transient: try again later
+  } else {
+    throw error;
+  }
+}`
+
+<CodeBlock language='ts' code={code1} />
+
+A few rules hold for every client:
+
+- **Transport is yours.** Every client accepts `fetch` (the global one by default; inject your own for proxies, instrumentation or tests), `timeoutMs` (30 seconds by default) and a `signal`, and every method takes a per-call `signal` too.
+- **HTTPS only, no redirects.** Requests never follow a redirect, so a key or token can't leak to another host.
+- **Arguments are checked before sending.** Coordinates, dates, ranges and identifiers are validated locally, and a bad one rejects with `invalid_argument` without a request.
+- **Plans are enforced by the types.** On APIs with a free and a paid tier, passing an API key to the free plan is a type error, and paid-only methods don't exist on a free client.
+
+## Authentication without storage
+
+Most of the hard part of an integration is OAuth: PKCE, `state`, the callback, refresh tokens that rotate, and two requests racing to refresh the same token. `@usemeshly/auth/oauth` handles the flow, built on [`oauth4webapi`](https://github.com/panva/oauth4webapi), and leaves only one decision to you: where tokens live.
+
+export const code2 = `import { createTokenManager } from '@usemeshly/auth/oauth';
+import { createGoogleCalendarClient, googleOAuthProvider } from '@usemeshly/google-calendar';
+
+const tokens = createTokenManager({
+  provider: googleOAuthProvider, // each OAuth integration exports its provider descriptor
+  client: { clientId, clientSecret },
+  load: () => tokenStore.read(userId), // your database, a file, the OS keychain...
+  save: (next) => tokenStore.write(userId, next),
+});
+
+const calendar = createGoogleCalendarClient({ getAccessToken: tokens.getAccessToken });`
+
+<CodeBlock language='ts' code={code2} />
+
+The token manager reads tokens with your `load` on every call. When the access token is about to expire, it refreshes it and calls your `save` **before** handing out the new one, which matters for providers that rotate refresh tokens. Concurrent calls share a single refresh. When an API still rejects a token with a 401, the Google Calendar client asks the manager for a forced refresh once and retries.
+
+For providers without OAuth, `@usemeshly/auth/basic` builds the headers (`basicAuthHeader`, `bearerAuthHeader`, `apiKeyHeader`) or the query parameter (`apiKeyQueryParam`), and rejects values that could inject headers. For any provider that isn't covered yet, `defineOAuthProvider` describes it in a few lines, or reads its endpoints from OIDC discovery.
+
+## One error type for everything
+
+Every failure, from any package, is a `MeshlyError` with a typed `code`: `invalid_argument`, `invalid_grant`, `not_signed_in`, `missing_scopes`, `network_error`, `timeout`, and a few provider-specific ones such as `sync_token_expired` for incremental calendar sync. `isMeshlyError(error, ...codes)` narrows it, and it works across the ESM and CommonJS copies of the package, which `instanceof` doesn't.
+
+Messages are redacted. A `MeshlyError` never contains access tokens, refresh tokens, authorization codes, PKCE verifiers, client secrets or API keys (including `apikey=…` in a URL), so it's safe to log or send to your error tracker as is.
+
+## Server-side by design
+
+Secrets don't belong in a browser bundle. usemeshly is meant for a backend, a serverless function, a CLI or the main process of a desktop app. Every function that takes credentials throws `unsupported_environment` in a browser-like runtime, so a client secret can't end up in a frontend by accident. Free plans that hold no secret, like Open-Meteo's or Nager.Date's community API, skip that check. Importing a package only for its types is always fine.
+
+That's how [Tempi](https://tempi.sebastianurdanegui.com) uses it: the desktop app's main process holds the Google tokens and calls every API, and the renderer only sees the results.
+
+## Available integrations
+
+usemeshly starts with three integrations, and more will be added as I need them. Each one follows every rule in this post:
+
+- **[`@usemeshly/google-calendar`](https://github.com/SebastianUrdaneguiBisalaya/usemeshly)**: Google Calendar API v3, with calendars, events, incremental sync and a ready-made Google OAuth provider.
+- **[`@usemeshly/open-meteo`](https://github.com/SebastianUrdaneguiBisalaya/usemeshly)**: every Open-Meteo API (forecast, historical, air quality, marine, geocoding and more), on the free and commercial plans, with responses inferred from the variables you request. It pairs well with [useweather](/blog/weather-backgrounds-with-useweather).
+- **[`@usemeshly/nager-date`](https://github.com/SebastianUrdaneguiBisalaya/usemeshly)**: public holidays from Nager.Date, on the community and Pro plans.
+
+Using a provider's API also means accepting its terms. Some free plans are for non-commercial use only, and some data needs attribution. The packages don't enforce any of that, so check each provider's terms before you ship.
+
+## Summary
+
+- usemeshly is a set of typed SDKs for third-party APIs that share one auth package and one error type.
+- Nothing is stored: credentials come from you, and tokens go wherever your `save` puts them.
+- Every response is validated with zod, every argument is checked before sending, and plans are enforced by the types.
+- It runs server-side, and refuses to handle credentials in a browser.
+- It starts with Google Calendar, Open-Meteo and Nager.Date, and grows one integration at a time.
