@@ -6,6 +6,8 @@ export interface Blog {
 	description: string;
 	link?: string;
 	name: string;
+	/** `name` of the entry in `projectsList` this post is about; its link is shown above the post. */
+	project?: string;
 	skills: string[];
 	year: string;
 }

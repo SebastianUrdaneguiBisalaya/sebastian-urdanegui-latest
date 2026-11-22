@@ -23,15 +23,17 @@ const navigationsPaths = [
 const projectsList: Project[] = [
 	{
 		category: 'Full-stack',
-		description: 'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
+		description:
+			'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
 		link: 'https://tempi.sebastianurdanegui.com',
 		name: 'tempi',
 		skills: ['Typescript', 'React.js', 'Next.js', 'Electron', 'SQLite', 'Bun', 'GitHub Actions', 'Google Calendar API', 'Monorepo'],
-		year: '2026'
+		year: '2026',
 	},
 	{
 		category: 'Packages',
-		description: 'Animated weather backgrounds for the web. Drifting clouds, falling rain and snow, a glowing sun, a realistic moon and twinkling stars. Pass a condition through props and get a full-screen animated sky behind your UI.',
+		description:
+			'Animated weather backgrounds for the web. Drifting clouds, falling rain and snow, a glowing sun, a realistic moon and twinkling stars. Pass a condition through props and get a full-screen animated sky behind your UI.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/useweather',
 		name: 'useweather',
 		skills: ['Typescript', 'React.js', 'Weather Forecast', 'UI', 'GitHub Actions', 'Monorepo'],
@@ -43,7 +45,7 @@ const projectsList: Project[] = [
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/skillstack',
 		name: 'skillstack',
 		skills: ['Agents', 'Skills'],
-		year: '2026'
+		year: '2026',
 	},
 	{
 		category: 'Packages',
@@ -55,11 +57,12 @@ const projectsList: Project[] = [
 	},
 	{
 		category: 'Packages',
-		description: 'A prop-driven, Google Calendar-style calendar component for React, built with Tailwind CSS v4. Business-logic agnostic, fully customizable, and designed for seamless integration.',
+		description:
+			'A prop-driven, Google Calendar-style calendar component for React, built with Tailwind CSS v4. Business-logic agnostic, fully customizable, and designed for seamless integration.',
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usecalendar',
 		name: 'usecalendar',
 		skills: ['Typescript', 'React.js', 'TailwindCSS', 'GitHub Actions', 'Monorepo'],
-		year: '2026'
+		year: '2026',
 	},
 	{
 		category: 'Packages',
@@ -67,7 +70,7 @@ const projectsList: Project[] = [
 		link: 'https://github.com/SebastianUrdaneguiBisalaya/usesounds',
 		name: 'usesounds',
 		skills: ['Typescript', 'React.js', 'Tsup', 'Bun', 'GitHub Actions', 'Monorepo'],
-		year: '2026'
+		year: '2026',
 	},
 	{
 		category: 'Full-stack',
@@ -222,9 +225,26 @@ const projectsList: Project[] = [
 
 const blogList: Blog[] = [
 	{
+		description: 'A practical guide to animated weather backgrounds in React and Next.js with useweather, from a single condition prop to live forecasts, reduced motion and performance.',
+		link: '/blog/weather-backgrounds-with-useweather',
+		name: 'Weather backgrounds with useweather',
+		project: 'useweather',
+		skills: ['TypeScript', 'React', 'Next.js', 'Canvas', 'Performance'],
+		year: '2026',
+	},
+	{
+		description: 'What usemeshly is and how it works: typed, storage-free SDKs for third-party APIs, with one shared authentication package and one error type across every integration.',
+		link: '/blog/third-party-integrations-with-usemeshly',
+		name: 'Third-party integrations with usemeshly',
+		project: 'usemeshly',
+		skills: ['TypeScript', 'Node.js', 'OAuth 2.0', 'Zod', 'SDK'],
+		year: '2026',
+	},
+	{
 		description: 'A practical guide to month, week and day calendars in React and Next.js with usecalendar, from the first render to drag-to-edit, theming and real benchmark numbers.',
 		link: '/blog/calendar-ui-with-usecalendar',
 		name: 'Calendar UIs with usecalendar',
+		project: 'usecalendar',
 		skills: ['TypeScript', 'React', 'Next.js', 'Temporal', 'Performance'],
 		year: '2026',
 	},
@@ -232,6 +252,7 @@ const blogList: Blog[] = [
 		description: 'A practical guide to synthesized interface sounds in React and Next.js with usesounds, from a single data-sound attribute to custom voices, samples and SSR.',
 		link: '/blog/ui-sounds-with-usesounds',
 		name: 'UI sounds with usesounds',
+		project: 'usesounds',
 		skills: ['TypeScript', 'React', 'Next.js', 'Web Audio API', 'Accessibility'],
 		year: '2026',
 	},
@@ -239,6 +260,7 @@ const blogList: Blog[] = [
 		description: 'A practical guide to RBAC, ABAC and ReBAC checks in React and Next.js with useguardrail, from first permission to server-side enforcement.',
 		link: '/blog/frontend-authorization-with-useguardrail',
 		name: 'Frontend authorization with useguardrail',
+		project: 'useguardrail',
 		skills: ['TypeScript', 'React', 'Next.js', 'RBAC', 'ABAC', 'ReBAC'],
 		year: '2026',
 	},
@@ -246,6 +268,7 @@ const blogList: Blog[] = [
 		description: 'A practical guide to shortcuts, scopes, priorities and user-customizable keymaps in React and Next.js with usehotkeys.',
 		link: '/blog/keyboard-shortcuts-with-usehotkeys',
 		name: 'Keyboard shortcuts with usehotkeys',
+		project: 'usehotkeys',
 		skills: ['TypeScript', 'React', 'Next.js', 'Hooks', 'Accessibility'],
 		year: '2026',
 	},
@@ -253,6 +276,7 @@ const blogList: Blog[] = [
 		description: 'A walkthrough of pyFinancialAnalysis, a Python package that turns stock prices into growth, risk metrics, charts and a financial dashboard in a few lines.',
 		link: '/blog/stock-analysis-with-pyfinancialanalysis',
 		name: 'Stock analysis with pyFinancialAnalysis',
+		project: 'py-financial-analysis',
 		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn'],
 		year: '2022',
 	},
@@ -260,6 +284,7 @@ const blogList: Blog[] = [
 		description: 'A walkthrough of pyportfolioanalytics, from closing prices and log returns to correlation matrices, a buy and sell simulation and an automatic PDF report.',
 		link: '/blog/portfolio-reports-with-pyportfolioanalytics',
 		name: 'Portfolio reports with pyportfolioanalytics',
+		project: 'py-portfolio-analytics',
 		skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'ReportLab'],
 		year: '2022',
 	},
