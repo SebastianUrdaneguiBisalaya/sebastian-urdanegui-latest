@@ -11,9 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		{ changeFrequency: 'weekly', priority: 0.5, url: `${SITE_URL}/activity` },
 	];
 
-	const posts: MetadataRoute.Sitemap = blogList
-		.filter(post => post.link)
-		.map(post => ({ changeFrequency: 'yearly', priority: 0.7, url: `${SITE_URL}${post.link}` }));
+	const posts: MetadataRoute.Sitemap = blogList.filter(post => post.link).map(post => ({ changeFrequency: 'yearly', priority: 0.7, url: `${SITE_URL}${post.link}` }));
 
 	return [...pages, ...posts];
 }

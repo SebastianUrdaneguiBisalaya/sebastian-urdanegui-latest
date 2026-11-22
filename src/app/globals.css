@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -88,11 +88,11 @@ html {
  * the status bar and toolbars, and the rubber-band overscroll at the top and bottom.
  */
 html {
-	background: url('/textures/grain-light.png') var(--background);
+	background: url("/textures/grain-light.png") var(--background);
 }
 
 html.dark {
-	background-image: url('/textures/grain-dark.png');
+	background-image: url("/textures/grain-dark.png");
 }
 
 body {

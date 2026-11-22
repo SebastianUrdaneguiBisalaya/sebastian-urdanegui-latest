@@ -30,15 +30,19 @@ function CopyLinkButton({ url }: { url: string }) {
 	};
 
 	return (
-		<button
-			className='inline-flex items-center gap-2 font-mono text-xs text-tertiary hover:text-foreground/70 transition-colors duration-300 ease-out cursor-pointer'
-			onClick={copy}
-			type='button'
-		>
+		<button className='inline-flex items-center gap-2 font-mono text-xs text-tertiary hover:text-foreground/70 transition-colors duration-300 ease-out cursor-pointer' onClick={copy} type='button'>
 			{/* Both icons share one box and cross-fade, so the label never shifts. */}
 			<span aria-hidden='true' className='relative inline-flex w-3.5 h-3.5'>
-				<Icon className={cn('absolute inset-0 transition-all duration-300 ease-out', copied ? 'opacity-0 scale-50 rotate-[-45deg]' : 'opacity-100 scale-100 rotate-0')} icon={LinkIcon} size='sm' />
-				<Icon className={cn('absolute inset-0 text-success transition-all duration-300 ease-out', copied ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 rotate-45')} icon={Check} size='sm' />
+				<Icon
+					className={cn('absolute inset-0 transition-all duration-300 ease-out', copied ? 'opacity-0 scale-50 rotate-[-45deg]' : 'opacity-100 scale-100 rotate-0')}
+					icon={LinkIcon}
+					size='sm'
+				/>
+				<Icon
+					className={cn('absolute inset-0 text-success transition-all duration-300 ease-out', copied ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 rotate-45')}
+					icon={Check}
+					size='sm'
+				/>
 			</span>
 			<span aria-live='polite' className={cn('transition-colors duration-300 ease-out', copied && 'text-success')}>
 				{copied ? 'Link copied' : 'Copy link'}
@@ -50,11 +54,7 @@ function CopyLinkButton({ url }: { url: string }) {
 function PostLink({ direction, href, name }: { direction: 'previous' | 'next'; href: string; name: string }) {
 	const isNext = direction === 'next';
 	return (
-		<Link
-			className={cn('group flex flex-col gap-1.5 py-4 sm:max-w-[45%]', isNext ? 'items-end text-right sm:ml-auto' : 'items-start text-left')}
-			href={href}
-			rel={isNext ? 'next' : 'prev'}
-		>
+		<Link className={cn('group flex flex-col gap-1.5 py-4 sm:max-w-[45%]', isNext ? 'items-end text-right sm:ml-auto' : 'items-start text-left')} href={href} rel={isNext ? 'next' : 'prev'}>
 			<span className='inline-flex items-center gap-1.5 font-mono text-xs text-tertiary'>
 				{!isNext && <Icon aria-hidden='true' className='transition-transform duration-300 ease-out group-hover:-translate-x-0.5' icon={ArrowLeft} size='xs' />}
 				{isNext ? 'Next' : 'Previous'}
