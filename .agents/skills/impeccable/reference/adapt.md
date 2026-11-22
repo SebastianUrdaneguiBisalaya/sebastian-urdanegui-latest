@@ -219,22 +219,30 @@ Don't chase device sizes; let content tell you where to break. Start narrow, str
 ```css
 /* Fine pointer (mouse, trackpad) */
 @media (pointer: fine) {
-  .button { padding: 8px 16px; }
+	.button {
+		padding: 8px 16px;
+	}
 }
 
 /* Coarse pointer (touch, stylus) */
 @media (pointer: coarse) {
-  .button { padding: 12px 20px; }  /* Larger touch target */
+	.button {
+		padding: 12px 20px;
+	} /* Larger touch target */
 }
 
 /* Device supports hover */
 @media (hover: hover) {
-  .card:hover { transform: translateY(-2px); }
+	.card:hover {
+		transform: translateY(-2px);
+	}
 }
 
 /* Device doesn't support hover (touch) */
 @media (hover: none) {
-  .card { /* No hover state - use active instead */ }
+	.card {
+		/* No hover state - use active instead */
+	}
 }
 ```
 
@@ -246,15 +254,15 @@ Modern phones have notches, rounded corners, and home indicators. Use `env()`:
 
 ```css
 body {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+	padding-top: env(safe-area-inset-top);
+	padding-bottom: env(safe-area-inset-bottom);
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
 }
 
 /* With fallback */
 .footer {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+	padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 ```
 

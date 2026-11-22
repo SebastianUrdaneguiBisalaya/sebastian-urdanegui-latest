@@ -69,10 +69,10 @@ const HeavyChart = lazy(() => import('./HeavyChart'));
 
 ```css
 @font-face {
-  font-family: 'CustomFont';
-  src: url('/fonts/custom.woff2') format('woff2');
-  font-display: swap; /* Show fallback immediately */
-  unicode-range: U+0020-007F; /* Basic Latin only */
+	font-family: "CustomFont";
+	src: url("/fonts/custom.woff2") format("woff2");
+	font-display: swap; /* Show fallback immediately */
+	unicode-range: U+0020-007F; /* Basic Latin only */
 }
 ```
 
@@ -89,14 +89,14 @@ const HeavyChart = lazy(() => import('./HeavyChart'));
 ```javascript
 // ❌ Bad: Alternating reads and writes (causes reflows)
 elements.forEach(el => {
-  const height = el.offsetHeight; // Read (forces layout)
-  el.style.height = height * 2; // Write
+	const height = el.offsetHeight; // Read (forces layout)
+	el.style.height = height * 2; // Write
 });
 
 // ✅ Good: Batch reads, then batch writes
 const heights = elements.map(el => el.offsetHeight); // All reads
 elements.forEach((el, i) => {
-  el.style.height = heights[i] * 2; // All writes
+	el.style.height = heights[i] * 2; // All writes
 });
 ```
 
@@ -119,14 +119,14 @@ elements.forEach((el, i) => {
 ```css
 /* ✅ GPU-accelerated (fast) */
 .animated {
-  transform: translateX(100px);
-  opacity: 0.5;
+	transform: translateX(100px);
+	opacity: 0.5;
 }
 
 /* ❌ CPU-bound (slow) */
 .animated {
-  left: 100px;
-  width: 300px;
+	left: 100px;
+	width: 300px;
 }
 ```
 
@@ -140,12 +140,12 @@ elements.forEach((el, i) => {
 **Intersection Observer**:
 ```javascript
 // Efficiently detect when elements enter viewport
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      // Element is visible, lazy load or animate
-    }
-  });
+const observer = new IntersectionObserver(entries => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			// Element is visible, lazy load or animate
+		}
+	});
 });
 ```
 
@@ -189,6 +189,7 @@ const observer = new IntersectionObserver((entries) => {
 ## Core Web Vitals Optimization
 
 ### Largest Contentful Paint (LCP < 2.5s)
+
 - Optimize hero images
 - Inline critical CSS
 - Preload key resources
@@ -196,12 +197,14 @@ const observer = new IntersectionObserver((entries) => {
 - Server-side rendering
 
 ### Interaction to Next Paint (INP < 200ms)
+
 - Break up long tasks
 - Defer non-critical JavaScript
 - Use web workers for heavy computation
 - Reduce JavaScript execution time
 
 ### Cumulative Layout Shift (CLS < 0.1)
+
 - Set dimensions on images and videos
 - Don't inject content above existing content
 - Use `aspect-ratio` CSS property
@@ -211,7 +214,7 @@ const observer = new IntersectionObserver((entries) => {
 ```css
 /* Reserve space for image */
 .image-container {
-  aspect-ratio: 16 / 9;
+	aspect-ratio: 16 / 9;
 }
 ```
 
@@ -252,6 +255,6 @@ Test that optimizations worked:
 - **Different devices**: Test on low-end Android, not just flagship iPhone
 - **Slow connections**: Throttle to 3G, test experience
 - **No regressions**: Ensure functionality still works
-- **User perception**: Does it *feel* faster?
+- **User perception**: Does it _feel_ faster?
 
 When the user-facing numbers move, hand off to `$impeccable polish` for the final pass.
