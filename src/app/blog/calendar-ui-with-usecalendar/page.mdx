@@ -24,6 +24,8 @@ export const metadata = pageMetadata({
     <DocsTocItem id='fetching-events-for-the-visible-range' title='Fetching events for the visible range' />
     <DocsTocItem id='creating-events' title='Creating events' />
     <DocsTocItem id='make-events-look-like-yours' title='Make events look like yours' />
+    <DocsTocItem id='event-details-in-a-popover' title='Event details in a popover' />
+    <DocsTocItem id='working-hours-and-time-zones' title='Working hours and time zones' />
     <DocsTocItem id='the-mini-calendar' title='The mini calendar' />
     <DocsTocItem id='theming-and-dark-mode' title='Theming and dark mode' />
     <DocsTocItem id='localization' title='Localization' />
@@ -32,7 +34,7 @@ export const metadata = pageMetadata({
     <DocsTocItem id='summary' title='Summary' />
 </DocsToc>
 
-###### Last updated: November 19, 2026
+###### Last updated: November 22, 2026
 
 # **Calendar UIs with usecalendar in React and Next.js**
 
@@ -42,7 +44,7 @@ Sooner or later, many apps need a calendar: bookings, shifts, classes, meetings.
 
 The library has two packages. `@usecalendar/core` holds the framework-agnostic math (visible ranges, layouts, drag and keyboard models). `@usecalendar/react` adds the components and hooks, and installs the core for you.
 
-This guide goes from the first render to a production-ready Next.js setup, and ends with real benchmark numbers. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usecalendar) has the full API reference.
+This guide covers `@usecalendar/react` 0.6 (with `@usecalendar/core` 0.4) and goes from the first render to a production-ready Next.js setup, ending with real benchmark numbers. Every release since 0.1 has been additive, so code written for earlier versions keeps working. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usecalendar) has the full API reference.
 
 ## Core concepts
 
@@ -164,6 +166,8 @@ export const code6 = `type CalendarEvent<TData = unknown> = {
   color?: string; // any CSS color: '#6366f1', 'oklch(...)', 'var(--brand)'
   status?: 'confirmed' | 'tentative'; // tentative events are drawn with stripes
   timeZone?: string; // zone an all-day event was created in
+  description?: string; // longer text, shown only in the event popover
+  location?: string; // a room, an address or a meeting link, shown in the event popover
   data?: TData; // your own payload, handed back in callbacks
 };`
 
@@ -174,6 +178,7 @@ A few rules make the rest predictable:
 - **Instants, not text.** `startAt` and `endAt` can use any offset (`Z`, `-05:00`...). They're always compared as points in time, never as strings.
 - **Days are `Temporal.PlainDate`.** Props such as `date` and `onDayClick` use plain calendar dates, with no time zone.
 - **`timeZone`** decides which day is today and where events are placed. It defaults to the viewer's system zone (UTC during server rendering, until hydration).
+- **`description` and `location` are never drawn on the grid.** They only appear in the [event popover](#event-details-in-a-popover), so long text never squeezes the layout.
 - **Recurring events aren't expanded.** Pass each occurrence in the visible range as its own event, with a unique `id` such as `${seriesId}:${startAt}`, and keep the series in `data`.
 
 ## Fetching events for the visible range
@@ -241,6 +246,49 @@ export const code9 = `import { Calendar, EventBlock, EventChip } from '@usecalen
 
 `renderEventWrapper` wraps every clickable event (timed, all-day and month), which makes it the right place for context menus or tooltips. For a fully custom layout, `<Calendar>` is assembled from exported parts: `useCalendar`, `CalendarProvider`, `CalendarToolbar`, `MonthView` and `TimeGridView`.
 
+## Event details in a popover
+
+Most calendars open a small card when you click an event: its color, title, when it happens, where, and a description. `eventPopover` turns that on. It's off by default, and `onEventClick` still fires on every click:
+
+export const code16 = `<Calendar
+  events={events}
+  eventPopover='click' // 'click', 'hover' or 'both'
+  renderEventPopover={({ details, event, close }) => (
+    <>
+      {details}
+      <button onClick={() => { close(); openEditor(event.data); }}>Edit</button>
+    </>
+  )}
+/>`
+
+<CodeBlock language='tsx' code={code16} />
+
+- **`'click'`** opens it with a click, a tap, or Enter/Space on a focused event. It closes with Escape, a click outside, or a second click on the event.
+- **`'hover'`** only previews it under a mouse and leaves clicks entirely to `onEventClick`. Use it when a click already opens an editor or a side panel. Keyboard and touch users can't open it in this mode, so keep what they need reachable through `onEventClick`.
+- **`'both'`** previews on hover and opens on click until dismissed.
+
+`renderEventPopover` replaces only the content: `details` is the default content, ready to reuse, and the calendar still opens, places and closes the popover. The date line comes from the new `eventWhen` formatter (*"Wednesday, November 18, 2026, 9:00 – 10:30 AM"*), and its parts can be styled through `classNames` (`eventPopover`, `eventPopoverTitle`, `eventPopoverWhen`, `eventPopoverLocation`, `eventPopoverDescription`). If your app already has a popover or hover card component, leave `eventPopover` off and use `renderEventWrapper` instead.
+
+## Working hours and time zones
+
+The week and day views can mark the hours someone works. Slots outside them get a muted background and `data-off-hours`. It's only a visual hint: nothing stops an event from being scheduled there, that decision stays in your app.
+
+export const code17 = `<Calendar
+  events={events}
+  workingHours={{
+    days: [1, 2, 3, 4, 5], // Monday to Friday, like Temporal's dayOfWeek
+    start: Temporal.PlainTime.from('09:00'),
+    end: Temporal.PlainTime.from('18:00'),
+  }}
+  secondaryTimeZones={[{ timeZone: 'America/Lima', label: 'Perú', description: 'GMT-5' }]}
+  timeZoneLabel={{ label: 'España', description: 'GMT+1' }}
+  timeZonePopover='hover'
+/>`
+
+<CodeBlock language='tsx' code={code17} />
+
+`secondaryTimeZones` adds hour columns to the left of the calendar's own, showing the same instants in other zones. Each header shows its `label` (or the zone's short name, such as `GMT-5`, from the `timeZoneName` formatter) with an optional `description` line, and zones with half-hour offsets like India's show minutes. `timeZoneLabel` names the calendar's own column so all of them look the same, and `timeZonePopover` shows the full, untruncated header on click or hover. For your own popover component, `renderTimeZoneWrapper` works like `renderEventWrapper`. `isWorkingTime` from `@usecalendar/core` uses the same rule, if you want to apply it in your own logic.
+
 ## The mini calendar
 
 `MiniCalendar` is a horizontal strip of days with previous and next arrows. It ships from its own entry point, so importing it doesn't pull in the grid views. Create the state once with `useCalendar` and pass it to both components to keep them in sync:
@@ -301,7 +349,7 @@ export const code13 = `<Calendar
 
 <CodeBlock language='tsx' code={code13} />
 
-For full control, `formatters` replaces any of the date and time formats.
+For full control, `formatters` replaces any of the date and time formats, including `eventWhen` (the date line in the event popover) and `timeZoneName` (the short zone name above each hour column).
 
 ## Keyboard and accessibility
 
@@ -318,6 +366,7 @@ export const code14 = `<Calendar
 - Actions that touch your data (`newEvent`, `deleteEvent`, `goToDate`, `close`) only fire when you pass a handler.
 - With several calendars on the page, they share one listener, and only the one the user last focused handles a key. Keys typed in inputs are ignored.
 - A focused event announces its move and resize shortcuts, built from the keys actually bound, so remapped keys are reflected.
+- The fixed focus keys are exported as `CALENDAR_FOCUS_KEYS`, shaped like `CALENDAR_KEYMAP`. Spread both into your own shortcut list or command menu to show every key the calendar uses: `{ ...resolveKeymap(hotkeys), ...CALENDAR_FOCUS_KEYS }`.
 
 ## How fast is it?
 
@@ -380,4 +429,5 @@ It takes about 30 seconds and writes `latest.json`, `latest.csv` and a dated cop
 - Treat every edit as an intent: `onEventChange`, `onSlotClick` and `onRangeSelect` propose times, and your app decides.
 - Use `onRangeChange` to fetch only the visible range, and `draftRange` to preview new events.
 - Customize with render props, `--uc-*` tokens and `classNames`, without breaking drag, focus or accessibility.
+- Turn on `eventPopover` for event details, and use `workingHours` and `secondaryTimeZones` for schedules that cross offices and time zones.
 - The layout math stays well inside a frame for realistic calendars, and the benchmark report keeps it that way.
