@@ -22,6 +22,14 @@ const navigationsPaths = [
 
 const projectsList: Project[] = [
 	{
+		category: 'Packages',
+		description: 'An open-source (MIT) Notion-style block editor built on Tiptap core, with AI responses streamed live into the editor.',
+		link: 'https://github.com/SebastianUrdaneguiBisalaya/useblocknotes',
+		name: 'useblocknotes',
+		skills: ['Typescript', 'React.js', 'Storybook', 'Bun', 'Tsup', 'Monorepo', 'GitHub Actions'],
+		year: '2026'
+	},
+	{
 		category: 'Full-stack',
 		description:
 			'A local-first desktop calendar for macOS, Windows and Linux. No account, no cloud, no tracking: your calendars live in a database on your own computer, and Tempi works the same with or without a connection.',
