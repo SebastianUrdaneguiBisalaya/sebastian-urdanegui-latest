@@ -3,6 +3,7 @@ import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 import { InstallSnippet } from '@/components/shared/Snippet';
 
+import PostVideo from '@/components/blog/PostVideo';
 import { pageMetadata } from '@/libs/metadata';
 
 export const metadata = pageMetadata({
@@ -37,6 +38,8 @@ Native weather apps don't show you a forecast, they show you the sky: clouds dri
 **useweather** draws that sky for you. Pass a `condition` and a `timeOfDay`, and you get a full-size animated background behind your UI: clouds, fog, drizzle, rain, hail, sleet, snow, lightning, a glowing sun, a realistic moon and twinkling stars. It never fetches weather data. It only draws what you tell it to, so it works with any weather API, or with none.
 
 The library has two packages. `@useweather/core` is the framework-agnostic engine that renders a scene into any DOM element. `@useweather/react` wraps it in a single `<WeatherBackground />` component and installs the core for you.
+
+<PostVideo />
 
 This guide goes from the first sky to live forecast data in Next.js. The [repository](https://github.com/SebastianUrdaneguiBisalaya/useweather) has the full API reference.
 

@@ -10,6 +10,8 @@ export interface Blog {
 	project?: string;
 	skills: string[];
 	year: string;
+	/** YouTube URL of the video version of the post; shown after the intro through `<PostVideo />`. */
+	youtube?: string;
 }
 
 export default function Card({ description, link, name, skills, year }: Blog) {

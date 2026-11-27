@@ -3,6 +3,7 @@ import { CodeBlock } from '@/components/shared/CodeBlock';
 import { MermaidDiagram } from '@/components/shared/MermaidDiagram';
 import { InstallSnippet } from '@/components/shared/Snippet';
 
+import PostVideo from '@/components/blog/PostVideo';
 import { pageMetadata } from '@/libs/metadata';
 
 import { BeforeAfterChart, CoreScalingChart, FrameShareChart, ReactScalingChart, TestEnvironment } from './charts';
@@ -43,6 +44,8 @@ Sooner or later, many apps need a calendar: bookings, shifts, classes, meetings.
 **usecalendar** is a month, week and day calendar for React in the style of the calendars people already know: an all-day lane, a current-time line, drag to create, move and resize, full keyboard navigation and a compact day strip. It is a **UI component, agnostic to business logic**. It draws the events you pass and tells you what the user *wants* through callbacks. It never decides what an event is, how to save it, or what a click does.
 
 The library has two packages. `@usecalendar/core` holds the framework-agnostic math (visible ranges, layouts, drag and keyboard models). `@usecalendar/react` adds the components and hooks, and installs the core for you.
+
+<PostVideo />
 
 This guide covers `@usecalendar/react` 0.6 (with `@usecalendar/core` 0.4) and goes from the first render to a production-ready Next.js setup, ending with real benchmark numbers. Every release since 0.1 has been additive, so code written for earlier versions keeps working. The [repository](https://github.com/SebastianUrdaneguiBisalaya/usecalendar) has the full API reference.
 

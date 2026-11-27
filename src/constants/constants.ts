@@ -239,6 +239,7 @@ const blogList: Blog[] = [
 		project: 'useweather',
 		skills: ['TypeScript', 'React', 'Next.js', 'Canvas', 'Performance'],
 		year: '2026',
+		youtube: 'https://youtu.be/8veazJoH9pA',
 	},
 	{
 		description: 'What usemeshly is and how it works: typed, storage-free SDKs for third-party APIs, with one shared authentication package and one error type across every integration.',
@@ -255,6 +256,7 @@ const blogList: Blog[] = [
 		project: 'usecalendar',
 		skills: ['TypeScript', 'React', 'Next.js', 'Temporal', 'Performance'],
 		year: '2026',
+		youtube: 'https://youtu.be/iKGLFmoS-no',
 	},
 	{
 		description: 'A practical guide to synthesized interface sounds in React and Next.js with usesounds, from a single data-sound attribute to custom voices, samples and SSR.',
