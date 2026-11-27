@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
 	experimental: {
 		viewTransition: true,
 	},
+	images: {
+		remotePatterns: [{ hostname: 'i.ytimg.com', pathname: '/vi/**', protocol: 'https' }],
+	},
 	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 };
 
